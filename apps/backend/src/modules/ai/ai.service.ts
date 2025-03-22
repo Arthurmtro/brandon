@@ -3,7 +3,6 @@ import { ChatMistralAI } from '@langchain/mistralai';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AIMessage } from './ai.types';
-import { DynamicTool } from '@langchain/core/dist/tools';
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 
@@ -74,34 +73,4 @@ export class AiService {
     ];
     return forbiddenPatterns.some((pattern) => pattern.test(input));
   }
-
-  checkClientTool = tool(
-    async ({ nom }: { nom: string }) => {
-      try {
-        const response = await fetch(
-          `https://tonapi.com/api/clients/?search=${encodeURIComponent(nom)}`,
-        );
-        if (!response.ok) {
-          return `Erreur lors de la recherche du client : ${response.status}`;
-        }
-        const data = await response.json();
-        if (!Array.isArray(data) || data.length === 0) {
-          return 'Aucun client trouvé.';
-        }
-        const client = data[0];
-        return `Client trouvé : ${client.prenom} ${client.nom}`;
-      } catch (error) {
-        console.error('Erreur API :', error);
-        return 'Erreur lors de la vérification du client.';
-      }
-    },
-    {
-      name: 'check_client',
-      description:
-        'Vérifie si un nom correspond à un client existant dans la base de données.',
-      schema: z.object({
-        nom: z.string().describe('Le nom complet du client à rechercher.'),
-      }),
-    },
-  );
 }
