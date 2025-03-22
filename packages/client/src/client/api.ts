@@ -26,6 +26,25 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface AiMessageDto
+ */
+export interface AiMessageDto {
+    /**
+     * text
+     * @type {string}
+     * @memberof AiMessageDto
+     */
+    'text': string;
+    /**
+     * role
+     * @type {string}
+     * @memberof AiMessageDto
+     */
+    'role': string;
+}
+/**
+ * 
+ * @export
  * @interface ChatClientPingDto
  */
 export interface ChatClientPingDto {
@@ -44,10 +63,10 @@ export interface ChatClientPingDto {
 export interface ChatClientSendChat {
     /**
      * blablabla
-     * @type {Array<string>}
+     * @type {Array<AiMessageDto>}
      * @memberof ChatClientSendChat
      */
-    'messages': Array<string>;
+    'messages': Array<AiMessageDto>;
 }
 /**
  * 

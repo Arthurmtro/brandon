@@ -11,7 +11,7 @@ const Paginator: React.FC<PaginatorProps> = ({
   page,
   onPageChange,
 }) => {
-  const pagesToShow = 4; // Nombre de pages immédiatement voisines affichées
+  const pagesToShow = 2; // Nombre de pages immédiatement voisines affichées
 
   const getPageNumbers = () => {
     const start = Math.max(minPage, page - pagesToShow);

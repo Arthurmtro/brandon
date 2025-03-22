@@ -31,12 +31,14 @@ export class ChatServerPongDto {
   message: string;
 }
 
-export class AiMessageDto {
-  @ApiProperty({ description: 'awd' })
+export class AiMessageDto implements AIMessage {
+  @ApiProperty({ description: 'text' })
+  @IsString()
   readonly text: string;
 
-  @ApiProperty({ description: 'type' })
-  readonly type: string;
+  @ApiProperty({ description: 'role' })
+  @IsString()
+  readonly role: 'user' | 'assistant';
 }
 
 export class ChatClientSendChat {

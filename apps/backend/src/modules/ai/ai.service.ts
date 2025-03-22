@@ -4,7 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AIMessage } from './ai.types';
 import { DynamicTool } from '@langchain/core/dist/tools';
-// import { initializeAgentExecutorWithOptions } from 'langchain/agents';
+import { tool } from '@langchain/core/tools';
+import { z } from 'zod';
 
 @Injectable()
 export class AiService {
@@ -74,52 +75,33 @@ export class AiService {
     return forbiddenPatterns.some((pattern) => pattern.test(input));
   }
 
-  // async agentCheckClient(input: string) {
-  //   const checkClientTool = {
-  //     name: 'checkClient',
-  //     description:
-  //       'Vérifie si un nom correspond à un client existant dans la base de données.',
-  //     func: async (nom: string) => {
-  //       try {
-  //         const response = await fetch(
-  //           `https://tonapi.com/api/clients/?search=${encodeURIComponent(nom)}`,
-  //         );
-
-  //         if (!response.ok) {
-  //           return `Erreur lors de la recherche client : ${response.status}`;
-  //         }
-
-  //         const data = await response.json();
-
-  //         if (!Array.isArray(data) || data.length === 0) {
-  //           return 'Aucun client trouvé.';
-  //         }
-
-  //         const client = data[0]; // Tu peux adapter si besoin
-  //         return `Client trouvé : ${client.prenom} ${client.nom}`;
-  //       } catch (error) {
-  //         console.error('Erreur API :', error);
-  //         return 'Erreur lors de la vérification du client.';
-  //       }
-  //     },
-  //   };
-
-  //   const tool = new DynamicTool({
-  //     name: checkClientTool.name,
-  //     description: checkClientTool.description,
-  //     func: checkClientTool.func,
-  //   });
-
-  //   const executor = await initializeAgentExecutorWithOptions(
-  //     [tool],
-  //     this.model,
-  //     {
-  //       agentType: 'zero-shot-react-description',
-  //       verbose: true,
-  //     },
-  //   );
-
-  //   const result = await executor.run(input);
-  //   return result;
-  // }
+  checkClientTool = tool(
+    async ({ nom }: { nom: string }) => {
+      try {
+        const response = await fetch(
+          `https://tonapi.com/api/clients/?search=${encodeURIComponent(nom)}`,
+        );
+        if (!response.ok) {
+          return `Erreur lors de la recherche du client : ${response.status}`;
+        }
+        const data = await response.json();
+        if (!Array.isArray(data) || data.length === 0) {
+          return 'Aucun client trouvé.';
+        }
+        const client = data[0];
+        return `Client trouvé : ${client.prenom} ${client.nom}`;
+      } catch (error) {
+        console.error('Erreur API :', error);
+        return 'Erreur lors de la vérification du client.';
+      }
+    },
+    {
+      name: 'check_client',
+      description:
+        'Vérifie si un nom correspond à un client existant dans la base de données.',
+      schema: z.object({
+        nom: z.string().describe('Le nom complet du client à rechercher.'),
+      }),
+    },
+  );
 }

@@ -859,6 +859,23 @@
           "results"
         ]
       },
+      "AiMessageDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "text"
+          },
+          "role": {
+            "type": "string",
+            "description": "role"
+          }
+        },
+        "required": [
+          "text",
+          "role"
+        ]
+      },
       "ChatClientSendChat": {
         "type": "object",
         "properties": {
@@ -866,7 +883,7 @@
             "description": "blablabla",
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/AiMessageDto"
             }
           }
         },
