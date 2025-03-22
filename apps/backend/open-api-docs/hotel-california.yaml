@@ -1,0 +1,893 @@
+openapi: 3.0.3
+info:
+  title: API Hotel California
+  version: 1.0.0
+  description: API de gestion de l'hotel california
+paths:
+  /api/:
+    get:
+      operationId: root_retrieve
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+        - {}
+      responses:
+        '200':
+          description: No response body
+  /api/clients/:
+    get:
+      operationId: clients_list
+      description: Rechercher un client
+      summary: Rechercher un client
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: search
+          required: false
+          in: query
+          description: A search term.
+          schema:
+            type: string
+      tags:
+        - clients
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedClientList'
+          description: ''
+    post:
+      operationId: clients_create
+      description: Créer un client
+      summary: Créer un client
+      tags:
+        - clients
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientRequest'
+            examples:
+              ClientValide:
+                value:
+                  name: John Doe
+                  phone_number: +1 (555) 123-4567
+                  room_number: '205'
+                  special_requests: None
+                summary: Client valide
+                description: Exemple d'un client valide
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClientRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClientRequest'
+        required: true
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+              examples:
+                ClientValide:
+                  value:
+                    name: John Doe
+                    phone_number: +1 (555) 123-4567
+                    room_number: '205'
+                    special_requests: None
+                  summary: Client valide
+                  description: Exemple d'un client valide
+          description: ''
+        '400':
+          description: No response body
+  /api/clients/{id}/:
+    get:
+      operationId: clients_retrieve
+      description: Retourne les informations détaillées d'un client
+      summary: Détailler un client
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - clients
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+          description: ''
+    put:
+      operationId: clients_update
+      description: Modifie les informations d'un client
+      summary: Modifier un client
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - clients
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClientRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClientRequest'
+        required: true
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+          description: ''
+    delete:
+      operationId: clients_destroy
+      description: Supprime un client
+      summary: Supprimer un client
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - clients
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/meals/:
+    get:
+      operationId: meals_list
+      description: Retourne la liste des types de repas
+      summary: Lister les types de repas
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+      tags:
+        - meals
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMealTypeList'
+          description: ''
+  /api/reservations/:
+    get:
+      operationId: reservations_list
+      description: Retourne la liste paginée des reservations répondant aux critères
+      summary: Lister les réservations
+      parameters:
+        - in: query
+          name: client
+          schema:
+            type: integer
+        - in: query
+          name: date_from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: date_to
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: meal
+          schema:
+            type: integer
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - in: query
+          name: restaurant
+          schema:
+            type: integer
+      tags:
+        - reservations
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReservationList'
+          description: ''
+    post:
+      operationId: reservations_create
+      description: Crée une nouvelle réservation pour un restaurant
+      summary: Créer une nouvelle réservation
+      tags:
+        - reservations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+            examples:
+              RéservationValide:
+                value:
+                  client: 1
+                  restaurant: 1
+                  date: '2024-12-25'
+                  meal: 1
+                  number_of_guests: 4
+                  special_requests: Table près de la fenêtre
+                summary: Réservation valide
+                description: Exemple d'une réservation valide
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+        required: true
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+              examples:
+                RéservationValide:
+                  value:
+                    client: 1
+                    restaurant: 1
+                    date: '2024-12-25'
+                    meal: 1
+                    number_of_guests: 4
+                    special_requests: Table près de la fenêtre
+                  summary: Réservation valide
+                  description: Exemple d'une réservation valide
+          description: ''
+        '400':
+          description: No response body
+  /api/reservations/{id}/:
+    get:
+      operationId: reservations_retrieve
+      description: Retourne les informations concernant une reservation
+      summary: Détailler une reservation
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - reservations
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: ''
+    put:
+      operationId: reservations_update
+      description: Modifie les informations d'une reservation
+      summary: Modifier une reservation
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - reservations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+        required: true
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: ''
+    patch:
+      operationId: reservations_partial_update
+      description: Modifie partiellement les informations d'une reservation
+      summary: Modifier partiellement une reservation
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - reservations
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedReservationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedReservationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedReservationRequest'
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+          description: ''
+    delete:
+      operationId: reservations_destroy
+      description: Supprime une reservation
+      summary: Supprimer une reservation
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+      tags:
+        - reservations
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/restaurants/:
+    get:
+      operationId: restaurants_list
+      description: Liste tous les restaurants de l'hôtel
+      summary: Lister tous les restaurants de l'hôtel
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+      tags:
+        - restaurants
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRestaurantList'
+          description: ''
+  /api/schema/:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum:
+              - json
+              - yaml
+        - in: query
+          name: lang
+          schema:
+            type: string
+            enum:
+              - af
+              - ar
+              - ar-dz
+              - ast
+              - az
+              - be
+              - bg
+              - bn
+              - br
+              - bs
+              - ca
+              - ckb
+              - cs
+              - cy
+              - da
+              - de
+              - dsb
+              - el
+              - en
+              - en-au
+              - en-gb
+              - eo
+              - es
+              - es-ar
+              - es-co
+              - es-mx
+              - es-ni
+              - es-ve
+              - et
+              - eu
+              - fa
+              - fi
+              - fr
+              - fy
+              - ga
+              - gd
+              - gl
+              - he
+              - hi
+              - hr
+              - hsb
+              - hu
+              - hy
+              - ia
+              - id
+              - ig
+              - io
+              - is
+              - it
+              - ja
+              - ka
+              - kab
+              - kk
+              - km
+              - kn
+              - ko
+              - ky
+              - lb
+              - lt
+              - lv
+              - mk
+              - ml
+              - mn
+              - mr
+              - ms
+              - my
+              - nb
+              - ne
+              - nl
+              - nn
+              - os
+              - pa
+              - pl
+              - pt
+              - pt-br
+              - ro
+              - ru
+              - sk
+              - sl
+              - sq
+              - sr
+              - sr-latn
+              - sv
+              - sw
+              - ta
+              - te
+              - tg
+              - th
+              - tk
+              - tr
+              - tt
+              - udm
+              - ug
+              - uk
+              - ur
+              - uz
+              - vi
+              - zh-hans
+              - zh-hant
+      tags:
+        - schema
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+        - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/spas/:
+    get:
+      operationId: spas_retrieve
+      description: Retourne la liste des spas
+      summary: Lister tous les spas de l'hôtel
+      tags:
+        - spas
+      security:
+        - cookieAuth: []
+        - tokenAuth: []
+        - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Spa'
+          description: ''
+components:
+  schemas:
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        phone_number:
+          type: string
+          maxLength: 20
+        room_number:
+          type: string
+          nullable: true
+          maxLength: 10
+        special_requests:
+          type: string
+      required:
+        - id
+        - name
+        - phone_number
+    ClientRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        phone_number:
+          type: string
+          minLength: 1
+          maxLength: 20
+        room_number:
+          type: string
+          nullable: true
+          maxLength: 10
+        special_requests:
+          type: string
+      required:
+        - name
+        - phone_number
+    MealType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+      required:
+        - id
+        - name
+    PaginatedClientList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+    PaginatedMealTypeList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MealType'
+    PaginatedReservationList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reservation'
+    PaginatedRestaurantList:
+      type: object
+      required:
+        - count
+        - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Restaurant'
+    PatchedReservationRequest:
+      type: object
+      properties:
+        client:
+          type: integer
+        restaurant:
+          type: integer
+        date:
+          type: string
+          format: date
+          description: 'Format de date attendu : YYYY-MM-DD'
+        meal:
+          type: integer
+        number_of_guests:
+          type: integer
+          maximum: 100
+          minimum: 1
+          description: Nombre de convives (entre 1 et 100)
+        special_requests:
+          type: string
+    Reservation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        client:
+          type: integer
+        restaurant:
+          type: integer
+        date:
+          type: string
+          format: date
+          description: 'Format de date attendu : YYYY-MM-DD'
+        meal:
+          type: integer
+        number_of_guests:
+          type: integer
+          maximum: 100
+          minimum: 1
+          description: Nombre de convives (entre 1 et 100)
+        special_requests:
+          type: string
+      required:
+        - client
+        - date
+        - id
+        - meal
+        - number_of_guests
+        - restaurant
+    ReservationRequest:
+      type: object
+      properties:
+        client:
+          type: integer
+        restaurant:
+          type: integer
+        date:
+          type: string
+          format: date
+          description: 'Format de date attendu : YYYY-MM-DD'
+        meal:
+          type: integer
+        number_of_guests:
+          type: integer
+          maximum: 100
+          minimum: 1
+          description: Nombre de convives (entre 1 et 100)
+        special_requests:
+          type: string
+      required:
+        - client
+        - date
+        - meal
+        - number_of_guests
+        - restaurant
+    Restaurant:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+        capacity:
+          type: integer
+          maximum: 250
+          minimum: 1
+        opening_hours:
+          type: string
+          maxLength: 200
+        location:
+          type: string
+          maxLength: 100
+        is_active:
+          type: boolean
+      required:
+        - capacity
+        - description
+        - id
+        - location
+        - name
+        - opening_hours
+    Spa:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        location:
+          type: string
+          maxLength: 255
+        phone_number:
+          type: string
+          maxLength: 15
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        opening_hours:
+          type: string
+          maxLength: 255
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - created_at
+        - description
+        - email
+        - id
+        - location
+        - name
+        - opening_hours
+        - phone_number
+        - updated_at
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
