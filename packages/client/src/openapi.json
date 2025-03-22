@@ -9,7 +9,9 @@
             "name": "page",
             "required": false,
             "in": "query",
+            "description": "Page number (pagination)",
             "schema": {
+              "example": 1,
               "type": "string"
             }
           },
@@ -17,6 +19,7 @@
             "name": "search",
             "required": true,
             "in": "query",
+            "description": "Search term for filtering clients",
             "schema": {
               "type": "string"
             }
@@ -47,7 +50,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Object"
+                "$ref": "#/components/schemas/CreateClientRequest"
               }
             }
           }
@@ -167,26 +170,32 @@
         "operationId": "ReservationController_listReservations",
         "parameters": [
           {
-            "name": "page",
+            "name": "clientId",
             "required": false,
             "in": "query",
+            "description": "Filter by client ID",
             "schema": {
+              "example": 1,
               "type": "number"
-            }
-          },
-          {
-            "name": "dateTo",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
             }
           },
           {
             "name": "dateFrom",
             "required": false,
             "in": "query",
+            "description": "Filter by start date (YYYY-MM-DD)",
             "schema": {
+              "example": "2023-12-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "Filter by end date (YYYY-MM-DD)",
+            "schema": {
+              "example": "2023-12-31",
               "type": "string"
             }
           },
@@ -194,7 +203,19 @@
             "name": "mealId",
             "required": false,
             "in": "query",
+            "description": "Filter by meal type ID",
             "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (pagination)",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           },
@@ -202,15 +223,9 @@
             "name": "restaurantId",
             "required": false,
             "in": "query",
+            "description": "Filter by restaurant ID",
             "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "clientId",
-            "required": false,
-            "in": "query",
-            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -483,6 +498,71 @@
           "restaurants"
         ]
       }
+    },
+    "/ChatGateway/send-chat": {
+      "post": {
+        "tags": [
+          "WebSocket Events (Client → Server)"
+        ],
+        "summary": "Send a chat",
+        "operationId": "send-chat",
+        "x-event": "send-chat",
+        "x-namespace": "ChatGateway",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatClientSendChat"
+              }
+            }
+          }
+        },
+        "responses": {}
+      }
+    },
+    "/ChatGateway/client:ping": {
+      "post": {
+        "tags": [
+          "WebSocket Events (Client → Server)"
+        ],
+        "summary": "Ping for test",
+        "operationId": "client:ping",
+        "x-event": "client:ping",
+        "x-namespace": "ChatGateway",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatClientPingDto"
+              }
+            }
+          }
+        },
+        "responses": {}
+      }
+    },
+    "/ChatGateway/server:pong": {
+      "get": {
+        "tags": [
+          "WebSocket Events (Server → Client)"
+        ],
+        "summary": "Server emits a pong message to clients",
+        "operationId": "server:pong",
+        "x-event": "server:pong",
+        "x-namespace": "ChatGateway",
+        "responses": {
+          "200": {
+            "description": "Event payload for server:pong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatServerPongDto"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "info": {
@@ -494,7 +574,7 @@
   "tags": [],
   "servers": [
     {
-      "url": "http://localhost:3030",
+      "url": "http://localhost:3040",
       "description": "Local"
     }
   ],
@@ -559,6 +639,34 @@
         "required": [
           "count",
           "results"
+        ]
+      },
+      "CreateClientRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Client name",
+            "example": "John Doe"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Client phone number",
+            "example": "+33612345678"
+          },
+          "roomNumber": {
+            "type": "object",
+            "description": "Optional room number",
+            "example": "101"
+          },
+          "specialRequests": {
+            "type": "string",
+            "description": "Optional special requests"
+          }
+        },
+        "required": [
+          "name",
+          "phoneNumber"
         ]
       },
       "Object": {
@@ -806,6 +914,62 @@
         "required": [
           "count",
           "results"
+        ]
+      },
+      "AiMessageDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "text"
+          },
+          "role": {
+            "type": "string",
+            "description": "role"
+          }
+        },
+        "required": [
+          "text",
+          "role"
+        ]
+      },
+      "ChatClientSendChat": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "description": "blablabla",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AiMessageDto"
+            }
+          }
+        },
+        "required": [
+          "messages"
+        ]
+      },
+      "ChatClientPingDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "client send ping"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "ChatServerPongDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "server send pong"
+          }
+        },
+        "required": [
+          "message"
         ]
       }
     }

@@ -26,7 +26,7 @@ export class ConfigModuleGlobal {}
     UserModule,
     DiscoveryModule,
     ConfigModuleGlobal,
-    // ChatModule,
+    ChatModule,
     AiModule,
     HotelCaliforniaModule,
     ReservationModule,

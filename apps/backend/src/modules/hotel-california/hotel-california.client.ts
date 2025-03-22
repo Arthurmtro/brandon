@@ -6,22 +6,10 @@ import {
   ReservationsApi,
   MealsApi,
   SpasApi,
-  DefaultApi,
-  SchemaApi,
   Configuration,
   ClientRequest,
 } from '~/clients/hotel-california/api';
-import {
-  ClientResponse,
-  PaginatedClientListResponse,
-  PaginatedRestaurantListResponse,
-  ReservationResponse,
-  ReservationRequest,
-  PatchedReservationRequest,
-  PaginatedReservationListResponse,
-  PaginatedMealTypeListResponse,
-  SpaResponse,
-} from '~/clients/hotel-california/response';
+
 import {
   CreateClientParams,
   HotelCaliforniaClientConfig,
@@ -31,6 +19,20 @@ import {
   UpdateClientParams,
   UpdateReservationParams,
 } from './hotel-california.types';
+import {
+  ReservationResponse,
+  ClientResponse,
+  PaginatedClientsResponse,
+} from './responses/hotel-california.response';
+import {
+  PaginatedMealTypeListResponse,
+  PaginatedReservationListResponse,
+  PaginatedRestaurantListResponse,
+  PatchedReservationRequest,
+  ReservationRequestParams,
+  SpaResponse,
+} from '~/clients/hotel-california/response';
+import { ReservationRequest } from './requests/hotel-california.request';
 
 export class HotelCaliforniaClient {
   private readonly axiosInstance: AxiosInstance;
@@ -39,8 +41,6 @@ export class HotelCaliforniaClient {
   private readonly reservationsApi: ReservationsApi;
   private readonly mealsApi: MealsApi;
   private readonly spasApi: SpasApi;
-  private readonly defaultApi: DefaultApi;
-  private readonly schemaApi: SchemaApi;
 
   /**
    * Constructor.
@@ -88,18 +88,6 @@ export class HotelCaliforniaClient {
     );
 
     this.spasApi = new SpasApi(
-      apiConfig,
-      this.config.apiBaseUrl,
-      this.axiosInstance,
-    );
-
-    this.defaultApi = new DefaultApi(
-      apiConfig,
-      this.config.apiBaseUrl,
-      this.axiosInstance,
-    );
-
-    this.schemaApi = new SchemaApi(
       apiConfig,
       this.config.apiBaseUrl,
       this.axiosInstance,
@@ -187,13 +175,13 @@ export class HotelCaliforniaClient {
    */
   async listClients(
     params: ListClientsParams = {},
-  ): Promise<PaginatedClientListResponse> {
+  ): Promise<PaginatedClientsResponse> {
     const response = await this.clientsApi.clientsList({
       page: params.page,
       search: params.search,
     });
 
-    return response.data as unknown as PaginatedClientListResponse;
+    return response.data as unknown as PaginatedClientsResponse;
   }
 
   /**
@@ -217,9 +205,9 @@ export class HotelCaliforniaClient {
    * @returns Created reservation
    */
   async createReservation(
-    params: ReservationParams,
+    params: ReservationRequest,
   ): Promise<ReservationResponse> {
-    const reservationRequest: ReservationRequest = {
+    const reservationRequest = {
       client: params.clientId,
       restaurant: params.restaurantId,
       date: params.date,
@@ -277,7 +265,7 @@ export class HotelCaliforniaClient {
     reservationId: number,
     params: ReservationParams,
   ): Promise<ReservationResponse> {
-    const reservationRequest: ReservationRequest = {
+    const reservationRequest: ReservationRequestParams = {
       client: params.clientId,
       restaurant: params.restaurantId,
       date: params.date,

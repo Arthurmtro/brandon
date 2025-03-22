@@ -19,16 +19,14 @@ import {
 } from '@nestjs/swagger';
 import {
   PaginatedReservationListResponse,
+  ReservationRequest,
   ReservationResponse,
-  // ReservationParams,
-  // UpdateReservationParams,
 } from '~/clients/hotel-california/response';
 import { HotelCaliforniaService } from '../hotel-california/hotel-california.service';
 import {
-  ListReservationsParams,
-  ReservationParams,
-  UpdateReservationParams,
-} from '../hotel-california/hotel-california.types';
+  ListReservationsRequest,
+  UpdateReservationRequest,
+} from '../hotel-california/requests/hotel-california.request';
 
 @ApiTags('reservations')
 @Controller('reservations')
@@ -48,7 +46,7 @@ export class ReservationController {
     type: PaginatedReservationListResponse,
   })
   async listReservations(
-    @Query() params?: ListReservationsParams,
+    @Query() params?: ListReservationsRequest,
   ): Promise<PaginatedReservationListResponse> {
     const client = this.hotelService.getClient();
     return await client.listReservations(params);
@@ -62,9 +60,10 @@ export class ReservationController {
     type: ReservationResponse,
   })
   async createReservation(
-    @Body() data: ReservationParams,
+    @Body() data: ReservationRequest,
   ): Promise<ReservationResponse> {
     const client = this.hotelService.getClient();
+
     return await client.createReservation(data);
   }
 
@@ -92,7 +91,7 @@ export class ReservationController {
   })
   async updateReservation(
     @Param('id') id: number,
-    @Body() data: UpdateReservationParams,
+    @Body() data: UpdateReservationRequest,
   ): Promise<ReservationResponse> {
     const client = this.hotelService.getClient();
     return await client.updateReservation(id, data);

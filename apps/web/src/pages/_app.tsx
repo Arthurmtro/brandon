@@ -6,12 +6,7 @@ import { WebSocketProvider } from '@/context/websocket.context';
 
 api.init({
   api: {
-    baseUrl: 'http://localhost:3030',
-  },
-});
-socketApi.chat.init({
-  socket: {
-    baseUrl: 'http://localhost:3030',
+    baseUrl: 'http://localhost:3040',
   },
 });
 

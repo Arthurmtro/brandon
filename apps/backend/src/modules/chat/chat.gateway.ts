@@ -1,16 +1,13 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { ChatService } from './chat.service';
-import { ChatMistralAI } from '@langchain/mistralai';
-import { PromptTemplate } from '@langchain/core/prompts';
 import { Server, Socket } from 'socket.io';
 import { HumanMessage } from '@langchain/core/messages';
-import { ConfigService } from '@nestjs/config';
 import { Inject } from '@nestjs/common';
 import { AiService } from '../ai/ai.service';
 import {
@@ -24,16 +21,16 @@ import {
   ChatSocket,
 } from './chat.sockets';
 
-import { ClientTool } from '../ai/agents/client-agent/client-tool';
-
-import { ClientAgentService } from '../ai/agents/client-agent/client-agent.service';
-
 @WebSocketGateway({ namespace: 'chat', cors: { origin: '*' } })
-export class ChatGateway {
+export class ChatGateway implements OnGatewayConnection {
   @Inject() private readonly aiService: AiService;
-  @Inject() private readonly clientAgentService: ClientAgentService;
+  // @Inject() private readonly clientAgentService: ClientAgentService;
 
   @WebSocketServer() server: Server;
+
+  handleConnection(client: Socket) {
+    console.log('connected with id :', client.id);
+  }
 
   @ApiSocketEvent({
     event: 'send-chat',
@@ -46,9 +43,10 @@ export class ChatGateway {
     @ConnectedSocket() client: Socket,
   ) {
     try {
+      console.log('data', data);
       const { messages } = data;
 
-      const clientTool = new ClientTool(this.clientAgentService);
+      // const clientTool = new ClientTool(this.clientAgentService);
 
       console.log(messages);
 
@@ -86,7 +84,7 @@ export class ChatGateway {
     @ConnectedSocket() socket: ChatSocket,
     @MessageBody() payload: ChatClientPingDto,
   ) {
-    console.log('ping');
+    // console.log('ping');
     this.emitPont(socket, payload);
   }
 

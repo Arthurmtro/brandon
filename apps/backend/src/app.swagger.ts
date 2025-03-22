@@ -23,7 +23,7 @@ export async function setupSwagger(
     .setDescription('API docs for Brandon')
     .setVersion('1.0')
     // .addBearerAuth()
-    .addServer('http://localhost:3030', 'Local')
+    .addServer('http://localhost:3040', 'Local')
     // .addServer(`${host}:${port}`, 'Local')
     .build();
 
@@ -47,8 +47,14 @@ export async function setupSwagger(
   });
 
   if (writeApiDocs) {
-    const sourcePath = __dirname.split('/').slice(0, -3).join('/');
-    logger.log(`Writing API docs to /packages/client/src/openapi.json`);
+    const sourcePath =
+      process
+        .cwd()
+        .split('apps')?.[0]
+        ?.replace(/[\\/]$/, '') ?? '';
+    logger.log(
+      `Writing API docs to ${sourcePath}/packages/client/src/openapi.json`,
+    );
     writeFileSync(
       `${sourcePath}/packages/client/src/openapi.json`,
       JSON.stringify(document, null, 2),
@@ -59,7 +65,6 @@ export async function setupSwagger(
 
   return app;
 }
-
 async function collectExtraModels(app: INestApplication): Promise<any[]> {
   try {
     app.select(DiscoveryModule);

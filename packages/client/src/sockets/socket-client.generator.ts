@@ -1,9 +1,9 @@
-import { io, ManagerOptions, Socket, SocketOptions } from "socket.io-client";
-import { SocketConfig } from "../config.types";
+import { io, ManagerOptions, Socket, SocketOptions } from 'socket.io-client';
+import { SocketConfig } from '../config.types';
 
 const baseConfig: Partial<ManagerOptions & SocketOptions> = {
-  transports: ["websocket"],
-  autoConnect: false,
+  transports: ['websocket'],
+  autoConnect: true,
 };
 
 export class SocketClientGenerator<T extends object, D extends object> {

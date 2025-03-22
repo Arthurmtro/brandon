@@ -1,10 +1,10 @@
 import { useAdminApiContext } from '../../../context/AdminApiContext';
-import Paginator from '../../../utils/Paginator';
+import Paginator from '../../../components/Paginator';
 import { useEffect, useState, useId } from 'react';
 import {
-  PaginatedRestaurantList,
-  Restaurant,
-} from '../../../../../backend/src/clients/hotel-california/api/api';
+  PaginatedRestaurantListResponse,
+  RestaurantResponse,
+} from '@repo/client';
 
 export default function RestauratsPage() {
   const pageResolution = 10;
@@ -17,14 +17,15 @@ export default function RestauratsPage() {
   const [maxPage, setMaxPage] = useState<number>(1);
   const [minPage, setMinPage] = useState<number>(1);
 
-  const [restaurants, setRestaurants] = useState<PaginatedRestaurantList>();
+  const [restaurants, setRestaurants] =
+    useState<PaginatedRestaurantListResponse>();
   useEffect(() => {
     console.log(`page : ${page}`);
-    getRestaurants(page).then(setRestaurants);
+    getRestaurants({ page }).then(setRestaurants);
   }, [page]);
 
   useEffect(() => {
-    if (restaurants) setMaxPage(~~(restaurants.count / pageResolution) + 1);
+    if (restaurants) setMaxPage(Math.ceil(restaurants.count / pageResolution));
   }, [restaurants]);
 
   // useEffect(() => {
@@ -49,7 +50,7 @@ export default function RestauratsPage() {
             className='flex flex-col items-start gap-1 border border-gray-300 rounded-lg shadow-lg p-2'
           >
             {Object.keys(restaurant).map((k) => {
-              const key = k as keyof Restaurant;
+              const key = k as keyof RestaurantResponse;
               const value = ['boolean', 'undefined'].includes(
                 typeof restaurant[key]
               )

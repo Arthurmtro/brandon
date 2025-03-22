@@ -1,14 +1,14 @@
 import { useAdminApiContext } from '../../../context/AdminApiContext';
-import Paginator from '../../../utils/Paginator';
+import Paginator from '../../../components/Paginator';
 import { useEffect, useState, useId } from 'react';
-import { Spa } from '../../../../../backend/src/clients/hotel-california/api/api';
+import { SpaResponse } from '@repo/client';
 
 export default function SpasPage() {
   const baseId = useId();
 
   const { getSpas } = useAdminApiContext();
 
-  const [spas, setSpas] = useState<Spa[]>([]);
+  const [spas, setSpas] = useState<SpaResponse[]>([]);
 
   useEffect(() => {
     getSpas().then(setSpas);
@@ -24,7 +24,7 @@ export default function SpasPage() {
             className='flex flex-col items-start gap-1 border border-gray-300 rounded-lg shadow-lg p-2'
           >
             {Object.keys(spa).map((k) => {
-              const key = k as keyof Spa;
+              const key = k as keyof SpaResponse;
               const value = ['boolean', 'undefined'].includes(typeof spa[key])
                 ? String(spa[key])
                 : spa[key];

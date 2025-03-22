@@ -1,10 +1,7 @@
 import { useAdminApiContext } from '../../../context/AdminApiContext';
-import Paginator from '../../../utils/Paginator';
+import Paginator from '../../../components/Paginator';
 import { useEffect, useState, useId } from 'react';
-import {
-  PaginatedMealTypeList,
-  MealType,
-} from '../../../../../backend/src/clients/hotel-california/api/api';
+import { PaginatedMealTypeListResponse, MealTypeResponse } from '@repo/client';
 
 export default function MealsPage() {
   const pageResolution = 10;
@@ -17,14 +14,14 @@ export default function MealsPage() {
   const [maxPage, setMaxPage] = useState<number>(1);
   const [minPage, setMinPage] = useState<number>(1);
 
-  const [meals, setMeals] = useState<PaginatedMealTypeList>();
+  const [meals, setMeals] = useState<PaginatedMealTypeListResponse>();
   useEffect(() => {
     console.log(`page : ${page}`);
-    getMeals(page).then(setMeals);
+    getMeals({ page }).then(setMeals);
   }, [page]);
 
   useEffect(() => {
-    if (meals) setMaxPage(~~(meals.count / pageResolution) + 1);
+    if (meals) setMaxPage(Math.ceil(meals.count / pageResolution));
   }, [meals]);
 
   // useEffect(() => {
@@ -49,7 +46,7 @@ export default function MealsPage() {
             className='flex flex-col items-start gap-1 border border-gray-300 rounded-lg shadow-lg p-2'
           >
             {Object.keys(meal).map((k) => {
-              const key = k as keyof MealType;
+              const key = k as keyof MealTypeResponse;
               const value = ['boolean', 'undefined'].includes(typeof meal[key])
                 ? String(meal[key])
                 : meal[key];

@@ -20,7 +20,7 @@ async function bootstrap() {
   // Configure Swagger
   setupSwagger(app);
 
-  await app.listen(port, '0.0.0.0');
+  await app.listen(port);
 
   logger.log(`🚀 Brandon server has started on ${host}:${port}`);
 }

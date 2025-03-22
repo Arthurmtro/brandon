@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { FaPenFancy } from 'react-icons/fa';
+import { useWebSocket } from '@/context/websocket.context';
+import MessBubble from '@/components/MessBubble';
 
 // Définir des types pour les messages
 interface Message {
@@ -12,7 +14,7 @@ interface Message {
 }
 
 export default function ClientsPage() {
-  const { isConnected, connect, socket } = useWebSocket();
+  const { isConnected, socket } = useWebSocket();
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -27,6 +29,8 @@ export default function ClientsPage() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const [fadeIn, setFadeIn] = useState(true);
+
   // Fonction pour faire défiler automatiquement vers le bas
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -37,33 +41,15 @@ export default function ClientsPage() {
     scrollToBottom();
   }, [messages]);
 
-  // Effet pour configurer les écouteurs d'événements WebSocket
   useEffect(() => {
-    // Tentative de connexion si non connecté
-    if (!isConnected) {
-      connect();
-    }
+    setFadeIn(false); // Déclenche le fade out
+    const timer = setTimeout(() => {
+      setFadeIn(true); // Déclenche le fade in après un délai
+    }, 50);
 
-    // Configurer les écouteurs pour les messages du serveur
-    socket.on('server:message', (data: { message: string }) => {
-      addMessage(data.message, 'bot');
-      setIsLoading(false); // Arrêter l'indicateur de chargement quand un message est reçu
-    });
+    return () => clearTimeout(timer);
+  }, [isLoading]);
 
-    // Nettoyage
-    return () => {
-      socket.off('server:message');
-    };
-  }, [isConnected, connect]);
-
-  useEffect(() => {
-    if (isConnected) {
-      console.log('Connected to WebSocket server');
-    } else {
-      console.log('Disconnected from WebSocket server');
-    }
-  }, [isConnected]);
-  // Fonction pour ajouter un message à la liste
   const addMessage = (text: string, sender: 'bot' | 'user') => {
     const newMessage: Message = {
       text,
@@ -112,19 +98,27 @@ export default function ClientsPage() {
     >
       {/* Image du réceptionniste */}
       <div className='absolute left-1/6 top-3/5 transform -translate-y-1/2'>
-        <Image
-          src='/images/receptionist_welcomed.webp'
-          width={300}
-          height={300}
-          alt='Receptionist'
-        />
+        <div
+          className={`transition-opacity duration-500 ease-in-out ${fadeIn ? 'opacity-100' : 'opacity-0'}`}
+        >
+          <Image
+            src={
+              isLoading
+                ? '/images/receptionist_thinking.webp'
+                : '/images/receptionist_welcomed.webp'
+            }
+            width={300}
+            height={300}
+            alt='Receptionist'
+          />
+        </div>
       </div>
 
       {/* Fenêtre de chat */}
       <div className='absolute bottom-12 left-1/2 transform -translate-x-1/2 w-full max-w-lg'>
         <div className='h-120 overflow-y-auto mb-4 p-2'>
           {messages.map((msg, index) => (
-            <div
+            <MessBubble
               key={index}
               className={`flex ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}
             >
@@ -136,7 +130,7 @@ export default function ClientsPage() {
               >
                 {msg.text}
               </div>
-            </div>
+            </MessBubble>
           ))}
           {/* Référence pour le défilement automatique */}
           <div ref={messagesEndRef} />

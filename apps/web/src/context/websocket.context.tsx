@@ -20,39 +20,97 @@ const WebSocketContext = createContext<WebSocketContextType | undefined>(
   undefined
 );
 
+socketApi.chat.init({
+  socket: {
+    baseUrl: 'http://localhost:3040/chat',
+  },
+});
+
 export function WebSocketProvider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
-  const [socket, setSocket] = useState(socketApi.chat.socket);
+  const [socket, setSocket] = useState<any>(socketApi.chat.socket);
 
   const connect = () => {
     if (!isConnected) {
-      const chat = socketApi.chat.socket.connect();
-      setSocket(chat);
-      setIsConnected(true);
+      socketApi.chat.socket.connect();
+      console.log('Connecting to chat namespace');
+      setSocket(socketApi.chat.socket);
     }
   };
 
   const disconnect = () => {
     if (socket && isConnected) {
       socket.disconnect();
-      // setSocket(null);
       setIsConnected(false);
     }
   };
 
   useEffect(() => {
-    connect();
-
-    if (socket) {
-      socketApi.chat.socket.on('server:pong', (data) => {
-        console.log('Received pong from server:', data);
-      });
+    if (!isConnected) {
+      connect();
     }
 
-    return () => {
-      disconnect();
+    const handleConnect = () => {
+      console.log('Connected to chat namespace successfully');
+      setIsConnected(true);
     };
-  }, [isConnected]);
+
+    const handleDisconnect = () => {
+      console.log('Disconnected from chat namespace');
+      setIsConnected(false);
+    };
+
+    const handleConnectError = (error: any) => {
+      console.error('Connection error to chat namespace:', error);
+      setIsConnected(false);
+    };
+
+    const handleReconnect = (attemptNumber: number) => {
+      console.log(`Reconnecting to chat namespace, attempt ${attemptNumber}`);
+    };
+
+    const handleReconnectAttempt = (attemptNumber: number) => {
+      console.log(
+        `Attempting to reconnect to chat namespace, attempt ${attemptNumber}`
+      );
+    };
+
+    socketApi.chat.socket.on('connect', handleConnect);
+    socketApi.chat.socket.on('disconnect', handleDisconnect);
+    socketApi.chat.socket.on('connect_error', handleConnectError);
+    socketApi.chat.socket.on('reconnect', handleReconnect);
+    socketApi.chat.socket.on('reconnect_attempt', handleReconnectAttempt);
+
+    let pingInterval: NodeJS.Timeout | null = null;
+    if (socket && isConnected) {
+      console.log('Connected to chat namespace successfully', isConnected);
+
+      pingInterval = setInterval(() => {
+        console.log('Sending ping to chat namespace...');
+        socketApi.chat.socket.emit('client:ping', { message: 'ping' });
+      }, 1000);
+
+      const handlePong = (data: any) => {
+        console.log('Received pong from chat namespace:', data);
+      };
+
+      socketApi.chat.socket.on('server:pong', handlePong);
+
+      return () => {
+        if (pingInterval) clearInterval(pingInterval);
+        socketApi.chat.socket.offAny();
+      };
+    }
+    return () => {
+      if (pingInterval) clearInterval(pingInterval);
+
+      socketApi.chat.socket.offAny();
+
+      if (socket && isConnected) {
+        disconnect();
+      }
+    };
+  }, [socket, isConnected]);
 
   const value = {
     isConnected,

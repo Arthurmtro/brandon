@@ -6,7 +6,6 @@ import {
   Min,
   Max,
   IsBoolean,
-  IsDate,
   IsPositive,
   IsInt,
   IsNotEmpty,
@@ -14,7 +13,7 @@ import {
   IsEmail,
   Matches,
 } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 
 // Client DTOs
 export class ClientRequest {
@@ -77,7 +76,7 @@ export class MealTypeResponse {
 }
 
 // Reservation DTOs
-export class ReservationRequest {
+export class ReservationRequestParams {
   @ApiProperty({ description: 'Client ID' })
   @IsNumber()
   @IsPositive()

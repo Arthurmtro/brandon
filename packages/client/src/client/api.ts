@@ -26,64 +26,6 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
- * @interface AiMessageDto
- */
-export interface AiMessageDto {
-    /**
-     * text
-     * @type {string}
-     * @memberof AiMessageDto
-     */
-    'text': string;
-    /**
-     * role
-     * @type {string}
-     * @memberof AiMessageDto
-     */
-    'role': string;
-}
-/**
- * 
- * @export
- * @interface ChatClientPingDto
- */
-export interface ChatClientPingDto {
-    /**
-     * client send ping
-     * @type {string}
-     * @memberof ChatClientPingDto
-     */
-    'message': string;
-}
-/**
- * 
- * @export
- * @interface ChatClientSendChat
- */
-export interface ChatClientSendChat {
-    /**
-     * blablabla
-     * @type {Array<AiMessageDto>}
-     * @memberof ChatClientSendChat
-     */
-    'messages': Array<AiMessageDto>;
-}
-/**
- * 
- * @export
- * @interface ChatServerPongDto
- */
-export interface ChatServerPongDto {
-    /**
-     * server send pong
-     * @type {string}
-     * @memberof ChatServerPongDto
-     */
-    'message': string;
-}
-/**
- * 
- * @export
  * @interface ClientResponse
  */
 export interface ClientResponse {
@@ -420,6 +362,103 @@ export interface SpaResponse {
      */
     'updated_at': string;
 }
+
+/**
+ * AgentApi - axios parameter creator
+ * @export
+ */
+export const AgentApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        agentControllerTest: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/agents`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AgentApi - functional programming interface
+ * @export
+ */
+export const AgentApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AgentApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async agentControllerTest(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.agentControllerTest(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AgentApi.agentControllerTest']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AgentApi - factory interface
+ * @export
+ */
+export const AgentApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AgentApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        agentControllerTest(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.agentControllerTest(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AgentApi - object-oriented interface
+ * @export
+ * @class AgentApi
+ * @extends {BaseAPI}
+ */
+export class AgentApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AgentApi
+     */
+    public agentControllerTest(options?: RawAxiosRequestConfig) {
+        return AgentApiFp(this.configuration).agentControllerTest(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
 
 /**
  * MealsApi - axios parameter creator
@@ -1500,12 +1539,14 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @summary Rechercher un client
-         * @param {number} [page] 
-         * @param {string} [search] 
+         * @param {string} search 
+         * @param {string} [page] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerGetClients: async (page?: number, search?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userControllerGetClients: async (search: string, page?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'search' is not null or undefined
+            assertParamExists('userControllerGetClients', 'search', search)
             const localVarPath = `/users`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1629,13 +1670,13 @@ export const UsersApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Rechercher un client
-         * @param {number} [page] 
-         * @param {string} [search] 
+         * @param {string} search 
+         * @param {string} [page] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerGetClients(page?: number, search?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedClientListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerGetClients(page, search, options);
+        async userControllerGetClients(search: string, page?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedClientListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerGetClients(search, page, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerGetClients']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -1701,8 +1742,8 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerGetClients(requestParameters: UsersApiUserControllerGetClientsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedClientListResponse> {
-            return localVarFp.userControllerGetClients(requestParameters.page, requestParameters.search, options).then((request) => request(axios, basePath));
+        userControllerGetClients(requestParameters: UsersApiUserControllerGetClientsRequest, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedClientListResponse> {
+            return localVarFp.userControllerGetClients(requestParameters.search, requestParameters.page, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1767,17 +1808,17 @@ export interface UsersApiUserControllerGetClientByIdRequest {
 export interface UsersApiUserControllerGetClientsRequest {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof UsersApiUserControllerGetClients
      */
-    readonly page?: number
+    readonly search: string
 
     /**
      * 
      * @type {string}
      * @memberof UsersApiUserControllerGetClients
      */
-    readonly search?: string
+    readonly page?: string
 }
 
 /**
@@ -1852,8 +1893,8 @@ export class UsersApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public userControllerGetClients(requestParameters: UsersApiUserControllerGetClientsRequest = {}, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).userControllerGetClients(requestParameters.page, requestParameters.search, options).then((request) => request(this.axios, this.basePath));
+    public userControllerGetClients(requestParameters: UsersApiUserControllerGetClientsRequest, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).userControllerGetClients(requestParameters.search, requestParameters.page, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1866,312 +1907,6 @@ export class UsersApi extends BaseAPI {
      */
     public userControllerUpdateClient(requestParameters: UsersApiUserControllerUpdateClientRequest, options?: RawAxiosRequestConfig) {
         return UsersApiFp(this.configuration).userControllerUpdateClient(requestParameters.id, requestParameters.body, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * WebSocketEventsClientServerApi - axios parameter creator
- * @export
- */
-export const WebSocketEventsClientServerApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Ping for test
-         * @param {ChatClientPingDto} [chatClientPingDto] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        clientPing: async (chatClientPingDto?: ChatClientPingDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/ChatGateway/client:ping`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(chatClientPingDto, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Send a chat
-         * @param {ChatClientSendChat} [chatClientSendChat] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        sendChat: async (chatClientSendChat?: ChatClientSendChat, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/ChatGateway/send-chat`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(chatClientSendChat, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * WebSocketEventsClientServerApi - functional programming interface
- * @export
- */
-export const WebSocketEventsClientServerApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = WebSocketEventsClientServerApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Ping for test
-         * @param {ChatClientPingDto} [chatClientPingDto] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async clientPing(chatClientPingDto?: ChatClientPingDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.clientPing(chatClientPingDto, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['WebSocketEventsClientServerApi.clientPing']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Send a chat
-         * @param {ChatClientSendChat} [chatClientSendChat] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async sendChat(chatClientSendChat?: ChatClientSendChat, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.sendChat(chatClientSendChat, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['WebSocketEventsClientServerApi.sendChat']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * WebSocketEventsClientServerApi - factory interface
- * @export
- */
-export const WebSocketEventsClientServerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = WebSocketEventsClientServerApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Ping for test
-         * @param {WebSocketEventsClientServerApiClientPingRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        clientPing(requestParameters: WebSocketEventsClientServerApiClientPingRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.clientPing(requestParameters.chatClientPingDto, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Send a chat
-         * @param {WebSocketEventsClientServerApiSendChatRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        sendChat(requestParameters: WebSocketEventsClientServerApiSendChatRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.sendChat(requestParameters.chatClientSendChat, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * Request parameters for clientPing operation in WebSocketEventsClientServerApi.
- * @export
- * @interface WebSocketEventsClientServerApiClientPingRequest
- */
-export interface WebSocketEventsClientServerApiClientPingRequest {
-    /**
-     * 
-     * @type {ChatClientPingDto}
-     * @memberof WebSocketEventsClientServerApiClientPing
-     */
-    readonly chatClientPingDto?: ChatClientPingDto
-}
-
-/**
- * Request parameters for sendChat operation in WebSocketEventsClientServerApi.
- * @export
- * @interface WebSocketEventsClientServerApiSendChatRequest
- */
-export interface WebSocketEventsClientServerApiSendChatRequest {
-    /**
-     * 
-     * @type {ChatClientSendChat}
-     * @memberof WebSocketEventsClientServerApiSendChat
-     */
-    readonly chatClientSendChat?: ChatClientSendChat
-}
-
-/**
- * WebSocketEventsClientServerApi - object-oriented interface
- * @export
- * @class WebSocketEventsClientServerApi
- * @extends {BaseAPI}
- */
-export class WebSocketEventsClientServerApi extends BaseAPI {
-    /**
-     * 
-     * @summary Ping for test
-     * @param {WebSocketEventsClientServerApiClientPingRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof WebSocketEventsClientServerApi
-     */
-    public clientPing(requestParameters: WebSocketEventsClientServerApiClientPingRequest = {}, options?: RawAxiosRequestConfig) {
-        return WebSocketEventsClientServerApiFp(this.configuration).clientPing(requestParameters.chatClientPingDto, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Send a chat
-     * @param {WebSocketEventsClientServerApiSendChatRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof WebSocketEventsClientServerApi
-     */
-    public sendChat(requestParameters: WebSocketEventsClientServerApiSendChatRequest = {}, options?: RawAxiosRequestConfig) {
-        return WebSocketEventsClientServerApiFp(this.configuration).sendChat(requestParameters.chatClientSendChat, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * WebSocketEventsServerClientApi - axios parameter creator
- * @export
- */
-export const WebSocketEventsServerClientApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @summary Server emits a pong message to clients
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        serverPong: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/ChatGateway/server:pong`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * WebSocketEventsServerClientApi - functional programming interface
- * @export
- */
-export const WebSocketEventsServerClientApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = WebSocketEventsServerClientApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @summary Server emits a pong message to clients
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async serverPong(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ChatServerPongDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.serverPong(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['WebSocketEventsServerClientApi.serverPong']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * WebSocketEventsServerClientApi - factory interface
- * @export
- */
-export const WebSocketEventsServerClientApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = WebSocketEventsServerClientApiFp(configuration)
-    return {
-        /**
-         * 
-         * @summary Server emits a pong message to clients
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        serverPong(options?: RawAxiosRequestConfig): AxiosPromise<ChatServerPongDto> {
-            return localVarFp.serverPong(options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * WebSocketEventsServerClientApi - object-oriented interface
- * @export
- * @class WebSocketEventsServerClientApi
- * @extends {BaseAPI}
- */
-export class WebSocketEventsServerClientApi extends BaseAPI {
-    /**
-     * 
-     * @summary Server emits a pong message to clients
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof WebSocketEventsServerClientApi
-     */
-    public serverPong(options?: RawAxiosRequestConfig) {
-        return WebSocketEventsServerClientApiFp(this.configuration).serverPong(options).then((request) => request(this.axios, this.basePath));
     }
 }
 
