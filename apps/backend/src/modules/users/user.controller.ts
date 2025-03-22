@@ -37,13 +37,12 @@ export class UserController {
   @ApiOperation({ summary: 'Rechercher un client' })
   @ApiQuery({
     name: 'search',
-    required: false,
     type: String,
   })
   @ApiQuery({
     name: 'page',
     required: false,
-    type: Number,
+    type: String,
   })
   @ApiOkResponse({
     description: 'Clients retrieved successfully',

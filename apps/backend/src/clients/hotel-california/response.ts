@@ -366,10 +366,10 @@ export class ClientsListQueryParams {
   @Type(() => Number)
   page?: number;
 
-  @ApiPropertyOptional({ description: 'Search term for clients' })
-  @IsOptional()
+  @ApiProperty({ description: 'Search term for clients' })
   @IsString()
-  search?: string;
+  @IsNotEmpty()
+  search: string;
 }
 
 export class MealsListQueryParams {

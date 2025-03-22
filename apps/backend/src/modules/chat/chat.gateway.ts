@@ -24,9 +24,14 @@ import {
   ChatSocket,
 } from './chat.sockets';
 
+import { ClientTool } from '../ai/agents/client-agent/client-tool';
+
+import { ClientAgentService } from '../ai/agents/client-agent/client-agent.service';
+
 @WebSocketGateway({ namespace: 'chat', cors: { origin: '*' } })
 export class ChatGateway {
   @Inject() private readonly aiService: AiService;
+  @Inject() private readonly clientAgentService: ClientAgentService;
 
   @WebSocketServer() server: Server;
 
@@ -42,6 +47,8 @@ export class ChatGateway {
   ) {
     try {
       const { messages } = data;
+
+      const clientTool = new ClientTool(this.clientAgentService);
 
       console.log(messages);
 

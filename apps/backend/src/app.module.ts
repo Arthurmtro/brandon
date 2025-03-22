@@ -9,13 +9,11 @@ import { ConfigModule } from '@nestjs/config';
 import { DiscoveryModule } from '@nestjs/core';
 import { ChatModule } from './modules/chat/chat.module';
 import { HotelCaliforniaModule } from './modules/hotel-california/hotel-california.module';
+import { AgentModule } from './modules/agents/agent.module';
 
 @Global()
 @Module({
   imports: [
-    SpaModule,
-    MealModule,
-    RestaurantModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -28,10 +26,14 @@ export class ConfigModuleGlobal {}
     UserModule,
     DiscoveryModule,
     ConfigModuleGlobal,
-    ChatModule,
+    // ChatModule,
     AiModule,
     HotelCaliforniaModule,
     ReservationModule,
+    SpaModule,
+    MealModule,
+    AgentModule,
+    RestaurantModule,
   ],
 })
 export class AppModule {}
