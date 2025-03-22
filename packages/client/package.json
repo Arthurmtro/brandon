@@ -1,0 +1,23 @@
+{
+  "name": "@repo/client",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "default": "./src/index.ts"
+  },
+  "scripts": {
+    "generate:api": "openapi-generator-cli generate -i ./src/openapi.json -g typescript-axios -o src/client --additional-properties=useSingleRequestParameter=true",
+    "generate:socket": "ts-node src/scripts/generate-socket-events.ts",
+    "generate": "pnpm run generate:api && pnpm run generate:socket"
+  },
+  "dependencies": {
+    "axios": "^1.8.3",
+    "socket.io-client": "^4.8.1",
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.17.0",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*"
+  }
+}
