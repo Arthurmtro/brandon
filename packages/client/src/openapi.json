@@ -10,12 +10,12 @@
             "required": false,
             "in": "query",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           },
           {
             "name": "search",
-            "required": false,
+            "required": true,
             "in": "query",
             "schema": {
               "type": "string"
@@ -159,121 +159,6 @@
         "summary": "Supprimer un client",
         "tags": [
           "users"
-        ]
-      }
-    },
-    "/spa": {
-      "get": {
-        "operationId": "SpaController_getSpaInfo",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Spa information retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SpaResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Obtenir les informations du spa",
-        "tags": [
-          "spa"
-        ]
-      }
-    },
-    "/meals": {
-      "get": {
-        "operationId": "MealController_listMealTypes",
-        "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Meal types retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedMealTypeListResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Lister les types de repas",
-        "tags": [
-          "meals"
-        ]
-      }
-    },
-    "/restaurants": {
-      "get": {
-        "operationId": "RestaurantController_listRestaurants",
-        "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Restaurants retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedRestaurantListResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Lister les restaurants",
-        "tags": [
-          "restaurants"
-        ]
-      }
-    },
-    "/restaurants/{id}": {
-      "get": {
-        "operationId": "RestaurantController_getRestaurant",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Restaurant retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestaurantResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Détailler un restaurant",
-        "tags": [
-          "restaurants"
         ]
       }
     },
@@ -470,69 +355,133 @@
         ]
       }
     },
-    "/ChatGateway/send-chat": {
-      "post": {
-        "tags": [
-          "WebSocket Events (Client → Server)"
-        ],
-        "summary": "Send a chat",
-        "operationId": "send-chat",
-        "x-event": "send-chat",
-        "x-namespace": "ChatGateway",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChatClientSendChat"
-              }
-            }
-          }
-        },
-        "responses": {}
-      }
-    },
-    "/ChatGateway/client:ping": {
-      "post": {
-        "tags": [
-          "WebSocket Events (Client → Server)"
-        ],
-        "summary": "Ping for test",
-        "operationId": "client:ping",
-        "x-event": "client:ping",
-        "x-namespace": "ChatGateway",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChatClientPingDto"
-              }
-            }
-          }
-        },
-        "responses": {}
-      }
-    },
-    "/ChatGateway/server:pong": {
+    "/spa": {
       "get": {
-        "tags": [
-          "WebSocket Events (Server → Client)"
-        ],
-        "summary": "Server emits a pong message to clients",
-        "operationId": "server:pong",
-        "x-event": "server:pong",
-        "x-namespace": "ChatGateway",
+        "operationId": "SpaController_getSpaInfo",
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "Event payload for server:pong",
+            "description": "Spa information retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ChatServerPongDto"
+                  "$ref": "#/components/schemas/SpaResponse"
                 }
               }
             }
           }
-        }
+        },
+        "summary": "Obtenir les informations du spa",
+        "tags": [
+          "spa"
+        ]
+      }
+    },
+    "/meals": {
+      "get": {
+        "operationId": "MealController_listMealTypes",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Meal types retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedMealTypeListResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lister les types de repas",
+        "tags": [
+          "meals"
+        ]
+      }
+    },
+    "/agents": {
+      "post": {
+        "operationId": "AgentController_test",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Agent"
+        ]
+      }
+    },
+    "/restaurants": {
+      "get": {
+        "operationId": "RestaurantController_listRestaurants",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Restaurants retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedRestaurantListResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lister les restaurants",
+        "tags": [
+          "restaurants"
+        ]
+      }
+    },
+    "/restaurants/{id}": {
+      "get": {
+        "operationId": "RestaurantController_getRestaurant",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Restaurant retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestaurantResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Détailler un restaurant",
+        "tags": [
+          "restaurants"
+        ]
       }
     }
   },
@@ -615,6 +564,79 @@
       "Object": {
         "type": "object",
         "properties": {}
+      },
+      "ReservationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Reservation ID"
+          },
+          "client": {
+            "type": "number",
+            "description": "Client ID"
+          },
+          "restaurant": {
+            "type": "number",
+            "description": "Restaurant ID"
+          },
+          "date": {
+            "type": "string",
+            "description": "Reservation date (YYYY-MM-DD)"
+          },
+          "meal": {
+            "type": "number",
+            "description": "Meal type ID"
+          },
+          "number_of_guests": {
+            "type": "number",
+            "description": "Number of guests",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "special_requests": {
+            "type": "string",
+            "description": "Special requests for the reservation"
+          }
+        },
+        "required": [
+          "id",
+          "client",
+          "restaurant",
+          "date",
+          "meal",
+          "number_of_guests"
+        ]
+      },
+      "PaginatedReservationListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Total number of reservations"
+          },
+          "next": {
+            "type": "object",
+            "description": "URL to next page",
+            "nullable": true
+          },
+          "previous": {
+            "type": "object",
+            "description": "URL to previous page",
+            "nullable": true
+          },
+          "results": {
+            "description": "List of reservations",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReservationResponse"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "results"
+        ]
       },
       "SpaResponse": {
         "type": "object",
@@ -784,135 +806,6 @@
         "required": [
           "count",
           "results"
-        ]
-      },
-      "ReservationResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "description": "Reservation ID"
-          },
-          "client": {
-            "type": "number",
-            "description": "Client ID"
-          },
-          "restaurant": {
-            "type": "number",
-            "description": "Restaurant ID"
-          },
-          "date": {
-            "type": "string",
-            "description": "Reservation date (YYYY-MM-DD)"
-          },
-          "meal": {
-            "type": "number",
-            "description": "Meal type ID"
-          },
-          "number_of_guests": {
-            "type": "number",
-            "description": "Number of guests",
-            "minimum": 1,
-            "maximum": 100
-          },
-          "special_requests": {
-            "type": "string",
-            "description": "Special requests for the reservation"
-          }
-        },
-        "required": [
-          "id",
-          "client",
-          "restaurant",
-          "date",
-          "meal",
-          "number_of_guests"
-        ]
-      },
-      "PaginatedReservationListResponse": {
-        "type": "object",
-        "properties": {
-          "count": {
-            "type": "number",
-            "description": "Total number of reservations"
-          },
-          "next": {
-            "type": "object",
-            "description": "URL to next page",
-            "nullable": true
-          },
-          "previous": {
-            "type": "object",
-            "description": "URL to previous page",
-            "nullable": true
-          },
-          "results": {
-            "description": "List of reservations",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ReservationResponse"
-            }
-          }
-        },
-        "required": [
-          "count",
-          "results"
-        ]
-      },
-      "AiMessageDto": {
-        "type": "object",
-        "properties": {
-          "text": {
-            "type": "string",
-            "description": "text"
-          },
-          "role": {
-            "type": "string",
-            "description": "role"
-          }
-        },
-        "required": [
-          "text",
-          "role"
-        ]
-      },
-      "ChatClientSendChat": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "description": "blablabla",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AiMessageDto"
-            }
-          }
-        },
-        "required": [
-          "messages"
-        ]
-      },
-      "ChatClientPingDto": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "description": "client send ping"
-          }
-        },
-        "required": [
-          "message"
-        ]
-      },
-      "ChatServerPongDto": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "description": "server send pong"
-          }
-        },
-        "required": [
-          "message"
         ]
       }
     }
