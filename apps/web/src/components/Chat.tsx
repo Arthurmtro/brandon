@@ -57,27 +57,45 @@ const Chat: React.FC<ChatProps> = ({ className, onLoadingChange }) => {
     onLoadingChange?.(true);
 
     try {
-      // const response = await fetch('http://localhost:3010/api/chat', {
-      //     method: 'POST',
-      //     headers: {
-      //         'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify({ message: messageToSend }),
-      // });
+      let finalData = '';
+      const chatHandler = (data: any) => {
+        if (data.text) {
+          finalData += data.text;
+          console.log(data.text);
+        }
+        if (data.isFinished) {
+          addMessage(finalData, 'assistant');
+          socket.off('server:send-chat', chatHandler);
+          setLoading(false);
+          onLoadingChange?.(false);
+        }
+      };
 
-      // if (!response.ok) {
-      //     throw new Error('Erreur lors de la communication avec le serveur');
-      // }
+      socket.on('server:send-chat', chatHandler);
+
       socket.emit('client:send-chat', { text: messageToSend });
-      socket.on('server:send-chat', (data: any) => {
-        addMessage(data.text, 'assistant');
-      });
+
+      const timeoutId = setTimeout(() => {
+        socket.off('server:send-chat', chatHandler);
+        if (isLoading) {
+          setError('La réponse a pris trop de temps. Veuillez réessayer.');
+          setLoading(false);
+          onLoadingChange?.(false);
+        }
+      }, 30000);
+
+      return () => {
+        clearTimeout(timeoutId);
+        socket.off('server:send-chat', chatHandler);
+      };
     } catch (err) {
       console.error("Erreur lors de l'envoi du message:", err);
       setError("Erreur lors de l'envoi du message. Veuillez réessayer.");
     } finally {
-      setLoading(false);
-      onLoadingChange?.(false);
+      if (!socket.connected) {
+        setLoading(false);
+        onLoadingChange?.(false);
+      }
     }
   };
 
@@ -89,8 +107,6 @@ const Chat: React.FC<ChatProps> = ({ className, onLoadingChange }) => {
             msg.role === 'assistant' && msg.content === 'command : set-date';
           const isNbCommand =
             msg.role === 'assistant' && msg.content === 'command : set-nb';
-          const isWeatherCommand =
-            msg.role === 'assistant' && msg.content === 'command : dsp-weather';
 
           if (isCalendarCommand) {
             return (
@@ -108,17 +124,6 @@ const Chat: React.FC<ChatProps> = ({ className, onLoadingChange }) => {
                 key={msg.id}
                 isUser={false}
                 className='bg-amber-600 justify-end'
-              />
-            );
-          }
-
-          if (isWeatherCommand) {
-            return (
-              <WeatherBubble
-                key={msg.id}
-                isUser={false}
-                className='bg-amber-600 justify-end'
-                data={msg.content}
               />
             );
           }

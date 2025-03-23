@@ -25,16 +25,19 @@ export default function ClientIdPage() {
     _getUser();
   }, [id]);
 
-  const handleSubmit = useCallback(() => {
-    const _updateUser = async () => {
-      if (!id || !newUser || Array.isArray(id)) return;
+  const handleSubmit = useCallback(
+    (submitedUser: UserRequest) => {
+      const _updateUser = async () => {
+        if (!id || Array.isArray(id)) return;
 
-      const userData = await updateUser(id, newUser);
-      setUser(userData);
-      setNewUser(userData);
-    };
-    _updateUser();
-  }, [newUser, id]);
+        const userData = await updateUser(id, submitedUser);
+        setUser(userData);
+        setNewUser(userData);
+      };
+      _updateUser();
+    },
+    [id]
+  );
 
   const handleDelete = useCallback(() => {
     const _deleteUser = async () => {

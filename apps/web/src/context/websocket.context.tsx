@@ -46,9 +46,9 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (!isConnected) {
-      connect();
-    }
+    // if (!isConnected) {
+    //   connect();
+    // }
 
     const handleConnect = () => {
       console.log('Connected to chat namespace successfully');
@@ -78,8 +78,8 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
     socketApi.chat.socket.on('connect', handleConnect);
     socketApi.chat.socket.on('disconnect', handleDisconnect);
     socketApi.chat.socket.on('connect_error', handleConnectError);
-    socketApi.chat.socket.on('reconnect', handleReconnect);
-    socketApi.chat.socket.on('reconnect_attempt', handleReconnectAttempt);
+    // socketApi.chat.socket.on('reconnect', handleReconnect);
+    // socketApi.chat.socket.on('reconnect_attempt', handleReconnectAttempt);
 
     let pingInterval: NodeJS.Timeout | null = null;
     if (socket && isConnected) {

@@ -1,46 +1,44 @@
 'use client';
-import { useEffect, useState, useId, useCallback } from 'react';
-import { useRouter } from 'next/router';
-import { UserResponse } from '@repo/client';
+
+import { useCallback, useEffect, useId, useState } from 'react';
+import { PlusIcon, SearchIcon } from 'lucide-react';
+import { Loading } from '@/components/ui/loading';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { useUsers } from '@/context/user.context';
+import { UserList } from '@/components/users/list';
 import { debounce } from '@/utils/debounce';
-import Paginator from '@/components/Paginator';
+import { useRouter } from 'next/router';
 
 export const metadata = {
-  title: 'Clients | Hotel California',
-  description: 'Manage your clients at Hotel California',
+  title: 'Our Clients | Hotel California',
+  description: 'Manage all clients at Hotel California',
 };
 
 export default function ClientsPage() {
   const router = useRouter();
   const baseId = useId();
-  const { users, fetchUsers, isLoading, error } = useUsers();
+  const { users, fetchUsers, isLoading, error, totalCount, currentPage } =
+    useUsers();
 
-  const [query, setQuery] = useState<{ page: number; search: string }>({
-    page: 1,
-    search: '',
-  });
+  // État pour le contrôle du champ de recherche
+  const [searchInputValue, setSearchInputValue] = useState('');
 
-  const [maxPage, setMaxPage] = useState<number>(1);
-  const [minPage, setMinPage] = useState<number>(1);
-  const [searchValue, setSearchValue] = useState('');
-
+  // Créer la fonction debounce une seule fois
   const debouncedSearch = useCallback(
     debounce((searchTerm: string) => {
-      handleQueryChange({ ...query, search: searchTerm });
-    }, 1000),
-    [query]
-  );
+      const newQuery = {
+        page: 1,
+        search: searchTerm,
+      };
 
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    debouncedSearch(value);
-  };
-
-  const handleQueryChange = useCallback(
-    async (newQuery: { page: number; search: string }) => {
-      setQuery(newQuery);
       router.push(
         {
           pathname: '/admin/clients',
@@ -49,98 +47,110 @@ export default function ClientsPage() {
         undefined,
         { shallow: true }
       );
+
       fetchUsers(newQuery.page, newQuery.search);
-    },
-    [router, fetchUsers]
+    }, 500),
+    [router]
   );
 
+  // Gérer le changement de page
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      const newQuery = {
+        page: newPage,
+        search: (router.query.search as string) || '',
+      };
+
+      router.push(
+        {
+          pathname: '/admin/clients',
+          query: newQuery,
+        },
+        undefined,
+        { shallow: true }
+      );
+
+      fetchUsers(newQuery.page, newQuery.search);
+    },
+    [router]
+  );
+
+  // Gérer le changement dans l'input de recherche
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchInputValue(value);
+    debouncedSearch(value);
+  };
+
+  // Initialisation et synchronisation avec l'URL
   useEffect(() => {
     if (router.isReady) {
-      const page = Number(router.query.page) || 1;
       const search = String(router.query.search || '');
-      setQuery({ page, search });
-      setSearchValue(search);
+      const page = Number(router.query.page) || 1;
+
+      setSearchInputValue(search);
       fetchUsers(page, search);
     }
-  }, [router.isReady, router.query]);
+  }, [router.isReady, router.query.page, router.query.search]);
 
-  useEffect(() => {}, [users]);
+  if (error) {
+    return (
+      <div className='container mx-auto px-4 py-8'>
+        <Card className='border-red-200 bg-red-50'>
+          <CardContent className='pt-6'>
+            <div className='flex items-center text-red-700'>
+              <span className='font-bold mr-2'>Error:</span>
+              <span>{error.message}</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
-    <main className='p-5 bg-white text-black min-h-screen'>
-      <div className='text-2xl mb-4'>Utilisateurs</div>
-      <div>
-        <input
-          className='w-full my-2 pr-10 pl-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm'
-          value={searchValue}
-          type='text'
-          onChange={handleSearchInputChange}
-          placeholder='Search clients...'
-        />
-      </div>
-      <div className='mt-2'>
-        <Paginator
-          minPage={minPage}
-          maxPage={maxPage}
-          page={query.page}
-          onPageChange={(page) => handleQueryChange({ ...query, page: page })}
-        />
-      </div>
-
-      {isLoading ? (
-        <div className='flex justify-center my-8'>
-          <div className='animate-spin h-8 w-8 border-4 border-blue-500 rounded-full border-t-transparent'></div>
+    <div className='mx-auto px-4 py-6'>
+      <div className='flex flex-col space-y-6'>
+        <div className='flex justify-between items-center'>
+          <div>
+            <h1 className='text-3xl font-bold tracking-tight'>Clients</h1>
+            <p className='text-muted-foreground mt-1'>
+              Manage all client accounts and profiles
+            </p>
+          </div>
+          <Button className='ml-auto'>
+            <PlusIcon className='mr-2 h-4 w-4' />
+            Add Client
+          </Button>
         </div>
-      ) : error ? (
-        <div className='text-red-500 mt-4'>
-          Error loading clients: {error.message}
-        </div>
-      ) : (
-        <div className='mt-4 flex flex-col items-start gap-4'>
-          {users.length === 0 ? (
-            <div className='text-gray-500'>No clients found</div>
-          ) : (
-            users.map((client) => (
-              <div
-                key={`${baseId}-${client.id}`}
-                className='flex flex-col items-start gap-1 border border-gray-300 rounded-lg shadow-lg p-4 w-full'
-              >
-                {Object.keys(client).map((k) => {
-                  const key = k as keyof UserResponse;
-                  const value = String(client[key]);
 
-                  return (
-                    <div
-                      key={`${baseId}-${client.id}-${key}`}
-                      className='flex flex-row items-start gap-2'
-                    >
-                      <span className='font-medium'>{key}:</span>
-                      <span className='font-bold'>{value}</span>
-                    </div>
-                  );
-                })}
-                <button
-                  className='mt-3 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition'
-                  onClick={() => {
-                    router.push(router.pathname + `/${client.id}`);
-                  }}
-                >
-                  Fiche utilisateur
-                </button>
+        <Card>
+          <CardHeader className='pb-3'>
+            <CardTitle>Our Clients</CardTitle>
+            <CardDescription>{totalCount} registered clients</CardDescription>
+            <div className='flex items-center space-x-2 mt-4'>
+              <div className='relative flex-1'>
+                <SearchIcon className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
+                <Input
+                  type='search'
+                  placeholder='Search clients...'
+                  className='pl-8'
+                  value={searchInputValue}
+                  onChange={handleSearchInputChange}
+                />
               </div>
-            ))
-          )}
-        </div>
-      )}
-      <button
-        type='submit'
-        className=' bg-green-600 text-white p-2 mt-4 rounded-lg hover:bg-green-700 transition'
-        onClick={() => {
-          router.push(router.pathname + `/new`);
-        }}
-      >
-        Nouvel utilisateur
-      </button>
-    </main>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <UserList
+              clients={users}
+              totalCount={totalCount}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }
