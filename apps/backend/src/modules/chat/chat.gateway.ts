@@ -5,12 +5,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { ChatService } from './chat.service';
-import { ChatMistralAI } from '@langchain/mistralai';
-import { PromptTemplate } from '@langchain/core/prompts';
 import { Server, Socket } from 'socket.io';
-import { HumanMessage } from '@langchain/core/messages';
-import { ConfigService } from '@nestjs/config';
 import { Inject } from '@nestjs/common';
 import { AiService } from '../ai/ai.service';
 import {
@@ -21,58 +16,41 @@ import {
   ChatClientPingDto,
   ChatClientSendChat,
   ChatServerPongDto,
+  ChatServerSendChat,
   ChatSocket,
 } from './chat.sockets';
-
-import { ClientTool } from '../ai/agents/client-agent/client-tool';
-
-import { ClientAgentService } from '../ai/agents/client-agent/client-agent.service';
+import { AgentService } from '../agents/agent.service';
 
 @WebSocketGateway({ namespace: 'chat', cors: { origin: '*' } })
 export class ChatGateway {
+  @Inject() private readonly agentService: AgentService;
   @Inject() private readonly aiService: AiService;
-  @Inject() private readonly clientAgentService: ClientAgentService;
+  // @Inject() private readonly clientAgentService: ClientAgentService;
 
   @WebSocketServer() server: Server;
 
   @ApiSocketEvent({
-    event: 'send-chat',
+    event: 'client:send-chat',
     description: 'Send a chat',
     payloadType: ChatClientSendChat,
   })
-  @SubscribeMessage('send-chat')
+  @SubscribeMessage('client:send-chat')
   async handleMessage(
     @MessageBody() data: ChatClientSendChat,
     @ConnectedSocket() client: Socket,
   ) {
-    try {
-      const { messages } = data;
+    const iterableReadableStream = await this.agentService.sendMessageStream(
+      client.id,
+      data.text,
+    );
 
-      const clientTool = new ClientTool(this.clientAgentService);
-
-      console.log(messages);
-
-      if (!Array.isArray(messages)) {
-        client.emit('test', {
-          text: '⛔ Format invalide : "messages" doit être un tableau',
+    for await (const event of iterableReadableStream) {
+      if (event?.data && event.data?.chunk?.content) {
+        console.log(event.data.chunk.content);
+        this.emitMessage(client, {
+          text: event.data.chunk.content,
         });
-        return;
       }
-
-      const input = await this.aiService.generatePromptInput(messages);
-
-      console.log('🧪 Prompt généré :', input);
-
-      const responseStream = await this.aiService.model.stream([
-        new HumanMessage(input),
-      ]);
-
-      for await (const chunk of responseStream) {
-        client.emit('response', { text: chunk.content });
-      }
-    } catch (err) {
-      console.error('🔥 ERREUR WEBSOCKET :', err);
-      client.emit('response', { text: '❌ Une erreur est survenue.' });
     }
   }
 
@@ -97,5 +75,14 @@ export class ChatGateway {
   })
   emitPont(client: ChatSocket, payload: ChatServerPongDto): void {
     client.emit('server:pong', payload);
+  }
+
+  @ApiServerEvent({
+    event: 'server:send-chat',
+    description: 'Server emits a pong message to clients',
+    payloadType: ChatServerSendChat,
+  })
+  emitMessage(client: ChatSocket, payload: ChatServerSendChat): void {
+    client.emit('server:send-chat', payload);
   }
 }

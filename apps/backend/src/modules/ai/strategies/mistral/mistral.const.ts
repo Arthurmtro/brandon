@@ -1,0 +1,1 @@
+export const MISTRAL_PROVIDER = 'MISTRAL_PROVIDER';

@@ -4,10 +4,11 @@ import { ChatGateway } from './chat.gateway';
 import { ConfigModule } from '@nestjs/config';
 import { AiModule } from '../ai/ai.module';
 import { SocketModule } from '~/common/sockets/socket.module';
-import { ClientAgentModule } from '../ai/agents/client-agent/client-agent.module';
+import { AgentModule } from '../agents/agent.module';
+// import { ClientAgentModule } from '../ai/tools/client-agent/client-agent.module';
 
 @Module({
-  imports: [ConfigModule, SocketModule, AiModule, ClientAgentModule],
+  imports: [ConfigModule, SocketModule, AiModule, AgentModule],
   providers: [ChatGateway, ChatService],
 })
 export class ChatModule {}

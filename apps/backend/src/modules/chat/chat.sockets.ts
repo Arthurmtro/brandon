@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString, ValidateNested } from 'class-validator';
+import { IsString } from 'class-validator';
 import { Socket } from 'socket.io';
-import { AIMessage } from '../ai/ai.types';
-import { Type } from 'class-transformer';
 
 export type ChatSocket = Socket<
   ChatClientToServerEvents,
@@ -12,11 +10,12 @@ export type ChatSocket = Socket<
 
 export interface ChatClientToServerEvents {
   'client:ping': (payload: ChatClientPingDto) => void;
-  'send-chat': (payload: ChatClientSendChat) => void;
+  'client:send-chat': (payload: ChatClientSendChat) => void;
 }
 
 export interface ChatServerToClientEvents {
   'server:pong': (payload: ChatClientPingDto) => void;
+  'server:send-chat': (payload: ChatServerSendChat) => void;
 }
 
 export class ChatClientPingDto {
@@ -31,19 +30,14 @@ export class ChatServerPongDto {
   message: string;
 }
 
-export class AiMessageDto implements AIMessage {
+export class ChatClientSendChat {
   @ApiProperty({ description: 'text' })
   @IsString()
   readonly text: string;
-
-  @ApiProperty({ description: 'role' })
-  @IsString()
-  readonly role: 'user' | 'assistant';
 }
 
-export class ChatClientSendChat {
-  @ApiProperty({ description: 'blablabla', isArray: true, type: AiMessageDto })
-  @IsArray({ each: true })
-  @ValidateNested()
-  readonly messages: AiMessageDto[];
+export class ChatServerSendChat {
+  @ApiProperty({ description: 'text' })
+  @IsString()
+  readonly text: string;
 }

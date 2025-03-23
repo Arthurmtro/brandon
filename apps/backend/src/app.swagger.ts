@@ -23,7 +23,7 @@ export async function setupSwagger(
     .setDescription('API docs for Brandon')
     .setVersion('1.0')
     // .addBearerAuth()
-    .addServer('http://localhost:3030', 'Local')
+    .addServer('http://localhost:3033', 'Local')
     // .addServer(`${host}:${port}`, 'Local')
     .build();
 

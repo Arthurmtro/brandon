@@ -1,4 +1,3 @@
-import { DuckDuckGoSearch } from '@langchain/community/tools/duckduckgo_search';
 import { Tool } from '@langchain/core/tools';
 import { Provider } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

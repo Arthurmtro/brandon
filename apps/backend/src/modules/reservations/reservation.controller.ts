@@ -50,6 +50,7 @@ export class ReservationController {
   async listReservations(
     @Query() params?: ListReservationsParams,
   ): Promise<PaginatedReservationListResponse> {
+    console.log('listReservations');
     const client = this.hotelService.getClient();
     return await client.listReservations(params);
   }
@@ -64,6 +65,7 @@ export class ReservationController {
   async createReservation(
     @Body() data: ReservationParams,
   ): Promise<ReservationResponse> {
+    console.log('createReservation');
     const client = this.hotelService.getClient();
     return await client.createReservation(data);
   }
@@ -78,6 +80,7 @@ export class ReservationController {
   async getReservation(
     @Param('id') id: number,
   ): Promise<ReservationResponse | undefined> {
+    console.log('getReservation');
     const client = this.hotelService.getClient();
     return await client.getReservation(id);
   }
@@ -94,6 +97,7 @@ export class ReservationController {
     @Param('id') id: number,
     @Body() data: UpdateReservationParams,
   ): Promise<ReservationResponse> {
+    console.log('updateReservation');
     const client = this.hotelService.getClient();
     return await client.updateReservation(id, data);
   }
@@ -105,6 +109,7 @@ export class ReservationController {
     description: 'Reservation deleted successfully',
   })
   async deleteReservation(@Param('id') id: number): Promise<void> {
+    console.log('deleteReservation');
     const client = this.hotelService.getClient();
     await client.deleteReservation(id);
   }
