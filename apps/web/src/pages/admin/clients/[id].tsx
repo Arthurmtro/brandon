@@ -11,7 +11,7 @@ export default function ClientIdPage() {
   const { id } = router.query;
 
   const [user, setUser] = useState<UserResponse>();
-  const [newUser, setNewUser] = useState<UserRequest>();
+  const [newUser, setNewUser] = useState<Partial<UserRequest>>();
 
   useEffect(() => {
     const _getUser = async () => {

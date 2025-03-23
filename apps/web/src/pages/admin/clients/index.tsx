@@ -1,11 +1,10 @@
 'use client';
-import { useAdminApiContext } from '../../../context/AdminApiContext';
-import Paginator from '../../../components/Paginator';
-import { useEffect, useState, useId, useCallback, useMemo } from 'react';
+import { useEffect, useState, useId, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { PaginatedUsersResponse, UserResponse } from '@repo/client';
+import { UserResponse } from '@repo/client';
 import { useUsers } from '@/context/user.context';
-import { debounce } from '../../../utils/debounce';
+import { debounce } from '@/utils/debounce';
+import Paginator from '@/components/Paginator';
 
 export const metadata = {
   title: 'Clients | Hotel California',

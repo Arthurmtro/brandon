@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useChat } from '@/context/ChatContext';
 import MessBubble from '@/components/MessBubble';
-import { CalendarBubble } from '@/components/CalendarBubble';
+import { CalendarBubble } from '@/components/calendar-bubble';
 import { PencilLine } from 'lucide-react';
 import { NbSetterBubble } from './NbSetterBubble';
 import { useWebSocket } from '@/context/websocket.context';
@@ -83,7 +83,7 @@ const Chat: React.FC<ChatProps> = ({ className, onLoadingChange }) => {
 
   return (
     <div className={`flex flex-col ${className}`}>
-      <div className='h-140 overflow-y-auto mb-4 p-2 space-y-2'>
+      <div className='h-140 overflow-y-auto mb-4 p-2 space-y-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'>
         {messages.map((msg) => {
           const isCalendarCommand =
             msg.role === 'assistant' && msg.content === 'command : set-date';

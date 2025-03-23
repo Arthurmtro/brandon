@@ -2,13 +2,13 @@ import { UserRequest } from '@repo/client';
 import { FormEvent, useCallback } from 'react';
 
 type UserRequestFormProps = {
-  user: UserRequest;
-  onChange?: (client: UserRequest) => void;
-  onSubmit?: () => void;
+  user?: Partial<UserRequest>;
+  onChange?: (user: Partial<UserRequest>) => void;
+  onSubmit?: (user: UserRequest) => void;
 };
 
 export default function UserRequestForm({
-  user,
+  user = {},
   onChange = () => {},
   onSubmit = () => {},
 }: UserRequestFormProps) {
@@ -24,7 +24,7 @@ export default function UserRequestForm({
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      onSubmit();
+      if (user && user.name && user.phoneNumber) onSubmit(user as UserRequest);
     },
     [onSubmit]
   );

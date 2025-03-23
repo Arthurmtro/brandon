@@ -3,13 +3,14 @@
 import { FC, useState } from 'react';
 import { RestaurantResponse } from '@repo/client';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../ui/card';
-import { Clock, MapPin, Users } from 'lucide-react';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../ui/table';
+import { Clock, MapPin, Users, Edit, Trash2, Eye } from 'lucide-react';
 import {
   Pagination,
   PaginationContent,
@@ -20,6 +21,16 @@ import {
   PaginationNext,
 } from '../ui/pagination';
 import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface Props {
   readonly restaurants: RestaurantResponse[];
@@ -33,42 +44,122 @@ export const RestaurantList: FC<Props> = ({
   currentPage,
 }) => {
   return (
-    <div className='container mx-auto py-8 px-4'>
-      <h1 className='text-3xl font-bold mb-6'>Nos Restaurants</h1>
-
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8'>
-        {restaurants.map((restaurant) => (
-          <Card key={restaurant.id} className='h-full'>
-            <CardHeader>
-              <div className='flex justify-between items-start'>
-                <CardTitle className='text-xl'>{restaurant.name}</CardTitle>
-                {restaurant.isActive ? (
-                  <Badge className='bg-green-500'>Ouvert</Badge>
-                ) : (
-                  <Badge className='text-red-500 border-red-500'>Fermé</Badge>
-                )}
-              </div>
-              <CardDescription>{restaurant.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className='space-y-2 text-sm'>
-                <div className='flex items-center gap-2'>
-                  <Clock className='h-4 w-4 text-muted-foreground' />
-                  <span>{restaurant.openingHours}</span>
+    <div className='w-full space-y-4'>
+      <Table className='border rounded-md'>
+        <TableHeader>
+          <TableRow>
+            <TableHead className='w-[50px]'>ID</TableHead>
+            <TableHead className='w-[250px]'>Restaurant</TableHead>
+            <TableHead>Location</TableHead>
+            <TableHead>Horaires</TableHead>
+            <TableHead>Capacité</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead className='text-right'>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {restaurants.map((restaurant) => (
+            <TableRow key={restaurant.id}>
+              <TableCell className='font-medium'>{restaurant.id}</TableCell>
+              <TableCell>
+                <div className='flex items-center gap-3'>
+                  <Avatar className='h-9 w-9'>
+                    <AvatarFallback className='bg-primary/10 text-primary'>
+                      {restaurant.name.substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className='font-semibold'>{restaurant.name}</div>
+                    <div className='text-xs text-muted-foreground line-clamp-1'>
+                      {restaurant.description}
+                    </div>
+                  </div>
                 </div>
+              </TableCell>
+              <TableCell>
                 <div className='flex items-center gap-2'>
                   <MapPin className='h-4 w-4 text-muted-foreground' />
-                  <span>{restaurant.location}</span>
+                  <span className='text-sm'>{restaurant.location}</span>
                 </div>
+              </TableCell>
+              <TableCell>
+                <div className='flex items-center gap-2'>
+                  <Clock className='h-4 w-4 text-muted-foreground' />
+                  <span className='text-sm'>{restaurant.openingHours}</span>
+                </div>
+              </TableCell>
+              <TableCell>
                 <div className='flex items-center gap-2'>
                   <Users className='h-4 w-4 text-muted-foreground' />
-                  <span>Capacité: {restaurant.capacity} personnes</span>
+                  <span className='text-sm'>{restaurant.capacity} places</span>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </TableCell>
+              <TableCell>
+                {restaurant.isActive ? (
+                  <Badge
+                    variant='default'
+                    className='bg-green-500 hover:bg-green-600'
+                  >
+                    Ouvert
+                  </Badge>
+                ) : (
+                  <Badge
+                    variant='outline'
+                    className='text-red-500 border-red-500 hover:bg-red-50'
+                  >
+                    Fermé
+                  </Badge>
+                )}
+              </TableCell>
+              <TableCell className='text-right'>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant='ghost' className='h-8 w-8 p-0'>
+                      <span className='sr-only'>Ouvrir menu</span>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth='2'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        className='h-4 w-4'
+                      >
+                        <circle cx='12' cy='12' r='1' />
+                        <circle cx='12' cy='5' r='1' />
+                        <circle cx='12' cy='19' r='1' />
+                      </svg>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='end'>
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem>
+                      <Eye className='mr-2 h-4 w-4' />
+                      <span>Voir les détails</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Edit className='mr-2 h-4 w-4' />
+                      <span>Modifier</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className='text-red-600'>
+                      <Trash2 className='mr-2 h-4 w-4' />
+                      <span>Supprimer</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      {restaurants.length === 0 && (
+        <div className='flex justify-center items-center py-8 text-muted-foreground'>
+          Aucun restaurant trouvé
+        </div>
+      )}
 
       <Pagination>
         <PaginationContent>
@@ -85,7 +176,7 @@ export const RestaurantList: FC<Props> = ({
             />
           </PaginationItem>
 
-          {Array.from({ length: totalCount }).map((_, index) => (
+          {Array.from({ length: Math.min(5, totalCount) }).map((_, index) => (
             <PaginationItem key={index}>
               <PaginationLink
                 href='#'
@@ -100,7 +191,7 @@ export const RestaurantList: FC<Props> = ({
             </PaginationItem>
           ))}
 
-          {totalCount > 3 && (
+          {totalCount > 5 && (
             <PaginationItem>
               <PaginationEllipsis />
             </PaginationItem>

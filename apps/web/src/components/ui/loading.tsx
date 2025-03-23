@@ -3,7 +3,7 @@ import { cn } from '@/utils/cn';
 
 export function Loading() {
   return (
-    <div className='flex min-h-[400px] w-full flex-col items-center justify-center'>
+    <div className='fixed inset-0 flex items-center justify-center w-full h-full'>
       <div className='flex flex-col items-center gap-6'>
         <div className='flex items-center gap-2'>
           {[0, 1, 2, 3, 4].map((i) => (

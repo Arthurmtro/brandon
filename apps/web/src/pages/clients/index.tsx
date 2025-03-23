@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ChatProvider } from '@/context/ChatContext';
-import Chat from '@/components/Chat';
+import Chat from '@/components/chat';
 
 export default function ClientsPage() {
   const [isLoading, setIsLoading] = useState(false);
