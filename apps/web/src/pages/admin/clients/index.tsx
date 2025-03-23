@@ -126,7 +126,7 @@ export default function ClientsPage() {
                     router.push(router.pathname + `/${client.id}`);
                   }}
                 >
-                  EDIT
+                  Édition
                 </button>
               </div>
             ))

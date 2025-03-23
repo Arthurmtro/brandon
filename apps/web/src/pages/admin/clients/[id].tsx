@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useUsers } from '../../../context/user.context';
 import UserRequestForm from '../../../components/UserRequestForm';
@@ -6,7 +6,7 @@ import { api, UserRequest, UserResponse } from '@repo/client';
 
 export default function ClientIdPage() {
   const router = useRouter();
-  const { getUser, isLoading, error } = useUsers();
+  const { getUser, updateUser, isLoading, error } = useUsers();
 
   const { id } = router.query;
 
@@ -25,17 +25,15 @@ export default function ClientIdPage() {
     fetchUser();
   }, [id]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const handleSubmit = useCallback(() => {
+    if (!id || !newUser || Array.isArray(id)) return;
 
-  if (!user) {
-    return <div>User not found</div>;
-  }
+    updateUser(id, newUser);
+  }, [newUser, id]);
 
   return (
     <main className='p-5 bg-white text-black min-h-screen'>
-      <div className='text-2xl mb-4'>Client : {id}</div>
+      <div className='text-2xl mb-4'>Édition du client : {id}</div>
 
       {isLoading ? (
         <div className='flex justify-center my-8'>
@@ -46,14 +44,14 @@ export default function ClientIdPage() {
           Error loading client: {error.message}
         </div>
       ) : (
-        <div className='mt-4 flex flex-col items-start gap-4'>
-          {!user ? (
-            <div className='text-gray-500'>No clients found</div>
+        <div className='mt-4  gap-4'>
+          {!newUser ? (
+            <div className='text-gray-500'>User not found</div>
           ) : (
             <UserRequestForm
-              user={user}
+              user={newUser}
               onChange={setNewUser}
-              onSubmit={console.log}
+              onSubmit={handleSubmit}
             />
           )}
         </div>
