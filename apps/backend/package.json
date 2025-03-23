@@ -19,7 +19,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "generate-client": "openapi-generator-cli generate -i ./open-api-docs/hotel-california.yaml -g typescript-axios -o src/clients/hotel-california/api --additional-properties=useSingleRequestParameter=true --skip-validate-spec"
+    "generate-client": "openapi-generator-cli generate -i ./open-api-docs/hotel-california.yaml -g typescript-axios -o src/clients/hotel-california/api --additional-properties=useSingleRequestParameter=true --skip-validate-spec",
+    "check-types": "cross-env NODE_OPTIONS=\"$NODE_OPTIONS --max-old-space-size=8192\" tsc --project tsconfig.build.json --noEmit"
   },
   "dependencies": {
     "@langchain/community": "^0.3.36",
@@ -60,6 +61,7 @@
     "@types/supertest": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",

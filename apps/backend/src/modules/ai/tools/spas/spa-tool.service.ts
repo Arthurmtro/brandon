@@ -10,8 +10,7 @@ export class SpaToolService extends ToolStrategyService {
 
   public readonly getSpaInfo = tool(
     async () => {
-      const client = this.hotelService.getClient();
-      const spa = await client.getSpa();
+      const spa = await this.hotelService.getSpa();
 
       if (!spa) return 'Aucune information sur le spa trouvée.';
 

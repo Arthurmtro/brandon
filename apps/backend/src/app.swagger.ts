@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { INestApplication, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule, OpenAPIObject } from '@nestjs/swagger';
 import { writeFileSync } from 'fs';
 import { DiscoveryModule, DiscoveryService } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 
-const logger = new Logger('bootstrap.swagger');
+const logger = new Logger('Swagger');
 
 export async function setupSwagger(
   app: INestApplication,
@@ -13,28 +14,21 @@ export async function setupSwagger(
   const host = config.getOrThrow<string>('HOST');
   const port = config.getOrThrow<number>('PORT');
 
-  console.log('host', host);
-  console.log('port', port);
-
   const writeApiDocs = true;
 
   const documentBuilder = new DocumentBuilder()
     .setTitle('Brandon API')
     .setDescription('API docs for Brandon')
     .setVersion('1.0')
-    // .addBearerAuth()
-    .addServer('http://localhost:3033', 'Local')
-    // .addServer(`${host}:${port}`, 'Local')
+    .addServer('http://localhost:3040', 'Local')
     .build();
 
-  // Automatically collect extra models from your socket metadata.
   const extraModels = await collectExtraModels(app);
 
   let document = SwaggerModule.createDocument(app, documentBuilder, {
     extraModels,
   });
 
-  // Enhance the document with fake endpoints for socket events.
   document = await addWebsocketRoutes(app, document);
 
   SwaggerModule.setup('api-docs', app, document, {
@@ -47,8 +41,14 @@ export async function setupSwagger(
   });
 
   if (writeApiDocs) {
-    const sourcePath = __dirname.split('/').slice(0, -3).join('/');
-    logger.log(`Writing API docs to /packages/client/src/openapi.json`);
+    const sourcePath =
+      process
+        .cwd()
+        .split('apps')?.[0]
+        ?.replace(/[\\/]$/, '') ?? '';
+    logger.log(
+      `Writing API docs to ${sourcePath}/packages/client/src/openapi.json`,
+    );
     writeFileSync(
       `${sourcePath}/packages/client/src/openapi.json`,
       JSON.stringify(document, null, 2),
@@ -59,7 +59,6 @@ export async function setupSwagger(
 
   return app;
 }
-
 async function collectExtraModels(app: INestApplication): Promise<any[]> {
   try {
     app.select(DiscoveryModule);

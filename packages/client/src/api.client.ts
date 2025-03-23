@@ -1,10 +1,20 @@
-import axios, { AxiosInstance, CreateAxiosDefaults } from "axios";
-import { ApiConfig } from "./config.types";
-import { Configuration, SpaApi, UsersApi } from "./client";
+import axios, { AxiosInstance, CreateAxiosDefaults } from 'axios';
+import { ApiConfig } from './config.types';
+import {
+  Configuration,
+  ReservationsApi,
+  SpaApi,
+  UsersApi,
+  RestaurantsApi,
+  MealsApi,
+} from './client';
 
 const API_CLIENTS = {
   users: UsersApi,
   spas: SpaApi,
+  reservations: ReservationsApi,
+  restaurants: RestaurantsApi,
+  meals: MealsApi,
 };
 
 type Apis = {
@@ -55,8 +65,20 @@ class ApiClient {
     return this.apis.users;
   }
 
-  get spa() {
-    return this.apis.spa;
+  get spas() {
+    return this.apis.spas;
+  }
+
+  get reservations() {
+    return this.apis.reservations;
+  }
+
+  get restaurants() {
+    return this.apis.restaurants;
+  }
+
+  get meals() {
+    return this.apis.meals;
   }
 }
 

@@ -1,0 +1,79 @@
+body {
+  background: dimgrey;
+  perspective: 35em;
+}
+
+.speechBubble {
+  position: relative;
+  margin: 0.5em 0;
+  padding: 1em;
+  width: fit-content;
+  max-width: 70%;
+  border-radius: 0.25em;
+  font:
+    1em/1.5 Century Gothic,
+    Verdana,
+    sans-serif;
+  text-align: left;
+}
+
+.userBubble {
+  background: #629bdd;
+  align-self: flex-end;
+  color: white;
+}
+
+.botBubble {
+  background: #f4fbfe;
+  align-self: flex-start;
+  color: black;
+}
+
+.speechBubble:before,
+.speechBubble:after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+}
+
+.userBubble:after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: inherit;
+  transform: rotate(2deg) translate(0.35em, -0.15em) scale(1.02);
+  background: #f4fbfe;
+}
+
+.botBubble:after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: inherit;
+  transform: rotate(2deg) translate(-0.35em, -0.15em) scale(1.02);
+  background: #629bdd;
+}
+
+.userBubble:before {
+  border: solid 0 transparent;
+  border-left: solid 0.75em #f4fbfe;
+  border-bottom: solid 0.25em #629bdd;
+  bottom: 0.25em;
+  right: -0.75em;
+  width: 0;
+  height: 1em;
+  transform: rotate(-45deg) skewX(-75deg);
+}
+
+.botBubble:before {
+  border: solid 0 transparent;
+  border-right: solid 0.75em #629bdd;
+  border-bottom: solid 0.25em #f4fbfe;
+  bottom: 0.25em;
+  left: -0.75em;
+  width: 0;
+  height: 1em;
+  transform: rotate(45deg) skewX(75deg);
+}

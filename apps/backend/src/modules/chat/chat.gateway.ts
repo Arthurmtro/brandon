@@ -1,13 +1,15 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Inject } from '@nestjs/common';
-import { AiService } from '../ai/ai.service';
+import { Inject, Logger } from '@nestjs/common';
 import {
   ApiServerEvent,
   ApiSocketEvent,
@@ -22,12 +24,36 @@ import {
 import { AgentService } from '../agents/agent.service';
 
 @WebSocketGateway({ namespace: 'chat', cors: { origin: '*' } })
-export class ChatGateway {
+export class ChatGateway
+  implements OnGatewayConnection, OnGatewayInit, OnGatewayDisconnect
+{
+  private readonly logger = new Logger(ChatGateway.name);
+
   @Inject() private readonly agentService: AgentService;
-  @Inject() private readonly aiService: AiService;
-  // @Inject() private readonly clientAgentService: ClientAgentService;
 
   @WebSocketServer() server: Server;
+  private connectedClients: Map<string, Socket> = new Map();
+
+  afterInit() {
+    this.logger.log('Chat WebSocket Gateway initialized');
+  }
+
+  handleConnection(client: Socket) {
+    this.logger.log(`Client connected: ${client.id}`);
+    this.connectedClients.set(client.id, client);
+
+    // Emit welcome event to the connected client
+    client.emit('server:welcome', {
+      message: 'Connected to chat service',
+      clientId: client.id,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  handleDisconnect(client: Socket) {
+    this.logger.log(`Client disconnected: ${client.id}`);
+    this.connectedClients.delete(client.id);
+  }
 
   @ApiSocketEvent({
     event: 'client:send-chat',
@@ -54,18 +80,20 @@ export class ChatGateway {
     }
   }
 
-  @SubscribeMessage('client:ping')
   @ApiSocketEvent({
     event: 'client:ping',
-    description: 'Ping for test',
+    description: 'Ping for connection testing',
     payloadType: ChatClientPingDto,
   })
+  @SubscribeMessage('client:ping')
   async ping(
     @ConnectedSocket() socket: ChatSocket,
     @MessageBody() payload: ChatClientPingDto,
   ) {
-    console.log('ping');
-    this.emitPont(socket, payload);
+    this.logger.debug(`Ping received from client ${socket.id}`);
+    this.emitPong(socket, {
+      ...payload,
+    });
   }
 
   @ApiServerEvent({
@@ -73,8 +101,41 @@ export class ChatGateway {
     description: 'Server emits a pong message to clients',
     payloadType: ChatServerPongDto,
   })
-  emitPont(client: ChatSocket, payload: ChatServerPongDto): void {
-    client.emit('server:pong', payload);
+  emitPong(client: ChatSocket, payload: ChatServerPongDto): void {
+    this.logger.debug(`Sending pong to client ${client.id}`);
+    this.sendToClient(client.id, 'server:pong', payload);
+  }
+
+  private sendErrorToClient(client: Socket, message: string): void {
+    this.logger.warn(`Sending error to client ${client.id}: ${message}`);
+    client.emit('error', {
+      message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  // Utility method to broadcast to all connected clients
+  broadcastToAll(event: string, data: any): void {
+    this.logger.debug(`Broadcasting ${event} to all clients`);
+    this.server.emit(event, {
+      ...data,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  // Utility method to send to specific client
+  sendToClient(clientId: string, event: string, data: any): boolean {
+    const client = this.connectedClients.get(clientId);
+    if (client) {
+      this.logger.debug(`Sending ${event} to client ${clientId}`);
+      client.emit(event, {
+        ...data,
+        timestamp: new Date().toISOString(),
+      });
+      return true;
+    }
+    this.logger.warn(`Failed to send ${event}: client ${clientId} not found`);
+    return false;
   }
 
   @ApiServerEvent({

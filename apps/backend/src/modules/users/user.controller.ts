@@ -4,109 +4,220 @@ import {
   Post,
   Put,
   Delete,
-  Inject,
   Body,
   Param,
   Query,
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+  UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiTags,
-  ApiBody,
-  ApiQuery,
-} from '@nestjs/swagger';
-import {
-  PaginatedClientListResponse,
-  ClientResponse,
-} from '~/clients/hotel-california/response';
+  transformUserRequestToClient,
+  transformClientToUserResponse,
+  transformClientToPaginatedUserResponse,
+} from './user.transformers';
 import { HotelCaliforniaService } from '../hotel-california/hotel-california.service';
+import { ListUsersParams, UserRequest } from './requests/user.request';
 import {
-  ListClientsParams,
-  UpdateClientParams,
-  CreateClientParams,
-} from '../hotel-california/hotel-california.types';
+  PaginatedUsersResponse,
+  UserResponse,
+} from './responses/user.response';
+import { isAxiosError } from 'axios';
 
-@ApiTags('users')
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
-  @Inject() private readonly hotelService: HotelCaliforniaService;
+  constructor(private readonly hotelService: HotelCaliforniaService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Rechercher un client' })
-  @ApiQuery({
-    name: 'search',
-    type: String,
+  @ApiOperation({
+    summary: 'List all users',
+    description: 'Returns a paginated list of users',
   })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    type: String,
+  @ApiResponse({
+    status: 200,
+    description: 'Users retrieved successfully',
+    type: PaginatedUsersResponse,
   })
-  @ApiOkResponse({
-    description: 'Clients retrieved successfully',
-    type: PaginatedClientListResponse,
-  })
-  async getClients(
-    @Query() params?: ListClientsParams,
-  ): Promise<PaginatedClientListResponse> {
-    const client = this.hotelService.getClient();
-    return await client.listClients(params);
-  }
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Users not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async listUsers(
+    @Query() queryParams: ListUsersParams,
+  ): Promise<PaginatedUsersResponse> {
+    try {
+      const response = await this.hotelService.listClients({ ...queryParams });
+      return transformClientToPaginatedUserResponse(response);
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        throw new HttpException(
+          'Failed to retrieve users',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
 
-  @Post()
-  @ApiOperation({ summary: 'Créer un client' })
-  @ApiBody({ type: Object })
-  @ApiOkResponse({
-    description: 'Client created successfully',
-    type: ClientResponse,
-  })
-  async createClient(
-    @Body() data: CreateClientParams,
-  ): Promise<ClientResponse> {
-    const client = this.hotelService.getClient();
-    return await client.createClient(data);
+      if (error.status === HttpStatus.NOT_FOUND) {
+        throw new NotFoundException(`Users not found`);
+      }
+
+      throw error;
+    }
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Détailler un client' })
-  @ApiParam({ name: 'id', required: true, type: Number })
-  @ApiOkResponse({
-    description: 'Client retrieved successfully',
-    type: ClientResponse,
+  @ApiOperation({
+    summary: 'Get user by ID',
+    description: 'Returns a single user by ID',
   })
-  async getClientById(
-    @Param('id') id: number,
-  ): Promise<ClientResponse | undefined> {
-    const client = this.hotelService.getClient();
-    return await client.getClient(id);
+  @ApiParam({ name: 'id', description: 'User ID', example: 1 })
+  @ApiResponse({
+    status: 200,
+    description: 'User retrieved successfully',
+    type: UserResponse,
+  })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async getUser(@Param('id') id: number): Promise<UserResponse> {
+    try {
+      const response = await this.hotelService.getClient(id);
+      if (!response) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+
+      return transformClientToUserResponse(response);
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        console.error(error);
+        throw new HttpException(
+          'Failed to retrieve users',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      if (error.status === HttpStatus.NOT_FOUND) {
+        throw new NotFoundException(`User with ID ${id} not found`);
+      }
+
+      if (error.status === HttpStatus.UNAUTHORIZED) {
+        throw new UnauthorizedException();
+      }
+
+      throw error;
+    }
+  }
+
+  @Post()
+  @ApiOperation({
+    summary: 'Create new user',
+    description: 'Creates a new user',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'User created successfully',
+    type: UserResponse,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid input' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async createUser(@Body() userData: UserRequest): Promise<UserResponse> {
+    try {
+      const clientData = transformUserRequestToClient(userData);
+      const response = await this.hotelService.createClient(clientData);
+      return transformClientToUserResponse(response);
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        throw new HttpException(
+          `Failed to create user`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      if (error.response?.status === HttpStatus.BAD_REQUEST) {
+        throw new BadRequestException(error.response.data.message);
+      }
+
+      throw new HttpException(
+        `Failed to create user: ${error.response?.data.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Modifier un client' })
-  @ApiParam({ name: 'id', required: true, type: Number })
-  @ApiBody({ type: Object })
-  @ApiOkResponse({
-    description: 'Client updated successfully',
-    type: ClientResponse,
+  @ApiOperation({
+    summary: 'Update user',
+    description: 'Updates an existing user',
   })
-  async updateClient(
+  @ApiParam({ name: 'id', description: 'User ID', example: 1 })
+  @ApiResponse({
+    status: 200,
+    description: 'User updated successfully',
+    type: UserResponse,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid input' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async updateUser(
     @Param('id') id: number,
-    @Body() data: UpdateClientParams,
-  ): Promise<ClientResponse> {
-    const client = this.hotelService.getClient();
-    return await client.updateClient(id, data);
+    @Body() userData: UserRequest,
+  ): Promise<UserResponse> {
+    try {
+      const clientData = transformUserRequestToClient(userData);
+      const response = await this.hotelService.updateClient(id, clientData);
+      return transformClientToUserResponse(response);
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        throw new HttpException(
+          'Failed to update user',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      if (error.response?.status === HttpStatus.NOT_FOUND) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+
+      throw new HttpException(
+        `Failed to update user: ${error.response?.data.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Supprimer un client' })
-  @ApiParam({ name: 'id', required: true, type: Number })
-  @ApiOkResponse({
-    description: 'Client deleted successfully',
-  })
-  async deleteClient(@Param('id') id: number): Promise<void> {
-    const client = this.hotelService.getClient();
-    await client.deleteClient(id);
+  @ApiOperation({ summary: 'Delete user', description: 'Deletes a user' })
+  @ApiParam({ name: 'id', description: 'User ID', example: 1 })
+  @ApiResponse({ status: 204, description: 'User deleted successfully' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  async deleteUser(@Param('id') id: number): Promise<void> {
+    try {
+      await this.hotelService.deleteClient(id);
+    } catch (error) {
+      if (!isAxiosError(error)) {
+        throw new HttpException(
+          'Failed to delete user',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+
+      if (error.response?.status === HttpStatus.NOT_FOUND) {
+        throw new HttpException(
+          `User with id ${id} not found`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      throw new HttpException(
+        `Failed to delete user: ${error.response?.data.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

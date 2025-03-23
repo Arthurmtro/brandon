@@ -3,13 +3,17 @@
   "paths": {
     "/users": {
       "get": {
-        "operationId": "UserController_getClients",
+        "description": "Returns a paginated list of users",
+        "operationId": "UserController_listUsers",
         "parameters": [
           {
             "name": "page",
             "required": false,
             "in": "query",
+            "description": "Page number for pagination",
             "schema": {
+              "minimum": 1,
+              "example": 1,
               "type": "number"
             }
           },
@@ -17,97 +21,133 @@
             "name": "search",
             "required": false,
             "in": "query",
+            "description": "Search term to filter users by name or email",
             "schema": {
+              "example": "john",
               "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Clients retrieved successfully",
+            "description": "Users retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedClientListResponse"
+                  "$ref": "#/components/schemas/PaginatedUsersResponse"
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Users not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         },
-        "summary": "Rechercher un client",
+        "summary": "List all users",
         "tags": [
-          "users"
+          "Users"
         ]
       },
       "post": {
-        "operationId": "UserController_createClient",
+        "description": "Creates a new user",
+        "operationId": "UserController_createUser",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Object"
+                "$ref": "#/components/schemas/UserRequest"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Client created successfully",
+          "201": {
+            "description": "User created successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ClientResponse"
+                  "$ref": "#/components/schemas/UserResponse"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         },
-        "summary": "Créer un client",
+        "summary": "Create new user",
         "tags": [
-          "users"
+          "Users"
         ]
       }
     },
     "/users/{id}": {
       "get": {
-        "operationId": "UserController_getClientById",
+        "description": "Returns a single user by ID",
+        "operationId": "UserController_getUser",
         "parameters": [
           {
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "User ID",
             "schema": {
+              "example": 1,
               "type": "number"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Client retrieved successfully",
+            "description": "User retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ClientResponse"
+                  "$ref": "#/components/schemas/UserResponse"
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         },
-        "summary": "Détailler un client",
+        "summary": "Get user by ID",
         "tags": [
-          "users"
+          "Users"
         ]
       },
       "put": {
-        "operationId": "UserController_updateClient",
+        "description": "Updates an existing user",
+        "operationId": "UserController_updateUser",
         "parameters": [
           {
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "User ID",
             "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -117,199 +157,87 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Object"
+                "$ref": "#/components/schemas/UserRequest"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Client updated successfully",
+            "description": "User updated successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ClientResponse"
+                  "$ref": "#/components/schemas/UserResponse"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         },
-        "summary": "Modifier un client",
+        "summary": "Update user",
         "tags": [
-          "users"
+          "Users"
         ]
       },
       "delete": {
-        "operationId": "UserController_deleteClient",
+        "description": "Deletes a user",
+        "operationId": "UserController_deleteUser",
         "parameters": [
           {
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "User ID",
             "schema": {
+              "example": 1,
               "type": "number"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "Client deleted successfully"
+          "204": {
+            "description": "User deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         },
-        "summary": "Supprimer un client",
+        "summary": "Delete user",
         "tags": [
-          "users"
-        ]
-      }
-    },
-    "/spa": {
-      "get": {
-        "operationId": "SpaController_getSpaInfo",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Spa information retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SpaResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Obtenir les informations du spa",
-        "tags": [
-          "spa"
-        ]
-      }
-    },
-    "/meals": {
-      "get": {
-        "operationId": "MealController_listMealTypes",
-        "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Meal types retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedMealTypeListResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Lister les types de repas",
-        "tags": [
-          "meals"
-        ]
-      }
-    },
-    "/restaurants": {
-      "get": {
-        "operationId": "RestaurantController_listRestaurants",
-        "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Restaurants retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedRestaurantListResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Lister les restaurants",
-        "tags": [
-          "restaurants"
-        ]
-      }
-    },
-    "/restaurants/{id}": {
-      "get": {
-        "operationId": "RestaurantController_getRestaurant",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Restaurant retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RestaurantResponse"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Détailler un restaurant",
-        "tags": [
-          "restaurants"
+          "Users"
         ]
       }
     },
     "/reservations": {
       "get": {
+        "description": "Returns a paginated list of reservations with optional filtering",
         "operationId": "ReservationController_listReservations",
         "parameters": [
           {
-            "name": "page",
+            "name": "clientId",
             "required": false,
             "in": "query",
+            "description": "Filter by client ID",
             "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "dateTo",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "dateFrom",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "mealId",
-            "required": false,
-            "in": "query",
-            "schema": {
+              "example": 1,
               "type": "number"
             }
           },
@@ -317,15 +245,50 @@
             "name": "restaurantId",
             "required": false,
             "in": "query",
+            "description": "Filter by restaurant ID",
             "schema": {
+              "example": 2,
               "type": "number"
             }
           },
           {
-            "name": "clientId",
+            "name": "mealId",
             "required": false,
             "in": "query",
+            "description": "Filter by meal type ID",
             "schema": {
+              "example": 3,
+              "type": "number"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "required": false,
+            "in": "query",
+            "description": "Start date for filtering (YYYY-MM-DD)",
+            "schema": {
+              "example": "2023-12-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "required": false,
+            "in": "query",
+            "description": "End date for filtering (YYYY-MM-DD)",
+            "schema": {
+              "example": "2023-12-31",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": {
+              "minimum": 1,
+              "example": 1,
               "type": "number"
             }
           }
@@ -336,18 +299,25 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedReservationListResponse"
+                  "$ref": "#/components/schemas/PaginatedReservationResponse"
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         },
-        "summary": "Lister les réservations",
+        "summary": "List reservations",
         "tags": [
-          "reservations"
+          "Reservations"
         ]
       },
       "post": {
+        "description": "Creates a new reservation",
         "operationId": "ReservationController_createReservation",
         "parameters": [],
         "requestBody": {
@@ -355,13 +325,13 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Object"
+                "$ref": "#/components/schemas/CreateReservationRequest"
               }
             }
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Reservation created successfully",
             "content": {
               "application/json": {
@@ -370,23 +340,35 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         },
-        "summary": "Créer une réservation",
+        "summary": "Create reservation",
         "tags": [
-          "reservations"
+          "Reservations"
         ]
       }
     },
     "/reservations/{id}": {
       "get": {
+        "description": "Returns a single reservation by ID",
         "operationId": "ReservationController_getReservation",
         "parameters": [
           {
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "Reservation ID",
             "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -401,21 +383,33 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Reservation not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         },
-        "summary": "Détailler une réservation",
+        "summary": "Get reservation by ID",
         "tags": [
-          "reservations"
+          "Reservations"
         ]
       },
       "put": {
-        "operationId": "ReservationController_updateReservation",
+        "description": "Completely replaces an existing reservation",
+        "operationId": "ReservationController_replaceReservation",
         "parameters": [
           {
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "Reservation ID",
             "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -425,7 +419,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Object"
+                "$ref": "#/components/schemas/UpdateReservationRequest"
               }
             }
           }
@@ -440,33 +434,239 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Reservation not found"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         },
-        "summary": "Modifier une réservation",
+        "summary": "Replace reservation",
         "tags": [
-          "reservations"
+          "Reservations"
+        ]
+      },
+      "patch": {
+        "description": "Partially updates an existing reservation",
+        "operationId": "ReservationController_updateReservation",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Reservation ID",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchReservationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reservation updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Reservation not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "summary": "Update reservation",
+        "tags": [
+          "Reservations"
         ]
       },
       "delete": {
+        "description": "Deletes a reservation",
         "operationId": "ReservationController_deleteReservation",
         "parameters": [
           {
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "Reservation ID",
             "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Reservation deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Reservation not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "summary": "Delete reservation",
+        "tags": [
+          "Reservations"
+        ]
+      }
+    },
+    "/spa": {
+      "get": {
+        "description": "Returns information about the hotel spa including contact details and opening hours",
+        "operationId": "SpaController_getSpa",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Spa information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpaResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Spa information not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "summary": "Get spa information",
+        "tags": [
+          "Spa"
+        ]
+      }
+    },
+    "/meals": {
+      "get": {
+        "description": "Returns a paginated list of meal types available at the hotel",
+        "operationId": "MealController_listMealTypes",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": {
+              "minimum": 1,
+              "example": 1,
               "type": "number"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Reservation deleted successfully"
+            "description": "Meal types retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedMealResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         },
-        "summary": "Supprimer une réservation",
+        "summary": "List meal types",
         "tags": [
-          "reservations"
+          "Meals"
+        ]
+      }
+    },
+    "/agents": {
+      "post": {
+        "operationId": "AgentController_test",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Agent"
+        ]
+      }
+    },
+    "/restaurants": {
+      "get": {
+        "description": "Returns a paginated list of restaurants in the hotel",
+        "operationId": "RestaurantController_listRestaurants",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": {
+              "minimum": 1,
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Restaurants retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedRestaurantResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "summary": "List restaurants",
+        "tags": [
+          "Restaurants"
         ]
       }
     },
@@ -475,7 +675,7 @@
         "tags": [
           "WebSocket Events (Client → Server)"
         ],
-        "summary": "Send a chat",
+        "summary": "Send a chat message and receive AI response",
         "operationId": "send-chat",
         "x-event": "send-chat",
         "x-namespace": "ChatGateway",
@@ -496,7 +696,7 @@
         "tags": [
           "WebSocket Events (Client → Server)"
         ],
-        "summary": "Ping for test",
+        "summary": "Ping for connection testing",
         "operationId": "client:ping",
         "x-event": "client:ping",
         "x-namespace": "ChatGateway",
@@ -545,65 +745,72 @@
   "tags": [],
   "servers": [
     {
-      "url": "http://localhost:3030",
+      "url": "http://localhost:3040",
       "description": "Local"
     }
   ],
   "components": {
     "schemas": {
-      "ClientResponse": {
+      "UserResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "number",
-            "description": "Client ID"
+            "description": "Unique identifier for the user",
+            "example": 1
           },
           "name": {
             "type": "string",
-            "description": "Client name"
+            "description": "The full name of the user",
+            "example": "John Doe"
           },
-          "phone_number": {
+          "phoneNumber": {
             "type": "string",
-            "description": "Client phone number"
+            "description": "User's phone number",
+            "example": "+33612345678"
           },
-          "room_number": {
-            "type": "object",
-            "description": "Client room number",
-            "nullable": true
-          },
-          "special_requests": {
+          "roomNumber": {
             "type": "string",
-            "description": "Client special requests"
+            "description": "Room number if the user is a guest",
+            "example": "101"
+          },
+          "specialRequests": {
+            "type": "string",
+            "description": "Any special requests or notes for this user",
+            "example": "Requires vegetarian meals"
           }
         },
         "required": [
           "id",
           "name",
-          "phone_number"
+          "phoneNumber"
         ]
       },
-      "PaginatedClientListResponse": {
+      "PaginatedUsersResponse": {
         "type": "object",
         "properties": {
           "count": {
             "type": "number",
-            "description": "Total number of clients"
+            "description": "Total number of users matching the criteria",
+            "example": 100
           },
           "next": {
             "type": "object",
-            "description": "URL to next page",
+            "description": "URL to the next page",
+            "example": "/api/users?page=2",
             "nullable": true
           },
           "previous": {
             "type": "object",
-            "description": "URL to previous page",
+            "description": "URL to the previous page",
+            "example": "/api/users?page=1",
             "nullable": true
           },
           "results": {
-            "description": "List of clients",
+            "description": "List of user results",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ClientResponse"
+              "$ref": "#/components/schemas/UserResponse"
             }
           }
         },
@@ -612,48 +819,321 @@
           "results"
         ]
       },
-      "Object": {
+      "UserRequest": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The full name of the user",
+            "example": "John Doe",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "User's phone number",
+            "example": "+33612345678",
+            "minLength": 10
+          },
+          "roomNumber": {
+            "type": "string",
+            "description": "Room number if the user is a guest",
+            "example": "101"
+          },
+          "specialRequests": {
+            "type": "string",
+            "description": "Any special requests or notes for this user",
+            "example": "Requires vegetarian meals"
+          }
+        },
+        "required": [
+          "name",
+          "phoneNumber"
+        ]
+      },
+      "ReservationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Unique identifier for the reservation",
+            "example": 1
+          },
+          "clientId": {
+            "type": "number",
+            "description": "Client ID",
+            "example": 1
+          },
+          "restaurantId": {
+            "type": "number",
+            "description": "Restaurant ID",
+            "example": 2
+          },
+          "date": {
+            "type": "string",
+            "description": "Reservation date (YYYY-MM-DD)",
+            "example": "2023-12-25"
+          },
+          "mealId": {
+            "type": "number",
+            "description": "Meal type ID (1: Breakfast, 2: Lunch, 3: Dinner, etc.)",
+            "example": 3
+          },
+          "numberOfGuests": {
+            "type": "number",
+            "description": "Number of guests",
+            "example": 4
+          },
+          "specialRequests": {
+            "type": "string",
+            "description": "Special requests or notes for the reservation",
+            "example": "Window table preferred, celebrating anniversary"
+          },
+          "status": {
+            "type": "string",
+            "description": "Reservation status",
+            "enum": [
+              "confirmed",
+              "pending",
+              "cancelled"
+            ],
+            "example": "confirmed"
+          }
+        },
+        "required": [
+          "id",
+          "clientId",
+          "restaurantId",
+          "date",
+          "mealId",
+          "numberOfGuests"
+        ]
+      },
+      "PaginatedReservationResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number",
+            "description": "Total number of reservations matching the criteria",
+            "example": 42
+          },
+          "next": {
+            "type": "object",
+            "description": "URL to the next page",
+            "example": "/api/reservations?page=2",
+            "nullable": true
+          },
+          "previous": {
+            "type": "object",
+            "description": "URL to the previous page",
+            "example": "/api/reservations?page=1",
+            "nullable": true
+          },
+          "results": {
+            "description": "List of reservation results",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReservationResponse"
+            }
+          }
+        },
+        "required": [
+          "count",
+          "results"
+        ]
+      },
+      "CreateReservationRequest": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "number",
+            "description": "Client ID",
+            "example": 1
+          },
+          "restaurantId": {
+            "type": "number",
+            "description": "Restaurant ID",
+            "example": 2
+          },
+          "date": {
+            "type": "string",
+            "description": "Reservation date (YYYY-MM-DD)",
+            "example": "2023-12-25"
+          },
+          "mealId": {
+            "type": "number",
+            "description": "Meal type ID (1: Breakfast, 2: Lunch, 3: Dinner, etc.)",
+            "example": 3
+          },
+          "numberOfGuests": {
+            "type": "number",
+            "description": "Number of guests",
+            "example": 4,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "specialRequests": {
+            "type": "string",
+            "description": "Special requests or notes for the reservation",
+            "example": "Window table preferred, celebrating anniversary"
+          }
+        },
+        "required": [
+          "clientId",
+          "restaurantId",
+          "date",
+          "mealId",
+          "numberOfGuests"
+        ]
+      },
+      "UpdateReservationRequest": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "number",
+            "description": "Client ID",
+            "example": 1
+          },
+          "restaurantId": {
+            "type": "number",
+            "description": "Restaurant ID",
+            "example": 2
+          },
+          "date": {
+            "type": "string",
+            "description": "Reservation date (YYYY-MM-DD)",
+            "example": "2023-12-25"
+          },
+          "mealId": {
+            "type": "number",
+            "description": "Meal type ID (1: Breakfast, 2: Lunch, 3: Dinner, etc.)",
+            "example": 3
+          },
+          "numberOfGuests": {
+            "type": "number",
+            "description": "Number of guests",
+            "example": 4,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "specialRequests": {
+            "type": "string",
+            "description": "Special requests or notes for the reservation",
+            "example": "Window table preferred, celebrating anniversary"
+          }
+        },
+        "required": [
+          "clientId",
+          "restaurantId",
+          "date",
+          "mealId",
+          "numberOfGuests"
+        ]
+      },
+      "PatchReservationRequest": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "number",
+            "description": "Client ID",
+            "example": 1
+          },
+          "restaurantId": {
+            "type": "number",
+            "description": "Restaurant ID",
+            "example": 2
+          },
+          "date": {
+            "type": "string",
+            "description": "Reservation date (YYYY-MM-DD)",
+            "example": "2023-12-25"
+          },
+          "mealId": {
+            "type": "number",
+            "description": "Meal type ID (1: Breakfast, 2: Lunch, 3: Dinner, etc.)",
+            "example": 3
+          },
+          "numberOfGuests": {
+            "type": "number",
+            "description": "Number of guests",
+            "example": 4,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "specialRequests": {
+            "type": "string",
+            "description": "Special requests or notes for the reservation",
+            "example": "Window table preferred, celebrating anniversary"
+          },
+          "status": {
+            "type": "string",
+            "description": "Reservation status",
+            "enum": [
+              "confirmed",
+              "pending",
+              "cancelled"
+            ],
+            "example": "confirmed"
+          },
+          "updateReason": {
+            "type": "string",
+            "description": "Reason for update",
+            "example": "Guest requested a different date"
+          },
+          "notifyClient": {
+            "type": "boolean",
+            "description": "Whether to notify the client about changes",
+            "example": true
+          }
+        }
       },
       "SpaResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "number",
-            "description": "Spa ID"
+            "description": "Unique identifier for the spa",
+            "example": 1
           },
           "name": {
             "type": "string",
-            "description": "Spa name"
+            "description": "Name of the spa",
+            "example": "Zen Garden Spa"
           },
           "description": {
             "type": "string",
-            "description": "Spa description"
+            "description": "Description of the spa and its services",
+            "example": "A luxurious spa offering a variety of treatments and massages for complete relaxation"
           },
           "location": {
             "type": "string",
-            "description": "Spa location"
+            "description": "Physical location of the spa within the hotel",
+            "example": "Ground Floor, East Wing"
           },
-          "phone_number": {
+          "phoneNumber": {
             "type": "string",
-            "description": "Spa phone number"
+            "description": "Contact phone number for the spa",
+            "example": "+33612345678"
           },
           "email": {
             "type": "string",
-            "description": "Spa email"
+            "description": "Contact email for the spa",
+            "example": "spa@hotelcalifornia.com"
           },
-          "opening_hours": {
+          "openingHours": {
             "type": "string",
-            "description": "Spa opening hours"
+            "description": "Spa opening hours",
+            "example": "Mon-Sun: 9:00-20:00"
           },
-          "created_at": {
+          "createdAt": {
             "type": "string",
-            "description": "Spa creation date"
+            "description": "Date when the spa information was created",
+            "example": "2023-01-01T00:00:00Z"
           },
-          "updated_at": {
+          "updatedAt": {
             "type": "string",
-            "description": "Spa last update date"
+            "description": "Date when the spa information was last updated",
+            "example": "2023-01-01T00:00:00Z"
           }
         },
         "required": [
@@ -661,23 +1141,25 @@
           "name",
           "description",
           "location",
-          "phone_number",
+          "phoneNumber",
           "email",
-          "opening_hours",
-          "created_at",
-          "updated_at"
+          "openingHours",
+          "createdAt",
+          "updatedAt"
         ]
       },
-      "MealTypeResponse": {
+      "MealResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "number",
-            "description": "Meal type ID"
+            "description": "Unique identifier for the meal type",
+            "example": 1
           },
           "name": {
             "type": "string",
-            "description": "Meal type name"
+            "description": "Name of the meal type",
+            "example": "Breakfast"
           }
         },
         "required": [
@@ -685,28 +1167,31 @@
           "name"
         ]
       },
-      "PaginatedMealTypeListResponse": {
+      "PaginatedMealResponse": {
         "type": "object",
         "properties": {
           "count": {
             "type": "number",
-            "description": "Total number of meal types"
+            "description": "Total number of meal types",
+            "example": 4
           },
           "next": {
             "type": "object",
-            "description": "URL to next page",
+            "description": "URL to the next page",
+            "example": "/api/meals?page=2",
             "nullable": true
           },
           "previous": {
             "type": "object",
-            "description": "URL to previous page",
+            "description": "URL to the previous page",
+            "example": "/api/meals?page=1",
             "nullable": true
           },
           "results": {
-            "description": "List of meal types",
+            "description": "List of meal type results",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/MealTypeResponse"
+              "$ref": "#/components/schemas/MealResponse"
             }
           }
         },
@@ -720,31 +1205,38 @@
         "properties": {
           "id": {
             "type": "number",
-            "description": "Restaurant ID"
+            "description": "Unique identifier for the restaurant",
+            "example": 1
           },
           "name": {
             "type": "string",
-            "description": "Restaurant name"
+            "description": "Name of the restaurant",
+            "example": "Le Bistro Californien"
           },
           "description": {
             "type": "string",
-            "description": "Restaurant description"
+            "description": "Description of the restaurant",
+            "example": "A cozy bistro offering California-inspired French cuisine"
           },
           "capacity": {
             "type": "number",
-            "description": "Restaurant capacity"
+            "description": "Maximum number of guests the restaurant can accommodate",
+            "example": 80
           },
-          "opening_hours": {
+          "openingHours": {
             "type": "string",
-            "description": "Restaurant opening hours"
+            "description": "Restaurant opening hours",
+            "example": "Mon-Sun: 12:00-15:00, 19:00-23:00"
           },
           "location": {
             "type": "string",
-            "description": "Restaurant location"
+            "description": "Physical location of the restaurant within the hotel",
+            "example": "Ground Floor, West Wing"
           },
-          "is_active": {
+          "isActive": {
             "type": "boolean",
-            "description": "Restaurant active status"
+            "description": "Whether the restaurant is currently active",
+            "example": true
           }
         },
         "required": [
@@ -752,105 +1244,36 @@
           "name",
           "description",
           "capacity",
-          "opening_hours",
-          "location"
+          "openingHours",
+          "location",
+          "isActive"
         ]
       },
-      "PaginatedRestaurantListResponse": {
+      "PaginatedRestaurantResponse": {
         "type": "object",
         "properties": {
           "count": {
             "type": "number",
-            "description": "Total number of restaurants"
+            "description": "Total number of restaurants matching the criteria",
+            "example": 5
           },
           "next": {
             "type": "object",
-            "description": "URL to next page",
+            "description": "URL to the next page",
+            "example": "/api/restaurants?page=2",
             "nullable": true
           },
           "previous": {
             "type": "object",
-            "description": "URL to previous page",
+            "description": "URL to the previous page",
+            "example": "/api/restaurants?page=1",
             "nullable": true
           },
           "results": {
-            "description": "List of restaurants",
+            "description": "List of restaurant results",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RestaurantResponse"
-            }
-          }
-        },
-        "required": [
-          "count",
-          "results"
-        ]
-      },
-      "ReservationResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "description": "Reservation ID"
-          },
-          "client": {
-            "type": "number",
-            "description": "Client ID"
-          },
-          "restaurant": {
-            "type": "number",
-            "description": "Restaurant ID"
-          },
-          "date": {
-            "type": "string",
-            "description": "Reservation date (YYYY-MM-DD)"
-          },
-          "meal": {
-            "type": "number",
-            "description": "Meal type ID"
-          },
-          "number_of_guests": {
-            "type": "number",
-            "description": "Number of guests",
-            "minimum": 1,
-            "maximum": 100
-          },
-          "special_requests": {
-            "type": "string",
-            "description": "Special requests for the reservation"
-          }
-        },
-        "required": [
-          "id",
-          "client",
-          "restaurant",
-          "date",
-          "meal",
-          "number_of_guests"
-        ]
-      },
-      "PaginatedReservationListResponse": {
-        "type": "object",
-        "properties": {
-          "count": {
-            "type": "number",
-            "description": "Total number of reservations"
-          },
-          "next": {
-            "type": "object",
-            "description": "URL to next page",
-            "nullable": true
-          },
-          "previous": {
-            "type": "object",
-            "description": "URL to previous page",
-            "nullable": true
-          },
-          "results": {
-            "description": "List of reservations",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ReservationResponse"
             }
           }
         },

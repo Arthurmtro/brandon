@@ -44,8 +44,7 @@ export class UserToolService extends ToolStrategyService {
   public readonly createClient = tool(
     async (input) => {
       console.log('createClient');
-      const client = this.hotelService.getClient();
-      const result = await client.createClient(input);
+      const result = await this.hotelService.createClient(input);
       return `Client créé avec succès : 👤 ${result.name} (ID: ${result.id})\n📞 Téléphone : ${result.phone_number}\n🚪 Chambre : ${result.room_number}\n📝 Demandes spéciales : ${result.special_requests || 'Aucune'}`;
     },
     {
@@ -53,9 +52,9 @@ export class UserToolService extends ToolStrategyService {
       description: 'Créer un nouveau client.',
       schema: z.object({
         name: z.string().min(1),
-        phoneNumber: z.string(),
-        roomNumber: z.string().nullable().optional(),
-        specialRequests: z.string().optional(),
+        phone_number: z.string(),
+        room_number: z.string().nullable().optional(),
+        special_requests: z.string().optional(),
       }),
     },
   );
@@ -63,8 +62,7 @@ export class UserToolService extends ToolStrategyService {
   public readonly getClientById = tool(
     async (input) => {
       console.log('getClientById');
-      const client = this.hotelService.getClient();
-      const c = await client.getClient(input.id);
+      const c = await this.hotelService.getClient(input.id);
 
       if (!c) return `Aucun client trouvé pour l'ID ${input.id}`;
 
@@ -86,8 +84,8 @@ export class UserToolService extends ToolStrategyService {
   public readonly updateClient = tool(
     async (input) => {
       console.log('updateClient');
-      const client = this.hotelService.getClient();
-      return await client.updateClient(input.id, input.data);
+
+      return await this.hotelService.updateClient(input.id, input.data);
     },
     {
       name: 'update_client',
@@ -96,9 +94,9 @@ export class UserToolService extends ToolStrategyService {
         id: z.number().positive().describe('Identifiant du client à modifier'),
         data: z.object({
           name: z.string(),
-          phoneNumber: z.string(),
-          roomNumber: z.string().nullable().optional(),
-          specialRequests: z.string().optional(),
+          phone_number: z.string(),
+          room_number: z.string().nullable().optional(),
+          special_requests: z.string().optional(),
         }),
       }),
     },
@@ -107,8 +105,7 @@ export class UserToolService extends ToolStrategyService {
   public readonly deleteClient = tool(
     async (input) => {
       console.log('deleteClient');
-      const client = this.hotelService.getClient();
-      await client.deleteClient(input.id);
+      await this.hotelService.deleteClient(input.id);
       return `Client avec l'id ${input.id} supprimé avec succès.`;
     },
     {
@@ -123,8 +120,7 @@ export class UserToolService extends ToolStrategyService {
   public readonly listClients = tool(
     async (input) => {
       console.log('listClients');
-      const client = this.hotelService.getClient();
-      const result = await client.listClients(input);
+      const result = await this.hotelService.listClients(input);
 
       if (!result.results || result.results.length === 0) {
         return 'Aucun client trouvé.';

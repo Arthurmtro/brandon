@@ -5,8 +5,8 @@ import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 import {
   ListReservationsParams,
-  ReservationParams,
-  UpdateReservationParams,
+  CreateReservationParams,
+  ReservationUpdateInput,
 } from '~/modules/hotel-california/hotel-california.types';
 
 @Injectable()
@@ -16,8 +16,7 @@ export class ReservationToolService extends ToolStrategyService {
   public readonly listReservations = tool(
     async (input: ListReservationsParams) => {
       console.log('listReservations');
-      const client = this.hotelService.getClient();
-      const response = await client.listReservations(input);
+      const response = await this.hotelService.listReservations(input);
       return response.results
         .map(
           (r) =>
@@ -29,9 +28,9 @@ export class ReservationToolService extends ToolStrategyService {
       name: 'list_reservations',
       description: 'Lister les réservations avec filtres et pagination.',
       schema: z.object({
-        clientId: z.number().optional(),
-        restaurantId: z.number().optional(),
-        mealId: z.number().optional(),
+        client: z.number().optional(),
+        restaurant: z.number().optional(),
+        meal: z.number().optional(),
         dateFrom: z.string().optional(),
         dateTo: z.string().optional(),
         page: z.number().optional(),
@@ -40,23 +39,23 @@ export class ReservationToolService extends ToolStrategyService {
   );
 
   public readonly createReservation = tool(
-    async (input: ReservationParams) => {
+    async (input: CreateReservationParams) => {
       console.log('createReservation');
-      const client = this.hotelService.getClient();
-
-      const reservation = await client.createReservation(input);
+      const reservation = await this.hotelService.createReservation(input.data);
       return `Réservation créée avec succès (ID: ${reservation.id}) pour le client ${reservation.client}, le ${reservation.date} au restaurant ${reservation.restaurant}.`;
     },
     {
       name: 'create_reservation',
       description: 'Créer une nouvelle réservation.',
       schema: z.object({
-        clientId: z.number(),
-        restaurantId: z.number(),
-        date: z.string(),
-        mealId: z.number(),
-        numberOfGuests: z.number().int().positive(),
-        specialRequests: z.string().optional(),
+        data: z.object({
+          client: z.number(),
+          restaurant: z.number(),
+          date: z.string(),
+          meal: z.number(),
+          number_of_guests: z.number().int().positive(),
+          special_requests: z.string().optional(),
+        }),
       }),
     },
   );
@@ -64,8 +63,7 @@ export class ReservationToolService extends ToolStrategyService {
   public readonly getReservation = tool(
     async (input) => {
       console.log('getReservation');
-      const client = this.hotelService.getClient();
-      const r = await client.getReservation(input.id);
+      const r = await this.hotelService.getReservation(input.id);
       if (!r) return `Aucune réservation trouvée pour l'ID ${input.id}`;
       return `🆔 ${r.id} | Client: ${r.client}, Restaurant: ${r.restaurant}, Date: ${r.date}, Meal: ${r.meal}, Guests: ${r.number_of_guests}, Special Requests: ${r.special_requests || 'None'}`;
     },
@@ -82,10 +80,9 @@ export class ReservationToolService extends ToolStrategyService {
   );
 
   public readonly updateReservation = tool(
-    async (input: { id: number; data: UpdateReservationParams }) => {
+    async (input: { id: number; data: ReservationUpdateInput }) => {
       console.log('updateReservation');
-      const client = this.hotelService.getClient();
-      const r = await client.updateReservation(input.id, input.data);
+      const r = await this.hotelService.updateReservation(input.id, input.data);
       if (!r)
         return `Impossible de trouver ou de mettre à jour la réservation avec l'ID ${input.id}`;
       return `Réservation mise à jour avec succès (ID: ${r.id}). Nouvelle date: ${r.date}, Restaurant: ${r.restaurant}, Clients: ${r.number_of_guests}`;
@@ -110,9 +107,8 @@ export class ReservationToolService extends ToolStrategyService {
   public readonly deleteReservation = tool(
     async (input) => {
       console.log('deleteReservation');
-      const client = this.hotelService.getClient();
       try {
-        await client.deleteReservation(input.id);
+        await this.hotelService.deleteReservation(input.id);
         return `Réservation avec l'id ${input.id} supprimée avec succès.`;
       } catch {
         return `Aucune réservation trouvée ou erreur lors de la suppression avec l'id ${input.id}.`;

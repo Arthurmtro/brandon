@@ -1,29 +1,51 @@
-import { Controller, Get, Inject, Query } from '@nestjs/common';
 import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
-import { PaginatedMealTypeListResponse } from '~/clients/hotel-california/response';
+  Controller,
+  Get,
+  Query,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { transformClientToPaginatedMealResponse } from './meal.transformer';
 import { HotelCaliforniaService } from '../hotel-california/hotel-california.service';
+import { PaginatedMealResponse } from './responses/meal.response';
+import { ListMealsParams } from './requests/meal.request';
+import { isAxiosError } from 'axios';
 
-@ApiTags('meals')
+@ApiTags('Meals')
 @Controller('meals')
 export class MealController {
-  @Inject() private readonly hotelService: HotelCaliforniaService;
+  constructor(private readonly hotelService: HotelCaliforniaService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lister les types de repas' })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiOkResponse({
-    description: 'Meal types retrieved successfully',
-    type: PaginatedMealTypeListResponse,
+  @ApiOperation({
+    summary: 'List meal types',
+    description:
+      'Returns a paginated list of meal types available at the hotel',
   })
+  @ApiResponse({
+    status: 200,
+    description: 'Meal types retrieved successfully',
+    type: PaginatedMealResponse,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   async listMealTypes(
-    @Query('page') page?: number,
-  ): Promise<PaginatedMealTypeListResponse> {
-    const client = this.hotelService.getClient();
-    return await client.listMealTypes(page);
+    @Query() queryParams: ListMealsParams,
+  ): Promise<PaginatedMealResponse> {
+    try {
+      const response = await this.hotelService.listMealTypes(queryParams.page);
+
+      return transformClientToPaginatedMealResponse(response);
+    } catch (error) {
+      if (isAxiosError(error) && error instanceof HttpException) {
+        throw error;
+      }
+
+      throw new HttpException(
+        'Failed to retrieve meal types',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

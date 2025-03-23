@@ -84,183 +84,259 @@ export interface ChatServerPongDto {
 /**
  * 
  * @export
- * @interface ClientResponse
+ * @interface CreateReservationRequest
  */
-export interface ClientResponse {
+export interface CreateReservationRequest {
     /**
      * Client ID
      * @type {number}
-     * @memberof ClientResponse
+     * @memberof CreateReservationRequest
+     */
+    'clientId': number;
+    /**
+     * Restaurant ID
+     * @type {number}
+     * @memberof CreateReservationRequest
+     */
+    'restaurantId': number;
+    /**
+     * Reservation date (YYYY-MM-DD)
+     * @type {string}
+     * @memberof CreateReservationRequest
+     */
+    'date': string;
+    /**
+     * Meal type ID (1: Breakfast, 2: Lunch, 3: Dinner, etc.)
+     * @type {number}
+     * @memberof CreateReservationRequest
+     */
+    'mealId': number;
+    /**
+     * Number of guests
+     * @type {number}
+     * @memberof CreateReservationRequest
+     */
+    'numberOfGuests': number;
+    /**
+     * Special requests or notes for the reservation
+     * @type {string}
+     * @memberof CreateReservationRequest
+     */
+    'specialRequests'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface MealResponse
+ */
+export interface MealResponse {
+    /**
+     * Unique identifier for the meal type
+     * @type {number}
+     * @memberof MealResponse
      */
     'id': number;
     /**
-     * Client name
+     * Name of the meal type
      * @type {string}
-     * @memberof ClientResponse
-     */
-    'name': string;
-    /**
-     * Client phone number
-     * @type {string}
-     * @memberof ClientResponse
-     */
-    'phone_number': string;
-    /**
-     * Client room number
-     * @type {object}
-     * @memberof ClientResponse
-     */
-    'room_number'?: object | null;
-    /**
-     * Client special requests
-     * @type {string}
-     * @memberof ClientResponse
-     */
-    'special_requests'?: string;
-}
-/**
- * 
- * @export
- * @interface MealTypeResponse
- */
-export interface MealTypeResponse {
-    /**
-     * Meal type ID
-     * @type {number}
-     * @memberof MealTypeResponse
-     */
-    'id': number;
-    /**
-     * Meal type name
-     * @type {string}
-     * @memberof MealTypeResponse
+     * @memberof MealResponse
      */
     'name': string;
 }
 /**
  * 
  * @export
- * @interface PaginatedClientListResponse
+ * @interface PaginatedMealResponse
  */
-export interface PaginatedClientListResponse {
-    /**
-     * Total number of clients
-     * @type {number}
-     * @memberof PaginatedClientListResponse
-     */
-    'count': number;
-    /**
-     * URL to next page
-     * @type {object}
-     * @memberof PaginatedClientListResponse
-     */
-    'next'?: object | null;
-    /**
-     * URL to previous page
-     * @type {object}
-     * @memberof PaginatedClientListResponse
-     */
-    'previous'?: object | null;
-    /**
-     * List of clients
-     * @type {Array<ClientResponse>}
-     * @memberof PaginatedClientListResponse
-     */
-    'results': Array<ClientResponse>;
-}
-/**
- * 
- * @export
- * @interface PaginatedMealTypeListResponse
- */
-export interface PaginatedMealTypeListResponse {
+export interface PaginatedMealResponse {
     /**
      * Total number of meal types
      * @type {number}
-     * @memberof PaginatedMealTypeListResponse
+     * @memberof PaginatedMealResponse
      */
     'count': number;
     /**
-     * URL to next page
+     * URL to the next page
      * @type {object}
-     * @memberof PaginatedMealTypeListResponse
+     * @memberof PaginatedMealResponse
      */
     'next'?: object | null;
     /**
-     * URL to previous page
+     * URL to the previous page
      * @type {object}
-     * @memberof PaginatedMealTypeListResponse
+     * @memberof PaginatedMealResponse
      */
     'previous'?: object | null;
     /**
-     * List of meal types
-     * @type {Array<MealTypeResponse>}
-     * @memberof PaginatedMealTypeListResponse
+     * List of meal type results
+     * @type {Array<MealResponse>}
+     * @memberof PaginatedMealResponse
      */
-    'results': Array<MealTypeResponse>;
+    'results': Array<MealResponse>;
 }
 /**
  * 
  * @export
- * @interface PaginatedReservationListResponse
+ * @interface PaginatedReservationResponse
  */
-export interface PaginatedReservationListResponse {
+export interface PaginatedReservationResponse {
     /**
-     * Total number of reservations
+     * Total number of reservations matching the criteria
      * @type {number}
-     * @memberof PaginatedReservationListResponse
+     * @memberof PaginatedReservationResponse
      */
     'count': number;
     /**
-     * URL to next page
+     * URL to the next page
      * @type {object}
-     * @memberof PaginatedReservationListResponse
+     * @memberof PaginatedReservationResponse
      */
     'next'?: object | null;
     /**
-     * URL to previous page
+     * URL to the previous page
      * @type {object}
-     * @memberof PaginatedReservationListResponse
+     * @memberof PaginatedReservationResponse
      */
     'previous'?: object | null;
     /**
-     * List of reservations
+     * List of reservation results
      * @type {Array<ReservationResponse>}
-     * @memberof PaginatedReservationListResponse
+     * @memberof PaginatedReservationResponse
      */
     'results': Array<ReservationResponse>;
 }
 /**
  * 
  * @export
- * @interface PaginatedRestaurantListResponse
+ * @interface PaginatedRestaurantResponse
  */
-export interface PaginatedRestaurantListResponse {
+export interface PaginatedRestaurantResponse {
     /**
-     * Total number of restaurants
+     * Total number of restaurants matching the criteria
      * @type {number}
-     * @memberof PaginatedRestaurantListResponse
+     * @memberof PaginatedRestaurantResponse
      */
     'count': number;
     /**
-     * URL to next page
+     * URL to the next page
      * @type {object}
-     * @memberof PaginatedRestaurantListResponse
+     * @memberof PaginatedRestaurantResponse
      */
     'next'?: object | null;
     /**
-     * URL to previous page
+     * URL to the previous page
      * @type {object}
-     * @memberof PaginatedRestaurantListResponse
+     * @memberof PaginatedRestaurantResponse
      */
     'previous'?: object | null;
     /**
-     * List of restaurants
+     * List of restaurant results
      * @type {Array<RestaurantResponse>}
-     * @memberof PaginatedRestaurantListResponse
+     * @memberof PaginatedRestaurantResponse
      */
     'results': Array<RestaurantResponse>;
 }
+/**
+ * 
+ * @export
+ * @interface PaginatedUsersResponse
+ */
+export interface PaginatedUsersResponse {
+    /**
+     * Total number of users matching the criteria
+     * @type {number}
+     * @memberof PaginatedUsersResponse
+     */
+    'count': number;
+    /**
+     * URL to the next page
+     * @type {object}
+     * @memberof PaginatedUsersResponse
+     */
+    'next'?: object | null;
+    /**
+     * URL to the previous page
+     * @type {object}
+     * @memberof PaginatedUsersResponse
+     */
+    'previous'?: object | null;
+    /**
+     * List of user results
+     * @type {Array<UserResponse>}
+     * @memberof PaginatedUsersResponse
+     */
+    'results': Array<UserResponse>;
+}
+/**
+ * 
+ * @export
+ * @interface PatchReservationRequest
+ */
+export interface PatchReservationRequest {
+    /**
+     * Client ID
+     * @type {number}
+     * @memberof PatchReservationRequest
+     */
+    'clientId'?: number;
+    /**
+     * Restaurant ID
+     * @type {number}
+     * @memberof PatchReservationRequest
+     */
+    'restaurantId'?: number;
+    /**
+     * Reservation date (YYYY-MM-DD)
+     * @type {string}
+     * @memberof PatchReservationRequest
+     */
+    'date'?: string;
+    /**
+     * Meal type ID (1: Breakfast, 2: Lunch, 3: Dinner, etc.)
+     * @type {number}
+     * @memberof PatchReservationRequest
+     */
+    'mealId'?: number;
+    /**
+     * Number of guests
+     * @type {number}
+     * @memberof PatchReservationRequest
+     */
+    'numberOfGuests'?: number;
+    /**
+     * Special requests or notes for the reservation
+     * @type {string}
+     * @memberof PatchReservationRequest
+     */
+    'specialRequests'?: string;
+    /**
+     * Reservation status
+     * @type {string}
+     * @memberof PatchReservationRequest
+     */
+    'status'?: PatchReservationRequestStatusEnum;
+    /**
+     * Reason for update
+     * @type {string}
+     * @memberof PatchReservationRequest
+     */
+    'updateReason'?: string;
+    /**
+     * Whether to notify the client about changes
+     * @type {boolean}
+     * @memberof PatchReservationRequest
+     */
+    'notifyClient'?: boolean;
+}
+
+export const PatchReservationRequestStatusEnum = {
+    Confirmed: 'confirmed',
+    Pending: 'pending',
+    Cancelled: 'cancelled'
+} as const;
+
+export type PatchReservationRequestStatusEnum = typeof PatchReservationRequestStatusEnum[keyof typeof PatchReservationRequestStatusEnum];
+
 /**
  * 
  * @export
@@ -268,7 +344,7 @@ export interface PaginatedRestaurantListResponse {
  */
 export interface ReservationResponse {
     /**
-     * Reservation ID
+     * Unique identifier for the reservation
      * @type {number}
      * @memberof ReservationResponse
      */
@@ -278,13 +354,13 @@ export interface ReservationResponse {
      * @type {number}
      * @memberof ReservationResponse
      */
-    'client': number;
+    'clientId': number;
     /**
      * Restaurant ID
      * @type {number}
      * @memberof ReservationResponse
      */
-    'restaurant': number;
+    'restaurantId': number;
     /**
      * Reservation date (YYYY-MM-DD)
      * @type {string}
@@ -292,24 +368,39 @@ export interface ReservationResponse {
      */
     'date': string;
     /**
-     * Meal type ID
+     * Meal type ID (1: Breakfast, 2: Lunch, 3: Dinner, etc.)
      * @type {number}
      * @memberof ReservationResponse
      */
-    'meal': number;
+    'mealId': number;
     /**
      * Number of guests
      * @type {number}
      * @memberof ReservationResponse
      */
-    'number_of_guests': number;
+    'numberOfGuests': number;
     /**
-     * Special requests for the reservation
+     * Special requests or notes for the reservation
      * @type {string}
      * @memberof ReservationResponse
      */
-    'special_requests'?: string;
+    'specialRequests'?: string;
+    /**
+     * Reservation status
+     * @type {string}
+     * @memberof ReservationResponse
+     */
+    'status'?: ReservationResponseStatusEnum;
 }
+
+export const ReservationResponseStatusEnum = {
+    Confirmed: 'confirmed',
+    Pending: 'pending',
+    Cancelled: 'cancelled'
+} as const;
+
+export type ReservationResponseStatusEnum = typeof ReservationResponseStatusEnum[keyof typeof ReservationResponseStatusEnum];
+
 /**
  * 
  * @export
@@ -317,25 +408,25 @@ export interface ReservationResponse {
  */
 export interface RestaurantResponse {
     /**
-     * Restaurant ID
+     * Unique identifier for the restaurant
      * @type {number}
      * @memberof RestaurantResponse
      */
     'id': number;
     /**
-     * Restaurant name
+     * Name of the restaurant
      * @type {string}
      * @memberof RestaurantResponse
      */
     'name': string;
     /**
-     * Restaurant description
+     * Description of the restaurant
      * @type {string}
      * @memberof RestaurantResponse
      */
     'description': string;
     /**
-     * Restaurant capacity
+     * Maximum number of guests the restaurant can accommodate
      * @type {number}
      * @memberof RestaurantResponse
      */
@@ -345,19 +436,19 @@ export interface RestaurantResponse {
      * @type {string}
      * @memberof RestaurantResponse
      */
-    'opening_hours': string;
+    'openingHours': string;
     /**
-     * Restaurant location
+     * Physical location of the restaurant within the hotel
      * @type {string}
      * @memberof RestaurantResponse
      */
     'location': string;
     /**
-     * Restaurant active status
+     * Whether the restaurant is currently active
      * @type {boolean}
      * @memberof RestaurantResponse
      */
-    'is_active'?: boolean;
+    'isActive': boolean;
 }
 /**
  * 
@@ -366,37 +457,37 @@ export interface RestaurantResponse {
  */
 export interface SpaResponse {
     /**
-     * Spa ID
+     * Unique identifier for the spa
      * @type {number}
      * @memberof SpaResponse
      */
     'id': number;
     /**
-     * Spa name
+     * Name of the spa
      * @type {string}
      * @memberof SpaResponse
      */
     'name': string;
     /**
-     * Spa description
+     * Description of the spa and its services
      * @type {string}
      * @memberof SpaResponse
      */
     'description': string;
     /**
-     * Spa location
+     * Physical location of the spa within the hotel
      * @type {string}
      * @memberof SpaResponse
      */
     'location': string;
     /**
-     * Spa phone number
+     * Contact phone number for the spa
      * @type {string}
      * @memberof SpaResponse
      */
-    'phone_number': string;
+    'phoneNumber': string;
     /**
-     * Spa email
+     * Contact email for the spa
      * @type {string}
      * @memberof SpaResponse
      */
@@ -406,20 +497,228 @@ export interface SpaResponse {
      * @type {string}
      * @memberof SpaResponse
      */
-    'opening_hours': string;
+    'openingHours': string;
     /**
-     * Spa creation date
+     * Date when the spa information was created
      * @type {string}
      * @memberof SpaResponse
      */
-    'created_at': string;
+    'createdAt': string;
     /**
-     * Spa last update date
+     * Date when the spa information was last updated
      * @type {string}
      * @memberof SpaResponse
      */
-    'updated_at': string;
+    'updatedAt': string;
 }
+/**
+ * 
+ * @export
+ * @interface UpdateReservationRequest
+ */
+export interface UpdateReservationRequest {
+    /**
+     * Client ID
+     * @type {number}
+     * @memberof UpdateReservationRequest
+     */
+    'clientId': number;
+    /**
+     * Restaurant ID
+     * @type {number}
+     * @memberof UpdateReservationRequest
+     */
+    'restaurantId': number;
+    /**
+     * Reservation date (YYYY-MM-DD)
+     * @type {string}
+     * @memberof UpdateReservationRequest
+     */
+    'date': string;
+    /**
+     * Meal type ID (1: Breakfast, 2: Lunch, 3: Dinner, etc.)
+     * @type {number}
+     * @memberof UpdateReservationRequest
+     */
+    'mealId': number;
+    /**
+     * Number of guests
+     * @type {number}
+     * @memberof UpdateReservationRequest
+     */
+    'numberOfGuests': number;
+    /**
+     * Special requests or notes for the reservation
+     * @type {string}
+     * @memberof UpdateReservationRequest
+     */
+    'specialRequests'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface UserRequest
+ */
+export interface UserRequest {
+    /**
+     * The full name of the user
+     * @type {string}
+     * @memberof UserRequest
+     */
+    'name': string;
+    /**
+     * User\'s phone number
+     * @type {string}
+     * @memberof UserRequest
+     */
+    'phoneNumber': string;
+    /**
+     * Room number if the user is a guest
+     * @type {string}
+     * @memberof UserRequest
+     */
+    'roomNumber'?: string;
+    /**
+     * Any special requests or notes for this user
+     * @type {string}
+     * @memberof UserRequest
+     */
+    'specialRequests'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface UserResponse
+ */
+export interface UserResponse {
+    /**
+     * Unique identifier for the user
+     * @type {number}
+     * @memberof UserResponse
+     */
+    'id': number;
+    /**
+     * The full name of the user
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'name': string;
+    /**
+     * User\'s phone number
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'phoneNumber': string;
+    /**
+     * Room number if the user is a guest
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'roomNumber'?: string;
+    /**
+     * Any special requests or notes for this user
+     * @type {string}
+     * @memberof UserResponse
+     */
+    'specialRequests'?: string;
+}
+
+/**
+ * AgentApi - axios parameter creator
+ * @export
+ */
+export const AgentApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        agentControllerTest: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/agents`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AgentApi - functional programming interface
+ * @export
+ */
+export const AgentApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AgentApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async agentControllerTest(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.agentControllerTest(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AgentApi.agentControllerTest']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AgentApi - factory interface
+ * @export
+ */
+export const AgentApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AgentApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        agentControllerTest(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.agentControllerTest(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AgentApi - object-oriented interface
+ * @export
+ * @class AgentApi
+ * @extends {BaseAPI}
+ */
+export class AgentApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AgentApi
+     */
+    public agentControllerTest(options?: RawAxiosRequestConfig) {
+        return AgentApiFp(this.configuration).agentControllerTest(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
 
 /**
  * MealsApi - axios parameter creator
@@ -428,9 +727,9 @@ export interface SpaResponse {
 export const MealsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
-         * @summary Lister les types de repas
-         * @param {number} [page] 
+         * Returns a paginated list of meal types available at the hotel
+         * @summary List meal types
+         * @param {number} [page] Page number for pagination
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -473,13 +772,13 @@ export const MealsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = MealsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
-         * @summary Lister les types de repas
-         * @param {number} [page] 
+         * Returns a paginated list of meal types available at the hotel
+         * @summary List meal types
+         * @param {number} [page] Page number for pagination
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async mealControllerListMealTypes(page?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedMealTypeListResponse>> {
+        async mealControllerListMealTypes(page?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedMealResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.mealControllerListMealTypes(page, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MealsApi.mealControllerListMealTypes']?.[localVarOperationServerIndex]?.url;
@@ -496,13 +795,13 @@ export const MealsApiFactory = function (configuration?: Configuration, basePath
     const localVarFp = MealsApiFp(configuration)
     return {
         /**
-         * 
-         * @summary Lister les types de repas
+         * Returns a paginated list of meal types available at the hotel
+         * @summary List meal types
          * @param {MealsApiMealControllerListMealTypesRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        mealControllerListMealTypes(requestParameters: MealsApiMealControllerListMealTypesRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedMealTypeListResponse> {
+        mealControllerListMealTypes(requestParameters: MealsApiMealControllerListMealTypesRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedMealResponse> {
             return localVarFp.mealControllerListMealTypes(requestParameters.page, options).then((request) => request(axios, basePath));
         },
     };
@@ -515,7 +814,7 @@ export const MealsApiFactory = function (configuration?: Configuration, basePath
  */
 export interface MealsApiMealControllerListMealTypesRequest {
     /**
-     * 
+     * Page number for pagination
      * @type {number}
      * @memberof MealsApiMealControllerListMealTypes
      */
@@ -530,8 +829,8 @@ export interface MealsApiMealControllerListMealTypesRequest {
  */
 export class MealsApi extends BaseAPI {
     /**
-     * 
-     * @summary Lister les types de repas
+     * Returns a paginated list of meal types available at the hotel
+     * @summary List meal types
      * @param {MealsApiMealControllerListMealTypesRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -551,15 +850,15 @@ export class MealsApi extends BaseAPI {
 export const ReservationsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
-         * @summary Créer une réservation
-         * @param {object} body 
+         * Creates a new reservation
+         * @summary Create reservation
+         * @param {CreateReservationRequest} createReservationRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        reservationControllerCreateReservation: async (body: object, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('reservationControllerCreateReservation', 'body', body)
+        reservationControllerCreateReservation: async (createReservationRequest: CreateReservationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'createReservationRequest' is not null or undefined
+            assertParamExists('reservationControllerCreateReservation', 'createReservationRequest', createReservationRequest)
             const localVarPath = `/reservations`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -579,7 +878,7 @@ export const ReservationsApiAxiosParamCreator = function (configuration?: Config
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(createReservationRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -587,9 +886,9 @@ export const ReservationsApiAxiosParamCreator = function (configuration?: Config
             };
         },
         /**
-         * 
-         * @summary Supprimer une réservation
-         * @param {number} id 
+         * Deletes a reservation
+         * @summary Delete reservation
+         * @param {number} id Reservation ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -621,9 +920,9 @@ export const ReservationsApiAxiosParamCreator = function (configuration?: Config
             };
         },
         /**
-         * 
-         * @summary Détailler une réservation
-         * @param {number} id 
+         * Returns a single reservation by ID
+         * @summary Get reservation by ID
+         * @param {number} id Reservation ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -655,18 +954,18 @@ export const ReservationsApiAxiosParamCreator = function (configuration?: Config
             };
         },
         /**
-         * 
-         * @summary Lister les réservations
-         * @param {number} [page] 
-         * @param {string} [dateTo] 
-         * @param {string} [dateFrom] 
-         * @param {number} [mealId] 
-         * @param {number} [restaurantId] 
-         * @param {number} [clientId] 
+         * Returns a paginated list of reservations with optional filtering
+         * @summary List reservations
+         * @param {number} [clientId] Filter by client ID
+         * @param {number} [restaurantId] Filter by restaurant ID
+         * @param {number} [mealId] Filter by meal type ID
+         * @param {string} [dateFrom] Start date for filtering (YYYY-MM-DD)
+         * @param {string} [dateTo] End date for filtering (YYYY-MM-DD)
+         * @param {number} [page] Page number for pagination
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        reservationControllerListReservations: async (page?: number, dateTo?: string, dateFrom?: string, mealId?: number, restaurantId?: number, clientId?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        reservationControllerListReservations: async (clientId?: number, restaurantId?: number, mealId?: number, dateFrom?: string, dateTo?: string, page?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/reservations`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -679,28 +978,28 @@ export const ReservationsApiAxiosParamCreator = function (configuration?: Config
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (dateTo !== undefined) {
-                localVarQueryParameter['dateTo'] = dateTo;
-            }
-
-            if (dateFrom !== undefined) {
-                localVarQueryParameter['dateFrom'] = dateFrom;
-            }
-
-            if (mealId !== undefined) {
-                localVarQueryParameter['mealId'] = mealId;
+            if (clientId !== undefined) {
+                localVarQueryParameter['clientId'] = clientId;
             }
 
             if (restaurantId !== undefined) {
                 localVarQueryParameter['restaurantId'] = restaurantId;
             }
 
-            if (clientId !== undefined) {
-                localVarQueryParameter['clientId'] = clientId;
+            if (mealId !== undefined) {
+                localVarQueryParameter['mealId'] = mealId;
+            }
+
+            if (dateFrom !== undefined) {
+                localVarQueryParameter['dateFrom'] = dateFrom;
+            }
+
+            if (dateTo !== undefined) {
+                localVarQueryParameter['dateTo'] = dateTo;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
             }
 
 
@@ -715,18 +1014,18 @@ export const ReservationsApiAxiosParamCreator = function (configuration?: Config
             };
         },
         /**
-         * 
-         * @summary Modifier une réservation
-         * @param {number} id 
-         * @param {object} body 
+         * Completely replaces an existing reservation
+         * @summary Replace reservation
+         * @param {number} id Reservation ID
+         * @param {UpdateReservationRequest} updateReservationRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        reservationControllerUpdateReservation: async (id: number, body: object, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        reservationControllerReplaceReservation: async (id: number, updateReservationRequest: UpdateReservationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('reservationControllerUpdateReservation', 'id', id)
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('reservationControllerUpdateReservation', 'body', body)
+            assertParamExists('reservationControllerReplaceReservation', 'id', id)
+            // verify required parameter 'updateReservationRequest' is not null or undefined
+            assertParamExists('reservationControllerReplaceReservation', 'updateReservationRequest', updateReservationRequest)
             const localVarPath = `/reservations/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -747,7 +1046,47 @@ export const ReservationsApiAxiosParamCreator = function (configuration?: Config
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(updateReservationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Partially updates an existing reservation
+         * @summary Update reservation
+         * @param {number} id Reservation ID
+         * @param {PatchReservationRequest} patchReservationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        reservationControllerUpdateReservation: async (id: number, patchReservationRequest: PatchReservationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('reservationControllerUpdateReservation', 'id', id)
+            // verify required parameter 'patchReservationRequest' is not null or undefined
+            assertParamExists('reservationControllerUpdateReservation', 'patchReservationRequest', patchReservationRequest)
+            const localVarPath = `/reservations/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(patchReservationRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -765,22 +1104,22 @@ export const ReservationsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = ReservationsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
-         * @summary Créer une réservation
-         * @param {object} body 
+         * Creates a new reservation
+         * @summary Create reservation
+         * @param {CreateReservationRequest} createReservationRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async reservationControllerCreateReservation(body: object, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReservationResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.reservationControllerCreateReservation(body, options);
+        async reservationControllerCreateReservation(createReservationRequest: CreateReservationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReservationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.reservationControllerCreateReservation(createReservationRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ReservationsApi.reservationControllerCreateReservation']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
-         * @summary Supprimer une réservation
-         * @param {number} id 
+         * Deletes a reservation
+         * @summary Delete reservation
+         * @param {number} id Reservation ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -791,9 +1130,9 @@ export const ReservationsApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
-         * @summary Détailler une réservation
-         * @param {number} id 
+         * Returns a single reservation by ID
+         * @summary Get reservation by ID
+         * @param {number} id Reservation ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -804,33 +1143,47 @@ export const ReservationsApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
-         * @summary Lister les réservations
-         * @param {number} [page] 
-         * @param {string} [dateTo] 
-         * @param {string} [dateFrom] 
-         * @param {number} [mealId] 
-         * @param {number} [restaurantId] 
-         * @param {number} [clientId] 
+         * Returns a paginated list of reservations with optional filtering
+         * @summary List reservations
+         * @param {number} [clientId] Filter by client ID
+         * @param {number} [restaurantId] Filter by restaurant ID
+         * @param {number} [mealId] Filter by meal type ID
+         * @param {string} [dateFrom] Start date for filtering (YYYY-MM-DD)
+         * @param {string} [dateTo] End date for filtering (YYYY-MM-DD)
+         * @param {number} [page] Page number for pagination
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async reservationControllerListReservations(page?: number, dateTo?: string, dateFrom?: string, mealId?: number, restaurantId?: number, clientId?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedReservationListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.reservationControllerListReservations(page, dateTo, dateFrom, mealId, restaurantId, clientId, options);
+        async reservationControllerListReservations(clientId?: number, restaurantId?: number, mealId?: number, dateFrom?: string, dateTo?: string, page?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedReservationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.reservationControllerListReservations(clientId, restaurantId, mealId, dateFrom, dateTo, page, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ReservationsApi.reservationControllerListReservations']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
-         * @summary Modifier une réservation
-         * @param {number} id 
-         * @param {object} body 
+         * Completely replaces an existing reservation
+         * @summary Replace reservation
+         * @param {number} id Reservation ID
+         * @param {UpdateReservationRequest} updateReservationRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async reservationControllerUpdateReservation(id: number, body: object, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReservationResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.reservationControllerUpdateReservation(id, body, options);
+        async reservationControllerReplaceReservation(id: number, updateReservationRequest: UpdateReservationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReservationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.reservationControllerReplaceReservation(id, updateReservationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ReservationsApi.reservationControllerReplaceReservation']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Partially updates an existing reservation
+         * @summary Update reservation
+         * @param {number} id Reservation ID
+         * @param {PatchReservationRequest} patchReservationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async reservationControllerUpdateReservation(id: number, patchReservationRequest: PatchReservationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReservationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.reservationControllerUpdateReservation(id, patchReservationRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ReservationsApi.reservationControllerUpdateReservation']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -846,18 +1199,18 @@ export const ReservationsApiFactory = function (configuration?: Configuration, b
     const localVarFp = ReservationsApiFp(configuration)
     return {
         /**
-         * 
-         * @summary Créer une réservation
+         * Creates a new reservation
+         * @summary Create reservation
          * @param {ReservationsApiReservationControllerCreateReservationRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         reservationControllerCreateReservation(requestParameters: ReservationsApiReservationControllerCreateReservationRequest, options?: RawAxiosRequestConfig): AxiosPromise<ReservationResponse> {
-            return localVarFp.reservationControllerCreateReservation(requestParameters.body, options).then((request) => request(axios, basePath));
+            return localVarFp.reservationControllerCreateReservation(requestParameters.createReservationRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
-         * @summary Supprimer une réservation
+         * Deletes a reservation
+         * @summary Delete reservation
          * @param {ReservationsApiReservationControllerDeleteReservationRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -866,8 +1219,8 @@ export const ReservationsApiFactory = function (configuration?: Configuration, b
             return localVarFp.reservationControllerDeleteReservation(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
-         * @summary Détailler une réservation
+         * Returns a single reservation by ID
+         * @summary Get reservation by ID
          * @param {ReservationsApiReservationControllerGetReservationRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -876,24 +1229,34 @@ export const ReservationsApiFactory = function (configuration?: Configuration, b
             return localVarFp.reservationControllerGetReservation(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
-         * @summary Lister les réservations
+         * Returns a paginated list of reservations with optional filtering
+         * @summary List reservations
          * @param {ReservationsApiReservationControllerListReservationsRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        reservationControllerListReservations(requestParameters: ReservationsApiReservationControllerListReservationsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedReservationListResponse> {
-            return localVarFp.reservationControllerListReservations(requestParameters.page, requestParameters.dateTo, requestParameters.dateFrom, requestParameters.mealId, requestParameters.restaurantId, requestParameters.clientId, options).then((request) => request(axios, basePath));
+        reservationControllerListReservations(requestParameters: ReservationsApiReservationControllerListReservationsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedReservationResponse> {
+            return localVarFp.reservationControllerListReservations(requestParameters.clientId, requestParameters.restaurantId, requestParameters.mealId, requestParameters.dateFrom, requestParameters.dateTo, requestParameters.page, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
-         * @summary Modifier une réservation
+         * Completely replaces an existing reservation
+         * @summary Replace reservation
+         * @param {ReservationsApiReservationControllerReplaceReservationRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        reservationControllerReplaceReservation(requestParameters: ReservationsApiReservationControllerReplaceReservationRequest, options?: RawAxiosRequestConfig): AxiosPromise<ReservationResponse> {
+            return localVarFp.reservationControllerReplaceReservation(requestParameters.id, requestParameters.updateReservationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Partially updates an existing reservation
+         * @summary Update reservation
          * @param {ReservationsApiReservationControllerUpdateReservationRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         reservationControllerUpdateReservation(requestParameters: ReservationsApiReservationControllerUpdateReservationRequest, options?: RawAxiosRequestConfig): AxiosPromise<ReservationResponse> {
-            return localVarFp.reservationControllerUpdateReservation(requestParameters.id, requestParameters.body, options).then((request) => request(axios, basePath));
+            return localVarFp.reservationControllerUpdateReservation(requestParameters.id, requestParameters.patchReservationRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -906,10 +1269,10 @@ export const ReservationsApiFactory = function (configuration?: Configuration, b
 export interface ReservationsApiReservationControllerCreateReservationRequest {
     /**
      * 
-     * @type {object}
+     * @type {CreateReservationRequest}
      * @memberof ReservationsApiReservationControllerCreateReservation
      */
-    readonly body: object
+    readonly createReservationRequest: CreateReservationRequest
 }
 
 /**
@@ -919,7 +1282,7 @@ export interface ReservationsApiReservationControllerCreateReservationRequest {
  */
 export interface ReservationsApiReservationControllerDeleteReservationRequest {
     /**
-     * 
+     * Reservation ID
      * @type {number}
      * @memberof ReservationsApiReservationControllerDeleteReservation
      */
@@ -933,7 +1296,7 @@ export interface ReservationsApiReservationControllerDeleteReservationRequest {
  */
 export interface ReservationsApiReservationControllerGetReservationRequest {
     /**
-     * 
+     * Reservation ID
      * @type {number}
      * @memberof ReservationsApiReservationControllerGetReservation
      */
@@ -947,46 +1310,67 @@ export interface ReservationsApiReservationControllerGetReservationRequest {
  */
 export interface ReservationsApiReservationControllerListReservationsRequest {
     /**
-     * 
+     * Filter by client ID
      * @type {number}
      * @memberof ReservationsApiReservationControllerListReservations
      */
-    readonly page?: number
+    readonly clientId?: number
 
     /**
-     * 
-     * @type {string}
-     * @memberof ReservationsApiReservationControllerListReservations
-     */
-    readonly dateTo?: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof ReservationsApiReservationControllerListReservations
-     */
-    readonly dateFrom?: string
-
-    /**
-     * 
-     * @type {number}
-     * @memberof ReservationsApiReservationControllerListReservations
-     */
-    readonly mealId?: number
-
-    /**
-     * 
+     * Filter by restaurant ID
      * @type {number}
      * @memberof ReservationsApiReservationControllerListReservations
      */
     readonly restaurantId?: number
 
     /**
-     * 
+     * Filter by meal type ID
      * @type {number}
      * @memberof ReservationsApiReservationControllerListReservations
      */
-    readonly clientId?: number
+    readonly mealId?: number
+
+    /**
+     * Start date for filtering (YYYY-MM-DD)
+     * @type {string}
+     * @memberof ReservationsApiReservationControllerListReservations
+     */
+    readonly dateFrom?: string
+
+    /**
+     * End date for filtering (YYYY-MM-DD)
+     * @type {string}
+     * @memberof ReservationsApiReservationControllerListReservations
+     */
+    readonly dateTo?: string
+
+    /**
+     * Page number for pagination
+     * @type {number}
+     * @memberof ReservationsApiReservationControllerListReservations
+     */
+    readonly page?: number
+}
+
+/**
+ * Request parameters for reservationControllerReplaceReservation operation in ReservationsApi.
+ * @export
+ * @interface ReservationsApiReservationControllerReplaceReservationRequest
+ */
+export interface ReservationsApiReservationControllerReplaceReservationRequest {
+    /**
+     * Reservation ID
+     * @type {number}
+     * @memberof ReservationsApiReservationControllerReplaceReservation
+     */
+    readonly id: number
+
+    /**
+     * 
+     * @type {UpdateReservationRequest}
+     * @memberof ReservationsApiReservationControllerReplaceReservation
+     */
+    readonly updateReservationRequest: UpdateReservationRequest
 }
 
 /**
@@ -996,7 +1380,7 @@ export interface ReservationsApiReservationControllerListReservationsRequest {
  */
 export interface ReservationsApiReservationControllerUpdateReservationRequest {
     /**
-     * 
+     * Reservation ID
      * @type {number}
      * @memberof ReservationsApiReservationControllerUpdateReservation
      */
@@ -1004,10 +1388,10 @@ export interface ReservationsApiReservationControllerUpdateReservationRequest {
 
     /**
      * 
-     * @type {object}
+     * @type {PatchReservationRequest}
      * @memberof ReservationsApiReservationControllerUpdateReservation
      */
-    readonly body: object
+    readonly patchReservationRequest: PatchReservationRequest
 }
 
 /**
@@ -1018,20 +1402,20 @@ export interface ReservationsApiReservationControllerUpdateReservationRequest {
  */
 export class ReservationsApi extends BaseAPI {
     /**
-     * 
-     * @summary Créer une réservation
+     * Creates a new reservation
+     * @summary Create reservation
      * @param {ReservationsApiReservationControllerCreateReservationRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ReservationsApi
      */
     public reservationControllerCreateReservation(requestParameters: ReservationsApiReservationControllerCreateReservationRequest, options?: RawAxiosRequestConfig) {
-        return ReservationsApiFp(this.configuration).reservationControllerCreateReservation(requestParameters.body, options).then((request) => request(this.axios, this.basePath));
+        return ReservationsApiFp(this.configuration).reservationControllerCreateReservation(requestParameters.createReservationRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * 
-     * @summary Supprimer une réservation
+     * Deletes a reservation
+     * @summary Delete reservation
      * @param {ReservationsApiReservationControllerDeleteReservationRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1042,8 +1426,8 @@ export class ReservationsApi extends BaseAPI {
     }
 
     /**
-     * 
-     * @summary Détailler une réservation
+     * Returns a single reservation by ID
+     * @summary Get reservation by ID
      * @param {ReservationsApiReservationControllerGetReservationRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1054,27 +1438,39 @@ export class ReservationsApi extends BaseAPI {
     }
 
     /**
-     * 
-     * @summary Lister les réservations
+     * Returns a paginated list of reservations with optional filtering
+     * @summary List reservations
      * @param {ReservationsApiReservationControllerListReservationsRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ReservationsApi
      */
     public reservationControllerListReservations(requestParameters: ReservationsApiReservationControllerListReservationsRequest = {}, options?: RawAxiosRequestConfig) {
-        return ReservationsApiFp(this.configuration).reservationControllerListReservations(requestParameters.page, requestParameters.dateTo, requestParameters.dateFrom, requestParameters.mealId, requestParameters.restaurantId, requestParameters.clientId, options).then((request) => request(this.axios, this.basePath));
+        return ReservationsApiFp(this.configuration).reservationControllerListReservations(requestParameters.clientId, requestParameters.restaurantId, requestParameters.mealId, requestParameters.dateFrom, requestParameters.dateTo, requestParameters.page, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * 
-     * @summary Modifier une réservation
+     * Completely replaces an existing reservation
+     * @summary Replace reservation
+     * @param {ReservationsApiReservationControllerReplaceReservationRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ReservationsApi
+     */
+    public reservationControllerReplaceReservation(requestParameters: ReservationsApiReservationControllerReplaceReservationRequest, options?: RawAxiosRequestConfig) {
+        return ReservationsApiFp(this.configuration).reservationControllerReplaceReservation(requestParameters.id, requestParameters.updateReservationRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Partially updates an existing reservation
+     * @summary Update reservation
      * @param {ReservationsApiReservationControllerUpdateReservationRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ReservationsApi
      */
     public reservationControllerUpdateReservation(requestParameters: ReservationsApiReservationControllerUpdateReservationRequest, options?: RawAxiosRequestConfig) {
-        return ReservationsApiFp(this.configuration).reservationControllerUpdateReservation(requestParameters.id, requestParameters.body, options).then((request) => request(this.axios, this.basePath));
+        return ReservationsApiFp(this.configuration).reservationControllerUpdateReservation(requestParameters.id, requestParameters.patchReservationRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1087,43 +1483,9 @@ export class ReservationsApi extends BaseAPI {
 export const RestaurantsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
-         * @summary Détailler un restaurant
-         * @param {number} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        restaurantControllerGetRestaurant: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('restaurantControllerGetRestaurant', 'id', id)
-            const localVarPath = `/restaurants/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Lister les restaurants
-         * @param {number} [page] 
+         * Returns a paginated list of restaurants in the hotel
+         * @summary List restaurants
+         * @param {number} [page] Page number for pagination
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1166,26 +1528,13 @@ export const RestaurantsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = RestaurantsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
-         * @summary Détailler un restaurant
-         * @param {number} id 
+         * Returns a paginated list of restaurants in the hotel
+         * @summary List restaurants
+         * @param {number} [page] Page number for pagination
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async restaurantControllerGetRestaurant(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestaurantResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.restaurantControllerGetRestaurant(id, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['RestaurantsApi.restaurantControllerGetRestaurant']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Lister les restaurants
-         * @param {number} [page] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async restaurantControllerListRestaurants(page?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedRestaurantListResponse>> {
+        async restaurantControllerListRestaurants(page?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedRestaurantResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.restaurantControllerListRestaurants(page, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['RestaurantsApi.restaurantControllerListRestaurants']?.[localVarOperationServerIndex]?.url;
@@ -1202,41 +1551,17 @@ export const RestaurantsApiFactory = function (configuration?: Configuration, ba
     const localVarFp = RestaurantsApiFp(configuration)
     return {
         /**
-         * 
-         * @summary Détailler un restaurant
-         * @param {RestaurantsApiRestaurantControllerGetRestaurantRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        restaurantControllerGetRestaurant(requestParameters: RestaurantsApiRestaurantControllerGetRestaurantRequest, options?: RawAxiosRequestConfig): AxiosPromise<RestaurantResponse> {
-            return localVarFp.restaurantControllerGetRestaurant(requestParameters.id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Lister les restaurants
+         * Returns a paginated list of restaurants in the hotel
+         * @summary List restaurants
          * @param {RestaurantsApiRestaurantControllerListRestaurantsRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        restaurantControllerListRestaurants(requestParameters: RestaurantsApiRestaurantControllerListRestaurantsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedRestaurantListResponse> {
+        restaurantControllerListRestaurants(requestParameters: RestaurantsApiRestaurantControllerListRestaurantsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedRestaurantResponse> {
             return localVarFp.restaurantControllerListRestaurants(requestParameters.page, options).then((request) => request(axios, basePath));
         },
     };
 };
-
-/**
- * Request parameters for restaurantControllerGetRestaurant operation in RestaurantsApi.
- * @export
- * @interface RestaurantsApiRestaurantControllerGetRestaurantRequest
- */
-export interface RestaurantsApiRestaurantControllerGetRestaurantRequest {
-    /**
-     * 
-     * @type {number}
-     * @memberof RestaurantsApiRestaurantControllerGetRestaurant
-     */
-    readonly id: number
-}
 
 /**
  * Request parameters for restaurantControllerListRestaurants operation in RestaurantsApi.
@@ -1245,7 +1570,7 @@ export interface RestaurantsApiRestaurantControllerGetRestaurantRequest {
  */
 export interface RestaurantsApiRestaurantControllerListRestaurantsRequest {
     /**
-     * 
+     * Page number for pagination
      * @type {number}
      * @memberof RestaurantsApiRestaurantControllerListRestaurants
      */
@@ -1260,20 +1585,8 @@ export interface RestaurantsApiRestaurantControllerListRestaurantsRequest {
  */
 export class RestaurantsApi extends BaseAPI {
     /**
-     * 
-     * @summary Détailler un restaurant
-     * @param {RestaurantsApiRestaurantControllerGetRestaurantRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof RestaurantsApi
-     */
-    public restaurantControllerGetRestaurant(requestParameters: RestaurantsApiRestaurantControllerGetRestaurantRequest, options?: RawAxiosRequestConfig) {
-        return RestaurantsApiFp(this.configuration).restaurantControllerGetRestaurant(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Lister les restaurants
+     * Returns a paginated list of restaurants in the hotel
+     * @summary List restaurants
      * @param {RestaurantsApiRestaurantControllerListRestaurantsRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1293,12 +1606,12 @@ export class RestaurantsApi extends BaseAPI {
 export const SpaApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
-         * @summary Obtenir les informations du spa
+         * Returns information about the hotel spa including contact details and opening hours
+         * @summary Get spa information
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        spaControllerGetSpaInfo: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        spaControllerGetSpa: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/spa`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1333,15 +1646,15 @@ export const SpaApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = SpaApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
-         * @summary Obtenir les informations du spa
+         * Returns information about the hotel spa including contact details and opening hours
+         * @summary Get spa information
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async spaControllerGetSpaInfo(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SpaResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.spaControllerGetSpaInfo(options);
+        async spaControllerGetSpa(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SpaResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.spaControllerGetSpa(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['SpaApi.spaControllerGetSpaInfo']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['SpaApi.spaControllerGetSpa']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -1355,13 +1668,13 @@ export const SpaApiFactory = function (configuration?: Configuration, basePath?:
     const localVarFp = SpaApiFp(configuration)
     return {
         /**
-         * 
-         * @summary Obtenir les informations du spa
+         * Returns information about the hotel spa including contact details and opening hours
+         * @summary Get spa information
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        spaControllerGetSpaInfo(options?: RawAxiosRequestConfig): AxiosPromise<SpaResponse> {
-            return localVarFp.spaControllerGetSpaInfo(options).then((request) => request(axios, basePath));
+        spaControllerGetSpa(options?: RawAxiosRequestConfig): AxiosPromise<SpaResponse> {
+            return localVarFp.spaControllerGetSpa(options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1374,14 +1687,14 @@ export const SpaApiFactory = function (configuration?: Configuration, basePath?:
  */
 export class SpaApi extends BaseAPI {
     /**
-     * 
-     * @summary Obtenir les informations du spa
+     * Returns information about the hotel spa including contact details and opening hours
+     * @summary Get spa information
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SpaApi
      */
-    public spaControllerGetSpaInfo(options?: RawAxiosRequestConfig) {
-        return SpaApiFp(this.configuration).spaControllerGetSpaInfo(options).then((request) => request(this.axios, this.basePath));
+    public spaControllerGetSpa(options?: RawAxiosRequestConfig) {
+        return SpaApiFp(this.configuration).spaControllerGetSpa(options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1394,15 +1707,15 @@ export class SpaApi extends BaseAPI {
 export const UsersApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 
-         * @summary Créer un client
-         * @param {object} body 
+         * Creates a new user
+         * @summary Create new user
+         * @param {UserRequest} userRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerCreateClient: async (body: object, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('userControllerCreateClient', 'body', body)
+        userControllerCreateUser: async (userRequest: UserRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userRequest' is not null or undefined
+            assertParamExists('userControllerCreateUser', 'userRequest', userRequest)
             const localVarPath = `/users`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1422,7 +1735,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(userRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1430,15 +1743,15 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 
-         * @summary Supprimer un client
-         * @param {number} id 
+         * Deletes a user
+         * @summary Delete user
+         * @param {number} id User ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerDeleteClient: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userControllerDeleteUser: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('userControllerDeleteClient', 'id', id)
+            assertParamExists('userControllerDeleteUser', 'id', id)
             const localVarPath = `/users/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1464,15 +1777,15 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 
-         * @summary Détailler un client
-         * @param {number} id 
+         * Returns a single user by ID
+         * @summary Get user by ID
+         * @param {number} id User ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerGetClientById: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userControllerGetUser: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('userControllerGetClientById', 'id', id)
+            assertParamExists('userControllerGetUser', 'id', id)
             const localVarPath = `/users/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1498,14 +1811,14 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 
-         * @summary Rechercher un client
-         * @param {number} [page] 
-         * @param {string} [search] 
+         * Returns a paginated list of users
+         * @summary List all users
+         * @param {number} [page] Page number for pagination
+         * @param {string} [search] Search term to filter users by name or email
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerGetClients: async (page?: number, search?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userControllerListUsers: async (page?: number, search?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/users`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1538,18 +1851,18 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             };
         },
         /**
-         * 
-         * @summary Modifier un client
-         * @param {number} id 
-         * @param {object} body 
+         * Updates an existing user
+         * @summary Update user
+         * @param {number} id User ID
+         * @param {UserRequest} userRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerUpdateClient: async (id: number, body: object, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        userControllerUpdateUser: async (id: number, userRequest: UserRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('userControllerUpdateClient', 'id', id)
-            // verify required parameter 'body' is not null or undefined
-            assertParamExists('userControllerUpdateClient', 'body', body)
+            assertParamExists('userControllerUpdateUser', 'id', id)
+            // verify required parameter 'userRequest' is not null or undefined
+            assertParamExists('userControllerUpdateUser', 'userRequest', userRequest)
             const localVarPath = `/users/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1570,7 +1883,7 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(userRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1588,70 +1901,70 @@ export const UsersApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = UsersApiAxiosParamCreator(configuration)
     return {
         /**
-         * 
-         * @summary Créer un client
-         * @param {object} body 
+         * Creates a new user
+         * @summary Create new user
+         * @param {UserRequest} userRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerCreateClient(body: object, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClientResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerCreateClient(body, options);
+        async userControllerCreateUser(userRequest: UserRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerCreateUser(userRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerCreateClient']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerCreateUser']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
-         * @summary Supprimer un client
-         * @param {number} id 
+         * Deletes a user
+         * @summary Delete user
+         * @param {number} id User ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerDeleteClient(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerDeleteClient(id, options);
+        async userControllerDeleteUser(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerDeleteUser(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerDeleteClient']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerDeleteUser']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
-         * @summary Détailler un client
-         * @param {number} id 
+         * Returns a single user by ID
+         * @summary Get user by ID
+         * @param {number} id User ID
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerGetClientById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClientResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerGetClientById(id, options);
+        async userControllerGetUser(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerGetUser(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerGetClientById']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerGetUser']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
-         * @summary Rechercher un client
-         * @param {number} [page] 
-         * @param {string} [search] 
+         * Returns a paginated list of users
+         * @summary List all users
+         * @param {number} [page] Page number for pagination
+         * @param {string} [search] Search term to filter users by name or email
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerGetClients(page?: number, search?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedClientListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerGetClients(page, search, options);
+        async userControllerListUsers(page?: number, search?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedUsersResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerListUsers(page, search, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerGetClients']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerListUsers']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * 
-         * @summary Modifier un client
-         * @param {number} id 
-         * @param {object} body 
+         * Updates an existing user
+         * @summary Update user
+         * @param {number} id User ID
+         * @param {UserRequest} userRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async userControllerUpdateClient(id: number, body: object, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ClientResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUpdateClient(id, body, options);
+        async userControllerUpdateUser(id: number, userRequest: UserRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.userControllerUpdateUser(id, userRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerUpdateClient']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UsersApi.userControllerUpdateUser']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -1665,140 +1978,140 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
     const localVarFp = UsersApiFp(configuration)
     return {
         /**
-         * 
-         * @summary Créer un client
-         * @param {UsersApiUserControllerCreateClientRequest} requestParameters Request parameters.
+         * Creates a new user
+         * @summary Create new user
+         * @param {UsersApiUserControllerCreateUserRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerCreateClient(requestParameters: UsersApiUserControllerCreateClientRequest, options?: RawAxiosRequestConfig): AxiosPromise<ClientResponse> {
-            return localVarFp.userControllerCreateClient(requestParameters.body, options).then((request) => request(axios, basePath));
+        userControllerCreateUser(requestParameters: UsersApiUserControllerCreateUserRequest, options?: RawAxiosRequestConfig): AxiosPromise<UserResponse> {
+            return localVarFp.userControllerCreateUser(requestParameters.userRequest, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
-         * @summary Supprimer un client
-         * @param {UsersApiUserControllerDeleteClientRequest} requestParameters Request parameters.
+         * Deletes a user
+         * @summary Delete user
+         * @param {UsersApiUserControllerDeleteUserRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerDeleteClient(requestParameters: UsersApiUserControllerDeleteClientRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.userControllerDeleteClient(requestParameters.id, options).then((request) => request(axios, basePath));
+        userControllerDeleteUser(requestParameters: UsersApiUserControllerDeleteUserRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.userControllerDeleteUser(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
-         * @summary Détailler un client
-         * @param {UsersApiUserControllerGetClientByIdRequest} requestParameters Request parameters.
+         * Returns a single user by ID
+         * @summary Get user by ID
+         * @param {UsersApiUserControllerGetUserRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerGetClientById(requestParameters: UsersApiUserControllerGetClientByIdRequest, options?: RawAxiosRequestConfig): AxiosPromise<ClientResponse> {
-            return localVarFp.userControllerGetClientById(requestParameters.id, options).then((request) => request(axios, basePath));
+        userControllerGetUser(requestParameters: UsersApiUserControllerGetUserRequest, options?: RawAxiosRequestConfig): AxiosPromise<UserResponse> {
+            return localVarFp.userControllerGetUser(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
-         * @summary Rechercher un client
-         * @param {UsersApiUserControllerGetClientsRequest} requestParameters Request parameters.
+         * Returns a paginated list of users
+         * @summary List all users
+         * @param {UsersApiUserControllerListUsersRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerGetClients(requestParameters: UsersApiUserControllerGetClientsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedClientListResponse> {
-            return localVarFp.userControllerGetClients(requestParameters.page, requestParameters.search, options).then((request) => request(axios, basePath));
+        userControllerListUsers(requestParameters: UsersApiUserControllerListUsersRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedUsersResponse> {
+            return localVarFp.userControllerListUsers(requestParameters.page, requestParameters.search, options).then((request) => request(axios, basePath));
         },
         /**
-         * 
-         * @summary Modifier un client
-         * @param {UsersApiUserControllerUpdateClientRequest} requestParameters Request parameters.
+         * Updates an existing user
+         * @summary Update user
+         * @param {UsersApiUserControllerUpdateUserRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        userControllerUpdateClient(requestParameters: UsersApiUserControllerUpdateClientRequest, options?: RawAxiosRequestConfig): AxiosPromise<ClientResponse> {
-            return localVarFp.userControllerUpdateClient(requestParameters.id, requestParameters.body, options).then((request) => request(axios, basePath));
+        userControllerUpdateUser(requestParameters: UsersApiUserControllerUpdateUserRequest, options?: RawAxiosRequestConfig): AxiosPromise<UserResponse> {
+            return localVarFp.userControllerUpdateUser(requestParameters.id, requestParameters.userRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * Request parameters for userControllerCreateClient operation in UsersApi.
+ * Request parameters for userControllerCreateUser operation in UsersApi.
  * @export
- * @interface UsersApiUserControllerCreateClientRequest
+ * @interface UsersApiUserControllerCreateUserRequest
  */
-export interface UsersApiUserControllerCreateClientRequest {
+export interface UsersApiUserControllerCreateUserRequest {
     /**
      * 
-     * @type {object}
-     * @memberof UsersApiUserControllerCreateClient
+     * @type {UserRequest}
+     * @memberof UsersApiUserControllerCreateUser
      */
-    readonly body: object
+    readonly userRequest: UserRequest
 }
 
 /**
- * Request parameters for userControllerDeleteClient operation in UsersApi.
+ * Request parameters for userControllerDeleteUser operation in UsersApi.
  * @export
- * @interface UsersApiUserControllerDeleteClientRequest
+ * @interface UsersApiUserControllerDeleteUserRequest
  */
-export interface UsersApiUserControllerDeleteClientRequest {
+export interface UsersApiUserControllerDeleteUserRequest {
     /**
-     * 
+     * User ID
      * @type {number}
-     * @memberof UsersApiUserControllerDeleteClient
-     */
-    readonly id: number
-}
-
-/**
- * Request parameters for userControllerGetClientById operation in UsersApi.
- * @export
- * @interface UsersApiUserControllerGetClientByIdRequest
- */
-export interface UsersApiUserControllerGetClientByIdRequest {
-    /**
-     * 
-     * @type {number}
-     * @memberof UsersApiUserControllerGetClientById
+     * @memberof UsersApiUserControllerDeleteUser
      */
     readonly id: number
 }
 
 /**
- * Request parameters for userControllerGetClients operation in UsersApi.
+ * Request parameters for userControllerGetUser operation in UsersApi.
  * @export
- * @interface UsersApiUserControllerGetClientsRequest
+ * @interface UsersApiUserControllerGetUserRequest
  */
-export interface UsersApiUserControllerGetClientsRequest {
+export interface UsersApiUserControllerGetUserRequest {
     /**
-     * 
+     * User ID
      * @type {number}
-     * @memberof UsersApiUserControllerGetClients
+     * @memberof UsersApiUserControllerGetUser
+     */
+    readonly id: number
+}
+
+/**
+ * Request parameters for userControllerListUsers operation in UsersApi.
+ * @export
+ * @interface UsersApiUserControllerListUsersRequest
+ */
+export interface UsersApiUserControllerListUsersRequest {
+    /**
+     * Page number for pagination
+     * @type {number}
+     * @memberof UsersApiUserControllerListUsers
      */
     readonly page?: number
 
     /**
-     * 
+     * Search term to filter users by name or email
      * @type {string}
-     * @memberof UsersApiUserControllerGetClients
+     * @memberof UsersApiUserControllerListUsers
      */
     readonly search?: string
 }
 
 /**
- * Request parameters for userControllerUpdateClient operation in UsersApi.
+ * Request parameters for userControllerUpdateUser operation in UsersApi.
  * @export
- * @interface UsersApiUserControllerUpdateClientRequest
+ * @interface UsersApiUserControllerUpdateUserRequest
  */
-export interface UsersApiUserControllerUpdateClientRequest {
+export interface UsersApiUserControllerUpdateUserRequest {
     /**
-     * 
+     * User ID
      * @type {number}
-     * @memberof UsersApiUserControllerUpdateClient
+     * @memberof UsersApiUserControllerUpdateUser
      */
     readonly id: number
 
     /**
      * 
-     * @type {object}
-     * @memberof UsersApiUserControllerUpdateClient
+     * @type {UserRequest}
+     * @memberof UsersApiUserControllerUpdateUser
      */
-    readonly body: object
+    readonly userRequest: UserRequest
 }
 
 /**
@@ -1809,63 +2122,63 @@ export interface UsersApiUserControllerUpdateClientRequest {
  */
 export class UsersApi extends BaseAPI {
     /**
-     * 
-     * @summary Créer un client
-     * @param {UsersApiUserControllerCreateClientRequest} requestParameters Request parameters.
+     * Creates a new user
+     * @summary Create new user
+     * @param {UsersApiUserControllerCreateUserRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public userControllerCreateClient(requestParameters: UsersApiUserControllerCreateClientRequest, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).userControllerCreateClient(requestParameters.body, options).then((request) => request(this.axios, this.basePath));
+    public userControllerCreateUser(requestParameters: UsersApiUserControllerCreateUserRequest, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).userControllerCreateUser(requestParameters.userRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * 
-     * @summary Supprimer un client
-     * @param {UsersApiUserControllerDeleteClientRequest} requestParameters Request parameters.
+     * Deletes a user
+     * @summary Delete user
+     * @param {UsersApiUserControllerDeleteUserRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public userControllerDeleteClient(requestParameters: UsersApiUserControllerDeleteClientRequest, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).userControllerDeleteClient(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    public userControllerDeleteUser(requestParameters: UsersApiUserControllerDeleteUserRequest, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).userControllerDeleteUser(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * 
-     * @summary Détailler un client
-     * @param {UsersApiUserControllerGetClientByIdRequest} requestParameters Request parameters.
+     * Returns a single user by ID
+     * @summary Get user by ID
+     * @param {UsersApiUserControllerGetUserRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public userControllerGetClientById(requestParameters: UsersApiUserControllerGetClientByIdRequest, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).userControllerGetClientById(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    public userControllerGetUser(requestParameters: UsersApiUserControllerGetUserRequest, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).userControllerGetUser(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * 
-     * @summary Rechercher un client
-     * @param {UsersApiUserControllerGetClientsRequest} requestParameters Request parameters.
+     * Returns a paginated list of users
+     * @summary List all users
+     * @param {UsersApiUserControllerListUsersRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public userControllerGetClients(requestParameters: UsersApiUserControllerGetClientsRequest = {}, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).userControllerGetClients(requestParameters.page, requestParameters.search, options).then((request) => request(this.axios, this.basePath));
+    public userControllerListUsers(requestParameters: UsersApiUserControllerListUsersRequest = {}, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).userControllerListUsers(requestParameters.page, requestParameters.search, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
-     * 
-     * @summary Modifier un client
-     * @param {UsersApiUserControllerUpdateClientRequest} requestParameters Request parameters.
+     * Updates an existing user
+     * @summary Update user
+     * @param {UsersApiUserControllerUpdateUserRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public userControllerUpdateClient(requestParameters: UsersApiUserControllerUpdateClientRequest, options?: RawAxiosRequestConfig) {
-        return UsersApiFp(this.configuration).userControllerUpdateClient(requestParameters.id, requestParameters.body, options).then((request) => request(this.axios, this.basePath));
+    public userControllerUpdateUser(requestParameters: UsersApiUserControllerUpdateUserRequest, options?: RawAxiosRequestConfig) {
+        return UsersApiFp(this.configuration).userControllerUpdateUser(requestParameters.id, requestParameters.userRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1879,7 +2192,7 @@ export const WebSocketEventsClientServerApiAxiosParamCreator = function (configu
     return {
         /**
          * 
-         * @summary Ping for test
+         * @summary Ping for connection testing
          * @param {ChatClientPingDto} [chatClientPingDto] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1913,7 +2226,7 @@ export const WebSocketEventsClientServerApiAxiosParamCreator = function (configu
         },
         /**
          * 
-         * @summary Send a chat
+         * @summary Send a chat message and receive AI response
          * @param {ChatClientSendChat} [chatClientSendChat] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1957,7 +2270,7 @@ export const WebSocketEventsClientServerApiFp = function(configuration?: Configu
     return {
         /**
          * 
-         * @summary Ping for test
+         * @summary Ping for connection testing
          * @param {ChatClientPingDto} [chatClientPingDto] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1970,7 +2283,7 @@ export const WebSocketEventsClientServerApiFp = function(configuration?: Configu
         },
         /**
          * 
-         * @summary Send a chat
+         * @summary Send a chat message and receive AI response
          * @param {ChatClientSendChat} [chatClientSendChat] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1993,7 +2306,7 @@ export const WebSocketEventsClientServerApiFactory = function (configuration?: C
     return {
         /**
          * 
-         * @summary Ping for test
+         * @summary Ping for connection testing
          * @param {WebSocketEventsClientServerApiClientPingRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2003,7 +2316,7 @@ export const WebSocketEventsClientServerApiFactory = function (configuration?: C
         },
         /**
          * 
-         * @summary Send a chat
+         * @summary Send a chat message and receive AI response
          * @param {WebSocketEventsClientServerApiSendChatRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2051,7 +2364,7 @@ export interface WebSocketEventsClientServerApiSendChatRequest {
 export class WebSocketEventsClientServerApi extends BaseAPI {
     /**
      * 
-     * @summary Ping for test
+     * @summary Ping for connection testing
      * @param {WebSocketEventsClientServerApiClientPingRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2063,7 +2376,7 @@ export class WebSocketEventsClientServerApi extends BaseAPI {
 
     /**
      * 
-     * @summary Send a chat
+     * @summary Send a chat message and receive AI response
      * @param {WebSocketEventsClientServerApiSendChatRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}

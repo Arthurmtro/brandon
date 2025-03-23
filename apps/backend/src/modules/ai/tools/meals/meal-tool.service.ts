@@ -11,8 +11,7 @@ export class MealToolService extends ToolStrategyService {
   public readonly listMealTypes = tool(
     async (input: { page?: number }) => {
       console.log('listMealTypes');
-      const client = this.hotelService.getClient();
-      const response = await client.listMealTypes(input.page);
+      const response = await this.hotelService.listMealTypes(input.page);
 
       const mealsList = response.results
         .map((meal) => `🍽️ ${meal.name} (ID: ${meal.id})`)

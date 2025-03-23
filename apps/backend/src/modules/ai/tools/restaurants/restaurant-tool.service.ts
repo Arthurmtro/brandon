@@ -11,8 +11,7 @@ export class RestaurantToolService extends ToolStrategyService {
   public readonly listRestaurants = tool(
     async (input: { page?: number }) => {
       console.log('listRestaurants');
-      const client = this.hotelService.getClient();
-      const response = await client.listRestaurants(input.page);
+      const response = await this.hotelService.listRestaurants(input.page);
 
       const restaurantsList = response.results
         .map(
@@ -35,8 +34,7 @@ export class RestaurantToolService extends ToolStrategyService {
   public readonly getRestaurant = tool(
     async (input: { id: number }) => {
       console.log('getRestaurant');
-      const client = this.hotelService.getClient();
-      const response = await client.listRestaurants();
+      const response = await this.hotelService.listRestaurants();
 
       const restaurant = response.results.find(
         (resto) => resto.id === input.id,
