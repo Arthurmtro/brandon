@@ -13,6 +13,7 @@ export class TramToolService extends ToolStrategyService {
 
   public readonly getTramInfo = tool(
     async ({ from, to, deadline }) => {
+      console.log('getTramInfo');
       const stops = await this.loadGTFSFile('stops.txt');
       const trips = await this.loadGTFSFile('trips.txt');
       const stopTimes = await this.loadGTFSFile('stop_times.txt');

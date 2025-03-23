@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
 import { Socket } from 'socket.io';
 
 export type ChatSocket = Socket<
@@ -46,6 +46,6 @@ export class ChatServerSendChat {
   readonly id: string;
 
   @ApiProperty({ description: 'isFinished' })
-  @IsString()
+  @IsBoolean()
   readonly isFinished: boolean;
 }
