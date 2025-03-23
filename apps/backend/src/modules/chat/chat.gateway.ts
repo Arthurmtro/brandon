@@ -70,14 +70,31 @@ export class ChatGateway
       data.text,
     );
 
-    for await (const event of iterableReadableStream) {
-      if (event?.data && event.data?.chunk?.content) {
-        console.log(event.data.chunk.content);
+    for await (const event of iterableReadableStream as any) {
+      console.log('event', event);
+      if (
+        event?.data &&
+        // event.data?.chunk?.content
+        (event.data?.chunk?.content ||
+          (event?.event === 'on_chain_end' && event.name === 'AgentExecutor'))
+      ) {
+        // console.log(event.data.chunk.content);
         this.emitMessage(client, {
-          text: event.data.chunk.content,
+          id: event.run_id,
+          text: event.data?.chunk?.content ?? '',
+          isFinished: event?.event === 'on_chain_end',
         });
       }
     }
+  }
+
+  @ApiServerEvent({
+    event: 'server:send-chat',
+    description: 'Server emits a pong message to clients',
+    payloadType: ChatServerSendChat,
+  })
+  emitMessage(client: ChatSocket, payload: ChatServerSendChat): void {
+    client.emit('server:send-chat', payload);
   }
 
   @ApiSocketEvent({
@@ -103,24 +120,7 @@ export class ChatGateway
   })
   emitPong(client: ChatSocket, payload: ChatServerPongDto): void {
     this.logger.debug(`Sending pong to client ${client.id}`);
-    this.sendToClient(client.id, 'server:pong', payload);
-  }
-
-  private sendErrorToClient(client: Socket, message: string): void {
-    this.logger.warn(`Sending error to client ${client.id}: ${message}`);
-    client.emit('error', {
-      message,
-      timestamp: new Date().toISOString(),
-    });
-  }
-
-  // Utility method to broadcast to all connected clients
-  broadcastToAll(event: string, data: any): void {
-    this.logger.debug(`Broadcasting ${event} to all clients`);
-    this.server.emit(event, {
-      ...data,
-      timestamp: new Date().toISOString(),
-    });
+    client.emit('server:pong', payload);
   }
 
   // Utility method to send to specific client
@@ -136,14 +136,5 @@ export class ChatGateway
     }
     this.logger.warn(`Failed to send ${event}: client ${clientId} not found`);
     return false;
-  }
-
-  @ApiServerEvent({
-    event: 'server:send-chat',
-    description: 'Server emits a pong message to clients',
-    payloadType: ChatServerSendChat,
-  })
-  emitMessage(client: ChatSocket, payload: ChatServerSendChat): void {
-    client.emit('server:send-chat', payload);
   }
 }

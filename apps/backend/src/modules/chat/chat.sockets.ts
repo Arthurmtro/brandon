@@ -40,4 +40,12 @@ export class ChatServerSendChat {
   @ApiProperty({ description: 'text' })
   @IsString()
   readonly text: string;
+
+  @ApiProperty({ description: 'id' })
+  @IsString()
+  readonly id: string;
+
+  @ApiProperty({ description: 'isFinished' })
+  @IsString()
+  readonly isFinished: boolean;
 }

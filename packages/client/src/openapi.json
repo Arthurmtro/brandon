@@ -739,6 +739,29 @@
         "responses": {}
       }
     },
+    "/ChatGateway/server:send-chat": {
+      "get": {
+        "tags": [
+          "WebSocket Events (Server → Client)"
+        ],
+        "summary": "Server emits a pong message to clients",
+        "operationId": "server:send-chat",
+        "x-event": "server:send-chat",
+        "x-namespace": "ChatGateway",
+        "responses": {
+          "200": {
+            "description": "Event payload for server:send-chat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatServerSendChat"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/ChatGateway/client:ping": {
       "post": {
         "tags": [
@@ -776,29 +799,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ChatServerPongDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/ChatGateway/server:send-chat": {
-      "get": {
-        "tags": [
-          "WebSocket Events (Server → Client)"
-        ],
-        "summary": "Server emits a pong message to clients",
-        "operationId": "server:send-chat",
-        "x-event": "server:send-chat",
-        "x-namespace": "ChatGateway",
-        "responses": {
-          "200": {
-            "description": "Event payload for server:send-chat",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ChatServerSendChat"
                 }
               }
             }
@@ -1365,6 +1365,28 @@
           "text"
         ]
       },
+      "ChatServerSendChat": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "text"
+          },
+          "id": {
+            "type": "string",
+            "description": "id"
+          },
+          "isFinished": {
+            "type": "boolean",
+            "description": "isFinished"
+          }
+        },
+        "required": [
+          "text",
+          "id",
+          "isFinished"
+        ]
+      },
       "ChatClientPingDto": {
         "type": "object",
         "properties": {
@@ -1387,18 +1409,6 @@
         },
         "required": [
           "message"
-        ]
-      },
-      "ChatServerSendChat": {
-        "type": "object",
-        "properties": {
-          "text": {
-            "type": "string",
-            "description": "text"
-          }
-        },
-        "required": [
-          "text"
         ]
       }
     }

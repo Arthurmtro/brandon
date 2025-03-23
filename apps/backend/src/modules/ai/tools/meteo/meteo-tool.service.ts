@@ -10,7 +10,7 @@ export class MeteoToolService extends ToolStrategyService {
   @Inject() private readonly hotelService: HotelCaliforniaService;
 
   public readonly meteo = tool(
-    async (input: { city: string; country: string }) => {
+    async (input: { city: string; country: string; date: string }) => {
       console.log('Meteo');
 
       try {
@@ -28,7 +28,7 @@ export class MeteoToolService extends ToolStrategyService {
         const { lat, lng } = location;
 
         // Date fixée : dimanche 23 mars 2025 à 10h UTC (11h heure locale France)
-        const date = '2025-03-23T10:00:00Z';
+        const date = input.date;
         const parameters = 't_2m:C,precip_1h:mm,weather_symbol_1h:idx';
         const meteoUrl = `https://api.meteomatics.com/${date}/${parameters}/${lat},${lng}/json`;
 
@@ -64,6 +64,7 @@ export class MeteoToolService extends ToolStrategyService {
       schema: z.object({
         city: z.string().describe(''),
         country: z.string().describe(''),
+        date: z.string(),
       }),
     },
   );

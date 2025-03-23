@@ -5,6 +5,8 @@ import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { CheerioWebBaseLoader } from '@langchain/community/document_loaders/web/cheerio';
 import * as cheerio from 'cheerio';
+import { PuppeteerWebBaseLoader } from '@langchain/community/document_loaders/web/puppeteer';
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 
 @Injectable()
 export class TourismToolService extends ToolStrategyService {
@@ -12,32 +14,18 @@ export class TourismToolService extends ToolStrategyService {
 
   public readonly getTourismInfo = tool(
     async () => {
+      console.log('getTourismInfo');
       const url =
         'https://www.lemans-tourisme.com/fr/decouvrir/les-incontournables.html';
-      const loader = new CheerioWebBaseLoader(url);
-      const [doc] = await loader.load();
-      if (!doc) {
-        return;
-      }
-      const $ = cheerio.load(doc.pageContent);
+      const docs = await this.loadWebPages([url]);
+      console.log('📄 docs:', docs);
 
-      // Sélecteur pour les titres des incontournables
-      const titres = $('h2')
-        .map((i: any, el: any) => $(el).text().trim())
-        .get();
+      if (!docs.length)
+        return 'Aucune donnée trouvée sur les incontournables du Mans.';
 
-      // Sélecteur pour les descriptions des incontournables
-      const descriptions = $('p')
-        .map((i: any, el: any) => $(el).text().trim())
-        .get();
-
-      // Combiner les titres et descriptions
-      const incontournables = titres.map((titre: any, index: any) => ({
-        titre,
-        description: descriptions[index] || 'Description non disponible',
-      }));
-
-      return incontournables;
+      return docs
+        .map((d, i) => `# Incontournable ${i + 1}\n\n${d.pageContent}`)
+        .join('\n\n');
     },
     {
       name: 'get_tourism_info',
@@ -45,4 +33,31 @@ export class TourismToolService extends ToolStrategyService {
       schema: z.object({}),
     },
   );
+
+  splitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 1000,
+    chunkOverlap: 100,
+  });
+
+  async loadWebPages(webPages: string[]) {
+    const loaders = webPages.map(
+      (page) =>
+        new PuppeteerWebBaseLoader(page, {
+          launchOptions: { headless: true },
+          gotoOptions: { waitUntil: 'networkidle0' },
+          evaluate: async (page) => {
+            await page.evaluate(
+              () => new Promise((resolve) => setTimeout(resolve, 2000)),
+            );
+            return await page.content();
+          },
+        }),
+    );
+
+    const docs = await Promise.all(loaders.map((loader) => loader.load()));
+    console.log('loadWebPages', docs);
+
+    const flatDocs = docs.flat();
+    return this.splitter.splitDocuments(flatDocs);
+  }
 }

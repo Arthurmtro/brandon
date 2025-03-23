@@ -186,7 +186,7 @@ export class AgentService {
     Question: What’s the weather like in Le Mans on March 23, 2025?
     Thought: I need to fetch the GPS coordinates for the city, then query the weather API.
     Action: get_meteo
-    Action Input: {{ "city": "Le Mans", "country": "France" }}
+    Action Input: {{ "city": "Le Mans", "country": "France", date: "2025-03-23T10:00:00Z"}}
     Observation: 🌍 Weather in Le Mans (France) on March 23, 2025 at 11am:
     🌡 Temperature: 13.4 °C
     🌧 Precipitation: 0.2 mm

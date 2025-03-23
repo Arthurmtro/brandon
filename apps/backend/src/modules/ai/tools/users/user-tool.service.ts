@@ -45,6 +45,11 @@ export class UserToolService extends ToolStrategyService {
     async (input) => {
       console.log('createClient');
       const result = await this.hotelService.createClient(input);
+      // .catch((err) => {
+      //   console.log('err', err);
+      //   throw new Error(err);
+      // });
+      console.log('result', result);
       return `Client créé avec succès : 👤 ${result.name} (ID: ${result.id})\n📞 Téléphone : ${result.phone_number}\n🚪 Chambre : ${result.room_number}\n📝 Demandes spéciales : ${result.special_requests || 'Aucune'}`;
     },
     {
