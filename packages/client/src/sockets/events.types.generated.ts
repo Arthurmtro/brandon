@@ -1,9 +1,19 @@
 /**
  * This file is auto-generated.
  */
-import type {  } from "../client";
+import type { ChatClientSendChat, ChatClientPingDto, ChatServerSendChat, ChatServerPongDto } from "../client";
 
 
+export interface ChatGatewayWebSocketEventsClientServer {
+  "client:send-chat": (payload: ChatClientSendChat) => void;
+  "client:ping": (payload: ChatClientPingDto) => void;
+}
 
-export type WebSocketEventsClientServer = {};
-export type WebSocketEventsServerClient = {};
+export interface ChatGatewayWebSocketEventsServerClient {
+  "server:send-chat": (payload: ChatServerSendChat) => void;
+  "server:pong": (payload: ChatServerPongDto) => void;
+}
+
+
+export type WebSocketEventsClientServer = ChatGatewayWebSocketEventsClientServer;
+export type WebSocketEventsServerClient = ChatGatewayWebSocketEventsServerClient;
