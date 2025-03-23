@@ -7,33 +7,34 @@ import {
   MealsApi,
   SpasApi,
   Configuration,
-  ClientRequest,
 } from '~/clients/hotel-california/api';
 
 import {
-  CreateClientParams,
-  HotelCaliforniaClientConfig,
+  ClientModel,
+  ClientInput,
+  ReservationModel,
+  ReservationInput,
+  ReservationUpdateInput,
+  SpaModel,
+  PaginatedClientResponse,
+  PaginatedReservationResponse,
+  PaginatedRestaurantResponse,
+  PaginatedMealTypeResponse,
   ListClientsParams,
   ListReservationsParams,
-  ReservationParams,
-  UpdateClientParams,
-  UpdateReservationParams,
 } from './hotel-california.types';
-import {
-  ReservationResponse,
-  ClientResponse,
-  PaginatedClientsResponse,
-} from './responses/hotel-california.response';
-import {
-  PaginatedMealTypeListResponse,
-  PaginatedReservationListResponse,
-  PaginatedRestaurantListResponse,
-  PatchedReservationRequest,
-  ReservationRequestParams,
-  SpaResponse,
-} from '~/clients/hotel-california/response';
-import { ReservationRequest } from './requests/hotel-california.request';
 
+/**
+ * Configuration for the Hotel California API client
+ */
+export interface HotelCaliforniaClientConfig {
+  apiBaseUrl: string;
+  timeout?: number;
+}
+
+/**
+ * Client implementation for the Hotel California API
+ */
 export class HotelCaliforniaClient {
   private readonly axiosInstance: AxiosInstance;
   private readonly clientsApi: ClientsApi;
@@ -51,7 +52,10 @@ export class HotelCaliforniaClient {
     readonly config: HotelCaliforniaClientConfig,
     private readonly token: string,
   ) {
-    this.axiosInstance = axios.create({ baseURL: this.config.apiBaseUrl });
+    this.axiosInstance = axios.create({
+      baseURL: this.config.apiBaseUrl,
+      timeout: this.config.timeout,
+    });
 
     this.axiosInstance.interceptors.request.use((config) => {
       config.headers.set('Authorization', `Token ${this.token}`);
@@ -96,47 +100,33 @@ export class HotelCaliforniaClient {
 
   /**
    * Creates a new client
-   * @param params Client creation parameters
+   * @param input Client input data
    * @returns Created client
    */
-  async createClient(params: CreateClientParams): Promise<ClientResponse> {
-    const clientRequest: ClientRequest = {
-      name: params.name,
-      phone_number: params.phoneNumber,
-      room_number: params.roomNumber,
-      special_requests: params.specialRequests,
-    };
-
+  async createClient(input: ClientInput): Promise<ClientModel> {
     const response = await this.clientsApi.clientsCreate({
-      clientRequest,
+      clientRequest: input,
     });
 
-    return response.data as unknown as ClientResponse;
+    return response.data;
   }
 
   /**
    * Updates an existing client
    * @param clientId Client ID
-   * @param params Client update parameters
+   * @param input Client update data
    * @returns Updated client
    */
   async updateClient(
     clientId: number,
-    params: UpdateClientParams,
-  ): Promise<ClientResponse> {
-    const clientRequest: ClientRequest = {
-      name: params.name,
-      phone_number: params.phoneNumber,
-      room_number: params.roomNumber,
-      special_requests: params.specialRequests,
-    };
-
+    input: ClientInput,
+  ): Promise<ClientModel> {
     const response = await this.clientsApi.clientsUpdate({
       id: clientId,
-      clientRequest,
+      clientRequest: input,
     });
 
-    return response.data as unknown as ClientResponse;
+    return response.data;
   }
 
   /**
@@ -152,18 +142,16 @@ export class HotelCaliforniaClient {
   /**
    * Gets client details
    * @param clientId Client ID
-   * @returns Client details
+   * @returns Client details or undefined if not found
    */
-  async getClient(clientId: number): Promise<ClientResponse | undefined> {
+  async getClient(clientId: number): Promise<ClientModel | undefined> {
     try {
       const response = await this.clientsApi.clientsRetrieve({
         id: clientId,
       });
-      return response.data as unknown as ClientResponse;
+
+      return response.data;
     } catch (error) {
-      if (isAxiosError(error) && error.response?.status === 404) {
-        return undefined;
-      }
       throw error;
     }
   }
@@ -175,13 +163,13 @@ export class HotelCaliforniaClient {
    */
   async listClients(
     params: ListClientsParams = {},
-  ): Promise<PaginatedClientsResponse> {
+  ): Promise<PaginatedClientResponse> {
     const response = await this.clientsApi.clientsList({
       page: params.page,
       search: params.search,
     });
 
-    return response.data as unknown as PaginatedClientsResponse;
+    return response.data;
   }
 
   /**
@@ -189,97 +177,61 @@ export class HotelCaliforniaClient {
    * @param page Page number
    * @returns Paginated list of restaurants
    */
-  async listRestaurants(
-    page?: number,
-  ): Promise<PaginatedRestaurantListResponse> {
+  async listRestaurants(page?: number): Promise<PaginatedRestaurantResponse> {
     const response = await this.restaurantsApi.restaurantsList({
       page,
     });
 
-    return response.data as unknown as PaginatedRestaurantListResponse;
+    return response.data;
   }
 
   /**
    * Creates a new reservation
-   * @param params Reservation parameters
+   * @param input Reservation input data
    * @returns Created reservation
    */
-  async createReservation(
-    params: ReservationRequest,
-  ): Promise<ReservationResponse> {
-    const reservationRequest = {
-      client: params.clientId,
-      restaurant: params.restaurantId,
-      date: params.date,
-      meal: params.mealId,
-      number_of_guests: params.numberOfGuests,
-      special_requests: params.specialRequests,
-    };
-
+  async createReservation(input: ReservationInput): Promise<ReservationModel> {
     const response = await this.reservationsApi.reservationsCreate({
-      reservationRequest,
+      reservationRequest: input,
     });
 
-    return response.data as unknown as ReservationResponse;
+    return response.data;
   }
 
   /**
-   * Updates an existing reservation
+   * Partially updates an existing reservation
    * @param reservationId Reservation ID
-   * @param params Update parameters
+   * @param input Update data
    * @returns Updated reservation
    */
   async updateReservation(
     reservationId: number,
-    params: UpdateReservationParams,
-  ): Promise<ReservationResponse> {
-    const patchedReservationRequest: PatchedReservationRequest = {};
-
-    if (params.clientId !== undefined)
-      patchedReservationRequest.client = params.clientId;
-    if (params.restaurantId !== undefined)
-      patchedReservationRequest.restaurant = params.restaurantId;
-    if (params.date !== undefined) patchedReservationRequest.date = params.date;
-    if (params.mealId !== undefined)
-      patchedReservationRequest.meal = params.mealId;
-    if (params.numberOfGuests !== undefined)
-      patchedReservationRequest.number_of_guests = params.numberOfGuests;
-    if (params.specialRequests !== undefined)
-      patchedReservationRequest.special_requests = params.specialRequests;
-
+    input: ReservationUpdateInput,
+  ): Promise<ReservationModel> {
     const response = await this.reservationsApi.reservationsPartialUpdate({
       id: reservationId,
-      patchedReservationRequest,
+      patchedReservationRequest: input,
     });
 
-    return response.data as unknown as ReservationResponse;
+    return response.data;
   }
 
   /**
    * Performs a full update of a reservation
    * @param reservationId Reservation ID
-   * @param params Update parameters
+   * @param input Complete reservation data
    * @returns Updated reservation
    */
   async replaceReservation(
     reservationId: number,
-    params: ReservationParams,
-  ): Promise<ReservationResponse> {
-    const reservationRequest: ReservationRequestParams = {
-      client: params.clientId,
-      restaurant: params.restaurantId,
-      date: params.date,
-      meal: params.mealId,
-      number_of_guests: params.numberOfGuests,
-      special_requests: params.specialRequests,
-    };
-
+    input: ReservationInput,
+  ): Promise<ReservationModel> {
     const response = await this.reservationsApi.reservationsUpdate({
       id: reservationId,
-      reservationRequest,
+      reservationRequest: input,
     });
 
-    return response.data as unknown as ReservationResponse;
+    return response.data;
   }
 
   /**
@@ -295,16 +247,16 @@ export class HotelCaliforniaClient {
   /**
    * Gets reservation details
    * @param reservationId Reservation ID
-   * @returns Reservation details
+   * @returns Reservation details or undefined if not found
    */
   async getReservation(
     reservationId: number,
-  ): Promise<ReservationResponse | undefined> {
+  ): Promise<ReservationModel | undefined> {
     try {
       const response = await this.reservationsApi.reservationsRetrieve({
         id: reservationId,
       });
-      return response.data as unknown as ReservationResponse;
+      return response.data;
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 404) {
         return undefined;
@@ -320,17 +272,17 @@ export class HotelCaliforniaClient {
    */
   async listReservations(
     params: ListReservationsParams = {},
-  ): Promise<PaginatedReservationListResponse> {
+  ): Promise<PaginatedReservationResponse> {
     const response = await this.reservationsApi.reservationsList({
-      client: params.clientId,
-      dateFrom: params.dateFrom,
-      dateTo: params.dateTo,
-      meal: params.mealId,
+      client: params.client,
+      dateFrom: params.date_from,
+      dateTo: params.date_to,
+      meal: params.meal,
       page: params.page,
-      restaurant: params.restaurantId,
+      restaurant: params.restaurant,
     });
 
-    return response.data as unknown as PaginatedReservationListResponse;
+    return response.data;
   }
 
   /**
@@ -338,22 +290,22 @@ export class HotelCaliforniaClient {
    * @param page Page number
    * @returns Paginated list of meal types
    */
-  async listMealTypes(page?: number): Promise<PaginatedMealTypeListResponse> {
+  async listMealTypes(page?: number): Promise<PaginatedMealTypeResponse> {
     const response = await this.mealsApi.mealsList({
       page,
     });
 
-    return response.data as unknown as PaginatedMealTypeListResponse;
+    return response.data;
   }
 
   /**
    * Gets spa information
-   * @returns Spa details
+   * @returns Spa details or undefined if not found
    */
-  async getSpa(): Promise<SpaResponse | undefined> {
+  async getSpa(): Promise<SpaModel | undefined> {
     try {
       const response = await this.spasApi.spasRetrieve();
-      return response.data as unknown as SpaResponse;
+      return response.data;
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 404) {
         return undefined;

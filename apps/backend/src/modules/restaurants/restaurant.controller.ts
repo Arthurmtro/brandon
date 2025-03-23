@@ -1,48 +1,51 @@
-import { Controller, Get, Inject, Param, Query } from '@nestjs/common';
 import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
-import {
-  PaginatedRestaurantListResponse,
-  RestaurantResponse,
-} from '~/clients/hotel-california/response';
+  Controller,
+  Get,
+  Query,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ListRestaurantsParams } from './requests/restaurant.request';
+import { PaginatedRestaurantResponse } from './responses/restaurant.response';
+import { transformToPaginatedRestaurantResponse } from './restaurant.transformer';
 import { HotelCaliforniaService } from '../hotel-california/hotel-california.service';
+import { isAxiosError } from 'axios';
 
-@ApiTags('restaurants')
+@ApiTags('Restaurants')
 @Controller('restaurants')
 export class RestaurantController {
-  @Inject() private readonly hotelService: HotelCaliforniaService;
+  constructor(private readonly hotelService: HotelCaliforniaService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lister les restaurants' })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiOkResponse({
+  @ApiOperation({
+    summary: 'List restaurants',
+    description: 'Returns a paginated list of restaurants in the hotel',
+  })
+  @ApiResponse({
+    status: 200,
     description: 'Restaurants retrieved successfully',
-    type: PaginatedRestaurantListResponse,
+    type: PaginatedRestaurantResponse,
   })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   async listRestaurants(
-    @Query('page') page?: number,
-  ): Promise<PaginatedRestaurantListResponse> {
-    const client = this.hotelService.getClient();
-    return await client.listRestaurants(page);
-  }
+    @Query() queryParams: ListRestaurantsParams,
+  ): Promise<PaginatedRestaurantResponse> {
+    try {
+      const response = await this.hotelService.listRestaurants(
+        queryParams.page,
+      );
+      return transformToPaginatedRestaurantResponse(response);
+    } catch (error) {
+      if (isAxiosError(error) && error.response?.status === 401) {
+        throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+      }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Détailler un restaurant' })
-  @ApiParam({ name: 'id', required: true, type: Number })
-  @ApiOkResponse({
-    description: 'Restaurant retrieved successfully',
-    type: RestaurantResponse,
-  })
-  async getRestaurant(
-    @Param('id') id: number,
-  ): Promise<RestaurantResponse | undefined> {
-    const client = this.hotelService.getClient();
-    const restaurants = await client.listRestaurants();
-    return restaurants.results.find((restaurant) => restaurant.id === id);
+      throw new HttpException(
+        'Failed to retrieve restaurants',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
