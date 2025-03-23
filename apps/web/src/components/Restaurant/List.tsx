@@ -1,120 +1,127 @@
 'use client';
 
-import { useRestaurants } from '@/context/restaurant.context';
-import { useState } from 'react';
+import { FC, useState } from 'react';
+import { RestaurantResponse } from '@repo/client';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
+import { Clock, MapPin, Users } from 'lucide-react';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationLink,
+  PaginationEllipsis,
+  PaginationNext,
+} from '../ui/pagination';
+import { Badge } from '../ui/badge';
 
-export default function RestaurantList() {
-  const {
-    restaurants,
-    isLoading,
-    error,
-    totalCount,
-    currentPage,
-    fetchRestaurants,
-  } = useRestaurants();
-  const [selectedRestaurant, setSelectedRestaurant] = useState<number | null>(
-    null
-  );
+interface Props {
+  readonly restaurants: RestaurantResponse[];
+  readonly totalCount: number;
+  readonly currentPage: number;
+}
 
-  if (isLoading) {
-    return (
-      <div className='flex justify-center items-center min-h-[200px]'>
-        <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary'></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div
-        className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative'
-        role='alert'
-      >
-        <strong className='font-bold'>Error!</strong>
-        <span className='block sm:inline'> {error.message}</span>
-      </div>
-    );
-  }
-
+export const RestaurantList: FC<Props> = ({
+  restaurants,
+  totalCount,
+  currentPage,
+}) => {
   return (
-    <div className='space-y-6'>
-      <h2 className='text-2xl font-bold'>Our Restaurants ({totalCount})</h2>
+    <div className='container mx-auto py-8 px-4'>
+      <h1 className='text-3xl font-bold mb-6'>Nos Restaurants</h1>
 
-      {restaurants.length === 0 ? (
-        <p className='text-gray-500'>No restaurants found.</p>
-      ) : (
-        <div className='grid md:grid-cols-2 gap-6'>
-          {restaurants.map((restaurant) => (
-            <div
-              key={restaurant.id}
-              className={`border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow ${
-                selectedRestaurant === restaurant.id
-                  ? 'ring-2 ring-primary'
-                  : ''
-              }`}
-              onClick={() => setSelectedRestaurant(restaurant.id)}
-            >
-              <div className='p-6'>
-                <div className='flex justify-between items-start'>
-                  <h3 className='text-xl font-semibold'>{restaurant.name}</h3>
-                  {restaurant.isActive ? (
-                    <span className='px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800'>
-                      Open
-                    </span>
-                  ) : (
-                    <span className='px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800'>
-                      Closed
-                    </span>
-                  )}
-                </div>
-
-                <p className='mt-2 text-gray-600'>{restaurant.description}</p>
-
-                <div className='mt-4 text-sm text-gray-500 space-y-1'>
-                  <p>
-                    <span className='font-medium'>Location:</span>{' '}
-                    {restaurant.location}
-                  </p>
-                  <p>
-                    <span className='font-medium'>Hours:</span>{' '}
-                    {restaurant.openingHours}
-                  </p>
-                  <p>
-                    <span className='font-medium'>Capacity:</span>{' '}
-                    {restaurant.capacity} guests
-                  </p>
-                </div>
-
-                <button className='mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors'>
-                  Make a Reservation
-                </button>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8'>
+        {restaurants.map((restaurant) => (
+          <Card key={restaurant.id} className='h-full'>
+            <CardHeader>
+              <div className='flex justify-between items-start'>
+                <CardTitle className='text-xl'>{restaurant.name}</CardTitle>
+                {restaurant.isActive ? (
+                  <Badge className='bg-green-500'>Ouvert</Badge>
+                ) : (
+                  <Badge className='text-red-500 border-red-500'>Fermé</Badge>
+                )}
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+              <CardDescription>{restaurant.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className='space-y-2 text-sm'>
+                <div className='flex items-center gap-2'>
+                  <Clock className='h-4 w-4 text-muted-foreground' />
+                  <span>{restaurant.openingHours}</span>
+                </div>
+                <div className='flex items-center gap-2'>
+                  <MapPin className='h-4 w-4 text-muted-foreground' />
+                  <span>{restaurant.location}</span>
+                </div>
+                <div className='flex items-center gap-2'>
+                  <Users className='h-4 w-4 text-muted-foreground' />
+                  <span>Capacité: {restaurant.capacity} personnes</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-      {totalCount > restaurants.length && (
-        <div className='flex justify-center mt-6'>
-          <div className='flex space-x-2'>
-            <button
-              onClick={() => fetchRestaurants(currentPage - 1)}
-              disabled={currentPage === 1}
-              className='px-4 py-2 border rounded disabled:opacity-50'
-            >
-              Previous
-            </button>
-            <span className='px-4 py-2'>Page {currentPage}</span>
-            <button
-              onClick={() => fetchRestaurants(currentPage + 1)}
-              disabled={currentPage * restaurants.length >= totalCount}
-              className='px-4 py-2 border rounded disabled:opacity-50'
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      )}
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href='#'
+              onClick={(e) => {
+                e.preventDefault();
+                // if (currentPage > 1) handlePageChange(currentPage - 1);
+              }}
+              className={
+                currentPage === 1 ? 'pointer-events-none opacity-50' : ''
+              }
+            />
+          </PaginationItem>
+
+          {Array.from({ length: totalCount }).map((_, index) => (
+            <PaginationItem key={index}>
+              <PaginationLink
+                href='#'
+                isActive={currentPage === index + 1}
+                onClick={(e) => {
+                  e.preventDefault();
+                  // handlePageChange(index + 1);
+                }}
+              >
+                {index + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
+          {totalCount > 3 && (
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+          )}
+
+          <PaginationItem>
+            <PaginationNext
+              href='#'
+              onClick={(e) => {
+                e.preventDefault();
+                // if (currentPage < totalCount) handlePageChange(currentPage + 1);
+              }}
+              className={
+                currentPage === totalCount
+                  ? 'pointer-events-none opacity-50'
+                  : ''
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
-}
+};

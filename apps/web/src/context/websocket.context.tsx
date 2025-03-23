@@ -28,7 +28,7 @@ socketApi.chat.init({
 
 export function WebSocketProvider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
-  const [socket, setSocket] = useState<any>(socketApi.chat.socket);
+  const [socket, setSocket] = useState(socketApi.chat.socket);
 
   const connect = () => {
     if (!isConnected) {

@@ -226,6 +226,68 @@
         ]
       }
     },
+    "/agents": {
+      "get": {
+        "operationId": "AgentController_test",
+        "parameters": [
+          {
+            "name": "input",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Agent"
+        ]
+      }
+    },
+    "/agents/stream": {
+      "get": {
+        "operationId": "AgentController_testStream",
+        "parameters": [
+          {
+            "name": "input",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Agent"
+        ]
+      }
+    },
     "/reservations": {
       "get": {
         "description": "Returns a paginated list of reservations with optional filtering",
@@ -615,20 +677,6 @@
         ]
       }
     },
-    "/agents": {
-      "post": {
-        "operationId": "AgentController_test",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Agent"
-        ]
-      }
-    },
     "/restaurants": {
       "get": {
         "description": "Returns a paginated list of restaurants in the hotel",
@@ -670,14 +718,14 @@
         ]
       }
     },
-    "/ChatGateway/send-chat": {
+    "/ChatGateway/client:send-chat": {
       "post": {
         "tags": [
           "WebSocket Events (Client → Server)"
         ],
-        "summary": "Send a chat message and receive AI response",
-        "operationId": "send-chat",
-        "x-event": "send-chat",
+        "summary": "Send a chat",
+        "operationId": "client:send-chat",
+        "x-event": "client:send-chat",
         "x-namespace": "ChatGateway",
         "requestBody": {
           "content": {
@@ -728,6 +776,29 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ChatServerPongDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ChatGateway/server:send-chat": {
+      "get": {
+        "tags": [
+          "WebSocket Events (Server → Client)"
+        ],
+        "summary": "Server emits a pong message to clients",
+        "operationId": "server:send-chat",
+        "x-event": "server:send-chat",
+        "x-namespace": "ChatGateway",
+        "responses": {
+          "200": {
+            "description": "Event payload for server:send-chat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatServerSendChat"
                 }
               }
             }
@@ -1282,36 +1353,16 @@
           "results"
         ]
       },
-      "AiMessageDto": {
+      "ChatClientSendChat": {
         "type": "object",
         "properties": {
           "text": {
             "type": "string",
             "description": "text"
-          },
-          "role": {
-            "type": "string",
-            "description": "role"
           }
         },
         "required": [
-          "text",
-          "role"
-        ]
-      },
-      "ChatClientSendChat": {
-        "type": "object",
-        "properties": {
-          "messages": {
-            "description": "blablabla",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AiMessageDto"
-            }
-          }
-        },
-        "required": [
-          "messages"
+          "text"
         ]
       },
       "ChatClientPingDto": {
@@ -1336,6 +1387,18 @@
         },
         "required": [
           "message"
+        ]
+      },
+      "ChatServerSendChat": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "text"
+          }
+        },
+        "required": [
+          "text"
         ]
       }
     }

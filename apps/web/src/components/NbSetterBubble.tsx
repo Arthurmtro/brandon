@@ -2,27 +2,21 @@
 
 import MessBubble from './MessBubble';
 import * as React from "react"
-import { Calendar } from "@/components/ui/calendar"
 import { Button } from "@/components/ui/button"
 import { useChat } from "@/context/ChatContext"
-import { format } from "date-fns"
-import { fr } from "date-fns/locale"
+import { Minus, Plus } from 'lucide-react';
 
-interface CalendarBubbleProps {
+interface NbSetterBubbleProps {
   isUser: boolean;
   className?: string;
 }
 
-export function CalendarBubble({ isUser, className }: CalendarBubbleProps) {
-  const [date, setDate] = React.useState<Date | undefined>(new Date())
+export function NbSetterBubble({ isUser, className }: NbSetterBubbleProps) {
+  const [nombre, setNombre] = React.useState<number>(1);
   const { addMessage, setLoading } = useChat()
 
-  const handleSendDate = async () => {
-    if (!date) return;
-
-    const formattedDate = format(date, "dd/MM/yyyy", { locale: fr });
-
-    const message = `Je veux déplacer ma réservation au ${formattedDate}`;
+  const handleSendNb = async () => {
+    const message = `Je veux réserver pour ${nombre}`;
 
     addMessage(message, 'user');
 
@@ -54,6 +48,14 @@ export function CalendarBubble({ isUser, className }: CalendarBubbleProps) {
     }
   };
 
+  const incrementNombre = () => {
+    setNombre(prev => prev + 1);
+  };
+
+  const decrementNombre = () => {
+    setNombre(prev => prev > 1 ? prev - 1 : 1);
+  };
+
   return (
     <MessBubble
       isUser={isUser}
@@ -61,18 +63,33 @@ export function CalendarBubble({ isUser, className }: CalendarBubbleProps) {
     >
       <div className="flex flex-col items-center space-y-4">
         <h3 className="text-sm font-medium text-gray-800">
-          Quelle nouvelle date voulez-vous ?
+          Quel nombre serez-vous ?
         </h3>
 
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={setDate}
-          className="rounded-md border bg-white"
-        />
+        <div className="flex flex-row items-center gap-5">
+          <Button
+            size="icon"
+            onClick={decrementNombre}
+            disabled={nombre <= 1}
+          >
+            <Minus />
+          </Button>
+
+          <div className="text-center text-2xl font-bold">
+            {nombre}
+          </div>
+
+          <Button
+            size="icon"
+            onClick={incrementNombre}
+            disabled={nombre >= 10}
+          >
+            <Plus />
+          </Button>
+        </div>
 
         <Button
-          onClick={handleSendDate}
+          onClick={handleSendNb}
           className="w-full mt-2"
         >
           Envoyer

@@ -30,7 +30,7 @@ export default function UserRequestForm({
   );
 
   return (
-    <div className=' mx-auto p-6 bg-white shadow-md rounded-lg'>
+    <div className='border border-gray-200 mx-auto p-6 bg-white shadow-md rounded-lg'>
       <form onSubmit={handleSubmit} className='space-y-4'>
         <div>
           <label className='block text-sm font-medium text-gray-700'>

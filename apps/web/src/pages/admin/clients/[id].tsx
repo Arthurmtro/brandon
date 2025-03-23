@@ -6,7 +6,7 @@ import { api, UserRequest, UserResponse } from '@repo/client';
 
 export default function ClientIdPage() {
   const router = useRouter();
-  const { getUser, updateUser, isLoading, error } = useUsers();
+  const { getUser, updateUser, deleteUser, isLoading, error } = useUsers();
 
   const { id } = router.query;
 
@@ -14,7 +14,7 @@ export default function ClientIdPage() {
   const [newUser, setNewUser] = useState<UserRequest>();
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const _getUser = async () => {
       if (!id || Array.isArray(id)) return;
 
       const userData = await getUser(id);
@@ -22,18 +22,35 @@ export default function ClientIdPage() {
       setNewUser(userData);
     };
 
-    fetchUser();
+    _getUser();
   }, [id]);
 
   const handleSubmit = useCallback(() => {
-    if (!id || !newUser || Array.isArray(id)) return;
+    const _updateUser = async () => {
+      if (!id || !newUser || Array.isArray(id)) return;
 
-    updateUser(id, newUser);
+      const userData = await updateUser(id, newUser);
+      setUser(userData);
+      setNewUser(userData);
+    };
+    _updateUser();
   }, [newUser, id]);
+
+  const handleDelete = useCallback(() => {
+    const _deleteUser = async () => {
+      if (!id || !newUser || Array.isArray(id)) return;
+
+      await deleteUser(id);
+      setUser(undefined);
+      setNewUser(undefined);
+      router.push('/admin/clients');
+    };
+    _deleteUser();
+  }, [id, router]);
 
   return (
     <main className='p-5 bg-white text-black min-h-screen'>
-      <div className='text-2xl mb-4'>Édition du client : {id}</div>
+      <div className='text-2xl mb-4'>Fiche utilisateur : {id}</div>
 
       {isLoading ? (
         <div className='flex justify-center my-8'>
@@ -48,11 +65,22 @@ export default function ClientIdPage() {
           {!newUser ? (
             <div className='text-gray-500'>User not found</div>
           ) : (
-            <UserRequestForm
-              user={newUser}
-              onChange={setNewUser}
-              onSubmit={handleSubmit}
-            />
+            <div>
+              <UserRequestForm
+                user={newUser}
+                onChange={setNewUser}
+                onSubmit={handleSubmit}
+              />
+
+              <button
+                className='mt-5 bg-red-600 text-white p-2 rounded-lg hover:bg-red-700 transition'
+                onClick={() => {
+                  // router.push(router.pathname + `/${client.id}`);
+                }}
+              >
+                Supprimer
+              </button>
+            </div>
           )}
         </div>
       )}
