@@ -41,7 +41,7 @@ export class TourismToolService extends ToolStrategyService {
     },
     {
       name: 'get_tourism_info',
-      description: 'Obtenir les choses à faire sur Le Mans.',
+      description: 'Savoir les activités à faire sur Le Mans.',
       schema: z.object({}),
     },
   );
