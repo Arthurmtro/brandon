@@ -675,7 +675,7 @@
         "tags": [
           "WebSocket Events (Client → Server)"
         ],
-        "summary": "Send a chat",
+        "summary": "Send a chat message and receive AI response",
         "operationId": "send-chat",
         "x-event": "send-chat",
         "x-namespace": "ChatGateway",
@@ -696,7 +696,7 @@
         "tags": [
           "WebSocket Events (Client → Server)"
         ],
-        "summary": "Ping for test",
+        "summary": "Ping for connection testing",
         "operationId": "client:ping",
         "x-event": "client:ping",
         "x-namespace": "ChatGateway",
@@ -759,7 +759,7 @@
             "description": "Unique identifier for the user",
             "example": 1
           },
-          "fullName": {
+          "name": {
             "type": "string",
             "description": "The full name of the user",
             "example": "John Doe"
@@ -782,7 +782,7 @@
         },
         "required": [
           "id",
-          "fullName",
+          "name",
           "phoneNumber"
         ]
       },

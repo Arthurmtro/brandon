@@ -602,7 +602,7 @@ export interface UserResponse {
      * @type {string}
      * @memberof UserResponse
      */
-    'fullName': string;
+    'name': string;
     /**
      * User\'s phone number
      * @type {string}
@@ -2192,7 +2192,7 @@ export const WebSocketEventsClientServerApiAxiosParamCreator = function (configu
     return {
         /**
          * 
-         * @summary Ping for test
+         * @summary Ping for connection testing
          * @param {ChatClientPingDto} [chatClientPingDto] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2226,7 +2226,7 @@ export const WebSocketEventsClientServerApiAxiosParamCreator = function (configu
         },
         /**
          * 
-         * @summary Send a chat
+         * @summary Send a chat message and receive AI response
          * @param {ChatClientSendChat} [chatClientSendChat] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2270,7 +2270,7 @@ export const WebSocketEventsClientServerApiFp = function(configuration?: Configu
     return {
         /**
          * 
-         * @summary Ping for test
+         * @summary Ping for connection testing
          * @param {ChatClientPingDto} [chatClientPingDto] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2283,7 +2283,7 @@ export const WebSocketEventsClientServerApiFp = function(configuration?: Configu
         },
         /**
          * 
-         * @summary Send a chat
+         * @summary Send a chat message and receive AI response
          * @param {ChatClientSendChat} [chatClientSendChat] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2306,7 +2306,7 @@ export const WebSocketEventsClientServerApiFactory = function (configuration?: C
     return {
         /**
          * 
-         * @summary Ping for test
+         * @summary Ping for connection testing
          * @param {WebSocketEventsClientServerApiClientPingRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2316,7 +2316,7 @@ export const WebSocketEventsClientServerApiFactory = function (configuration?: C
         },
         /**
          * 
-         * @summary Send a chat
+         * @summary Send a chat message and receive AI response
          * @param {WebSocketEventsClientServerApiSendChatRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2364,7 +2364,7 @@ export interface WebSocketEventsClientServerApiSendChatRequest {
 export class WebSocketEventsClientServerApi extends BaseAPI {
     /**
      * 
-     * @summary Ping for test
+     * @summary Ping for connection testing
      * @param {WebSocketEventsClientServerApiClientPingRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2376,7 +2376,7 @@ export class WebSocketEventsClientServerApi extends BaseAPI {
 
     /**
      * 
-     * @summary Send a chat
+     * @summary Send a chat message and receive AI response
      * @param {WebSocketEventsClientServerApiSendChatRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
