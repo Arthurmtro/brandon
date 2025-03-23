@@ -4,7 +4,7 @@ import { writeFileSync } from 'fs';
 import { DiscoveryModule, DiscoveryService } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 
-const logger = new Logger('bootstrap.swagger');
+const logger = new Logger('Swagger');
 
 export async function setupSwagger(
   app: INestApplication,
@@ -13,28 +13,21 @@ export async function setupSwagger(
   const host = config.getOrThrow<string>('HOST');
   const port = config.getOrThrow<number>('PORT');
 
-  console.log('host', host);
-  console.log('port', port);
-
   const writeApiDocs = true;
 
   const documentBuilder = new DocumentBuilder()
     .setTitle('Brandon API')
     .setDescription('API docs for Brandon')
     .setVersion('1.0')
-    // .addBearerAuth()
     .addServer('http://localhost:3040', 'Local')
-    // .addServer(`${host}:${port}`, 'Local')
     .build();
 
-  // Automatically collect extra models from your socket metadata.
   const extraModels = await collectExtraModels(app);
 
   let document = SwaggerModule.createDocument(app, documentBuilder, {
     extraModels,
   });
 
-  // Enhance the document with fake endpoints for socket events.
   document = await addWebsocketRoutes(app, document);
 
   SwaggerModule.setup('api-docs', app, document, {

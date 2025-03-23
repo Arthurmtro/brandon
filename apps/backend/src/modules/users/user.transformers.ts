@@ -34,7 +34,7 @@ export const transformClientToUserResponse = (
 ): UserResponse => {
   return {
     id: data.id,
-    fullName: data.name,
+    name: data.name,
     phoneNumber: data.phone_number,
     roomNumber: data.room_number ?? undefined,
     specialRequests: data.special_requests,

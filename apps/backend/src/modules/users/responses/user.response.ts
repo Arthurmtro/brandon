@@ -12,7 +12,7 @@ export class UserResponse {
     description: 'The full name of the user',
     example: 'John Doe',
   })
-  fullName: string;
+  name: string;
 
   @ApiProperty({
     description: "User's phone number",

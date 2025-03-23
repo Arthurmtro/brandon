@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsString, ValidateNested } from 'class-validator';
 import { Socket } from 'socket.io';
 import { AIMessage } from '../ai/ai.types';
-import { Type } from 'class-transformer';
 
 export type ChatSocket = Socket<
   ChatClientToServerEvents,

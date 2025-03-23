@@ -84,9 +84,6 @@ export class UserController {
   async getUser(@Param('id') id: number): Promise<UserResponse> {
     try {
       const response = await this.hotelService.getClient(id);
-
-      console.log(response);
-
       if (!response) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
