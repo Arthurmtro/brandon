@@ -1,24 +1,31 @@
 import { createContext, useContext } from 'react';
 import {
   api,
-  PaginatedClientListResponse,
-  PaginatedMealTypeListResponse,
+  PaginatedUsersResponse,
+  PaginatedMealResponse,
   SpaResponse,
-  PaginatedRestaurantListResponse,
+  PaginatedRestaurantResponse,
+  PaginatedReservationResponse,
 } from '@repo/client';
 
 interface AdminApiContextType {
   getRestaurants: (query?: {
     page?: number;
-  }) => Promise<PaginatedRestaurantListResponse>;
-  getMeals: (query?: {
-    page?: number;
-  }) => Promise<PaginatedMealTypeListResponse>;
+  }) => Promise<PaginatedRestaurantResponse>;
+  getMeals: (query?: { page?: number }) => Promise<PaginatedMealResponse>;
   getSpas: () => Promise<SpaResponse[]>;
   getClients: (query?: {
     page?: number;
     search?: string;
-  }) => Promise<PaginatedClientListResponse>;
+  }) => Promise<PaginatedUsersResponse>;
+  getReservations: (query?: {
+    page?: number;
+    client?: number;
+    date_from?: string;
+    date_to?: string;
+    meal?: number;
+    restaurant?: number;
+  }) => Promise<PaginatedReservationResponse>;
 }
 
 const AdminApiContext = createContext<AdminApiContextType | undefined>(
@@ -31,40 +38,48 @@ export const AdminApiContextProvider = ({
   children: React.ReactNode;
 }) => {
   const getRestaurants: AdminApiContextType['getRestaurants'] = async (
-    { page } = { page: 1 }
+    query = {}
   ) =>
     api.restaurants
       .restaurantControllerListRestaurants({
-        page,
+        page: 1,
+        ...query,
       })
       .then((r) => r.data);
 
-  const getMeals: AdminApiContextType['getMeals'] = ({ page } = { page: 1 }) =>
+  const getMeals: AdminApiContextType['getMeals'] = (query = {}) =>
     api.meals
       .mealControllerListMealTypes({
-        page,
+        page: 1,
+        ...query,
       })
       .then((r) => r.data);
 
   const getSpas: AdminApiContextType['getSpas'] = () =>
     api.spas
-      .spaControllerGetSpaInfo()
+      .spaControllerGetSpa()
       .then((r) => r.data)
       .then((spas) => Promise.resolve(Array.isArray(spas) ? spas : [spas]));
 
-  const getClients: AdminApiContextType['getClients'] = (
-    { page, search } = { page: 1, search: '' }
-  ) =>
+  const getClients: AdminApiContextType['getClients'] = (query = {}) =>
     api.users
-      .userControllerGetClients({
-        search: search || '',
-        page: String(page || 1),
+      .userControllerListUsers({
+        search: '',
+        page: 1,
+        ...query,
       })
+      .then((r) => r.data);
+
+  const getReservations: AdminApiContextType['getReservations'] = (
+    query = {}
+  ) =>
+    api.reservations
+      .reservationControllerListReservations({ page: 1, ...query })
       .then((r) => r.data);
 
   return (
     <AdminApiContext.Provider
-      value={{ getRestaurants, getMeals, getSpas, getClients }}
+      value={{ getRestaurants, getMeals, getSpas, getClients, getReservations }}
     >
       {children}
     </AdminApiContext.Provider>
