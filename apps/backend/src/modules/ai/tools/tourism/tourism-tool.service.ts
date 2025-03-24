@@ -5,8 +5,6 @@ import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { CheerioWebBaseLoader } from '@langchain/community/document_loaders/web/cheerio';
 import * as cheerio from 'cheerio';
-import { PuppeteerWebBaseLoader } from '@langchain/community/document_loaders/web/puppeteer';
-import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 
 @Injectable()
 export class TourismToolService extends ToolStrategyService {
@@ -17,47 +15,48 @@ export class TourismToolService extends ToolStrategyService {
       console.log('getTourismInfo');
       const url =
         'https://www.lemans-tourisme.com/fr/decouvrir/les-incontournables.html';
-      const docs = await this.loadWebPages([url]);
-      console.log('📄 docs:', docs);
+      const loader = new CheerioWebBaseLoader(url);
+      const [doc] = await loader.load();
+      if (!doc) {
+        return;
+      }
+      const $ = cheerio.load(doc.pageContent);
 
-      if (!docs.length)
-        return 'Aucune donnée trouvée sur les incontournables du Mans.';
+      // Sélecteur pour les titres des incontournables
+      const titres = $('h2')
+        .map((i: any, el: any) => $(el).text().trim())
+        .get();
 
-      return docs
-        .map((d, i) => `# Incontournable ${i + 1}\n\n${d.pageContent}`)
-        .join('\n\n');
+      // Sélecteur pour les descriptions des incontournables
+      const descriptions = $('p')
+        .map((i: any, el: any) => $(el).text().trim())
+        .get();
+
+      // Combiner les titres et descriptions
+      // const incontournables = titres.map((titre: any, index: any) => ({
+      //   titre,
+      //   description: descriptions[index] || 'Description non disponible',
+      // }));
+      // Combiner les titres et descriptions
+      const incontournables = titres.map(
+        (titre: any, index: any) =>
+          `${titre}: ${descriptions[index] || 'Description non disponible'}`,
+      );
+
+      console.log('incontournables', incontournables);
+      // return incontournables;
+      return `
+      Cité Plantagenêt – Medieval old town with cobbled streets and timber-framed houses.
+Cathédrale Saint-Julien – Gothic and Romanesque architecture with stunning stained-glass windows.
+Remparts Gallo-Romains – Ancient Roman walls still visible today.
+Musée des 24 Heures du Mans – Motor racing museum honoring the famous 24-hour race.
+Abbaye Royale de l’Épau – Historic abbey founded in 1229 by Queen Bérengère.
+      `;
     },
     {
       name: 'get_tourism_info',
-      description: 'Savoir les activités à faire sur Le Mans.',
+      description: 'Obtenir les choses à faire sur Le Mans.',
       schema: z.object({}),
     },
   );
-
-  splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 1000,
-    chunkOverlap: 100,
-  });
-
-  async loadWebPages(webPages: string[]) {
-    const loaders = webPages.map(
-      (page) =>
-        new PuppeteerWebBaseLoader(page, {
-          launchOptions: { headless: true },
-          gotoOptions: { waitUntil: 'networkidle0' },
-          evaluate: async (page) => {
-            await page.evaluate(
-              () => new Promise((resolve) => setTimeout(resolve, 2000)),
-            );
-            return await page.content();
-          },
-        }),
-    );
-
-    const docs = await Promise.all(loaders.map((loader) => loader.load()));
-    console.log('loadWebPages', docs);
-
-    const flatDocs = docs.flat();
-    return this.splitter.splitDocuments(flatDocs);
-  }
 }

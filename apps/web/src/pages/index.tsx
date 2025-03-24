@@ -1,77 +1,84 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import React, { useState } from "react";
+import Image from "next/image";
+import { FeedList } from "@/components/Feed/List";
+import { ChatProvider } from "@/context/ChatContext";
+import { Card, CardContent } from "@/components/ui/card";
+import { FeedFetchList } from "@/components/Feed/List-fetch";
 
 const HomePage = () => {
-  const [prompt, setPrompt] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPrompt(value);
-    setIsTyping(value.length > 0);
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [firstQuestionAsked, setFirstQuestionAsked] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   return (
-    <div
-      className='h-screen bg-cover bg-center w-full'
-      style={{
-        backgroundImage: "url('images/hotel-lobby.webp')",
-      }}
-    >
-      {/* floating button o top right  */}
-      <Button className='fixed top-0 right-0 m-4' asChild>
-        <Link href='/dashboard'>Dashboard</Link>
-      </Button>
+    <ChatProvider>
+      <div
+        className="h-screen bg-cover bg-center w-full"
+        style={{
+          backgroundImage: "url('images/hotel-lobby.webp')",
+        }}
+      >
+        {/* Floating button at top right */}
+        <Button className="fixed top-0 right-0 m-4 z-10" asChild>
+          <Link href="/dashboard">Dashboard</Link>
+        </Button>
 
-      <div className='flex flex-col items-center justify-center h-screen p-4 bg-gray-50'>
-        <div className='flex flex-col items-center justify-center gap-4'>
-          <img
-            src='/images/receptionist_welcomed.webp'
-            alt='Chat assistant'
-            className='rounded-full shadow-md w-40 h-40'
-          />
-          <Card className='shadow-sm'>
-            <CardContent className='p-4'>
-              <p className='text-center text-lg font-medium'>
-                What can I do for you?
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+        <div className="h-screen backdrop-blur-xs">
+          <div className="flex items-center justify-between h-screen px-5">
+            <div className="flex-1/2">
+              <Image
+                src={
+                  isLoading
+                    ? "/images/receptionist_thinking.webp"
+                    : isSpeaking
+                      ? "/images/receptionist_speaking.webp"
+                      : "/images/receptionist_welcomed.webp"
+                }
+                alt="Chat assistant"
+                width={500}
+                height={500}
+              />
+            </div>
+            <div className=" flex flex-col w-full h-full max-h-[80vh] align-center justify-center space-y-10">
+              {!firstQuestionAsked && (
+                <Card
+                  className={`max-w-[80%] bg-blue-500 text-white shadow-md p-0 border-none text-center mx-auto`}
+                >
+                  <CardContent className="p-3 flex flex-col items-center justify-center space-y-2">
+                    <h1 className="text-4xl font-bold text-center text-white">
+                      Welcome to the{" "}
+                      <b className=" text-blue-800">Hotel California!</b>
+                    </h1>
+                    {/* <p className="text-lg whitespace-pre-wrap break-words"> */}
+                    <p className="text-lg text-center text-white">
+                      Ask me anything about the hotel.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
 
-        {/* <AnimatePresence>
-          {isTyping && (
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 50 }}
-              transition={{ duration: 0.3 }}
-              className='fixed bottom-0 left-0 w-full bg-white shadow-lg py-2 px-4 flex items-center justify-between gap-2'
-            >
-              <span className='text-gray-700 font-medium'>
-                Prompt Mode Activated
-              </span>
-              <Button variant='outline'>Cancel</Button>
-            </motion.div>
-          )}
-        </AnimatePresence> */}
+              {/* <FeedList
+                onFirstQuestionAskedChange={(asked) =>
+                  setFirstQuestionAsked(asked)
+                }
+                onSpeaking={setIsSpeaking}
+                onLoadingChange={setIsLoading}
+              /> */}
 
-        <div className='fixed bottom-0 w-full px-4 pb-4'>
-          <Input
-            type='text'
-            placeholder='Type your message...'
-            className='shadow'
-            value={prompt}
-            onChange={handleInputChange}
-          />
+              <FeedFetchList
+                onFirstQuestionAskedChange={(asked) =>
+                  setFirstQuestionAsked(asked)
+                }
+                onSpeaking={setIsSpeaking}
+                onLoadingChange={setIsLoading}
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </ChatProvider>
   );
 };
 

@@ -14,45 +14,45 @@ export class TramToolService extends ToolStrategyService {
   public readonly getTramInfo = tool(
     async ({ from, to, deadline }) => {
       console.log('getTramInfo');
-      const stops = await this.loadGTFSFile('stops.txt');
-      const trips = await this.loadGTFSFile('trips.txt');
-      const stopTimes = await this.loadGTFSFile('stop_times.txt');
+      // const stops = await this.loadGTFSFile('stops.txt');
+      // const trips = await this.loadGTFSFile('trips.txt');
+      // const stopTimes = await this.loadGTFSFile('stop_times.txt');
 
-      // Récupérer stop_ids pour from et to
-      const fromStop = stops.find((s) =>
-        s.stop_name.toLowerCase().includes(from.toLowerCase()),
-      );
-      const toStop = stops.find((s) =>
-        s.stop_name.toLowerCase().includes(to.toLowerCase()),
-      );
-      if (!fromStop || !toStop) {
-        return `Impossible de trouver les arrêts "${from}" ou "${to}".`;
-      }
+      // // Récupérer stop_ids pour from et to
+      // const fromStop = stops.find((s) =>
+      //   s.stop_name.toLowerCase().includes(from.toLowerCase()),
+      // );
+      // const toStop = stops.find((s) =>
+      //   s.stop_name.toLowerCase().includes(to.toLowerCase()),
+      // );
+      // if (!fromStop || !toStop) {
+      //   return `Impossible de trouver les arrêts "${from}" ou "${to}".`;
+      // }
 
-      const fromStopId = fromStop.stop_id;
-      const toStopId = toStop.stop_id;
+      // const fromStopId = fromStop.stop_id;
+      // const toStopId = toStop.stop_id;
 
-      // Récupérer les trips qui passent par from et ensuite par to
-      const matchingTrips = stopTimes
-        .filter((s) => s.stop_id === fromStopId)
-        .map((s) => ({
-          trip_id: s.trip_id,
-          departure_time: s.departure_time,
-          from_sequence: parseInt(s.stop_sequence),
-        }))
-        .filter((trip) => {
-          const toMatch = stopTimes.find(
-            (s) => s.trip_id === trip.trip_id && s.stop_id === toStopId,
-          );
-          return (
-            toMatch && parseInt(toMatch.stop_sequence) > trip.from_sequence
-          );
-        });
+      // // Récupérer les trips qui passent par from et ensuite par to
+      // const matchingTrips = stopTimes
+      //   .filter((s) => s.stop_id === fromStopId)
+      //   .map((s) => ({
+      //     trip_id: s.trip_id,
+      //     departure_time: s.departure_time,
+      //     from_sequence: parseInt(s.stop_sequence),
+      //   }))
+      //   .filter((trip) => {
+      //     const toMatch = stopTimes.find(
+      //       (s) => s.trip_id === trip.trip_id && s.stop_id === toStopId,
+      //     );
+      //     return (
+      //       toMatch && parseInt(toMatch.stop_sequence) > trip.from_sequence
+      //     );
+      //   });
 
-      // TODO : Appel au flux temps réel TripUpdate
-      // pour corriger les horaires si dispo
+      // // TODO : Appel au flux temps réel TripUpdate
+      // // pour corriger les horaires si dispo
 
-      return matchingTrips.slice(0, 5); // juste un aperçu pour tester
+      // return matchingTrips.slice(0, 5); // juste un aperçu pour tester
     },
     {
       name: 'get_tram_info',

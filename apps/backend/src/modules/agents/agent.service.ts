@@ -31,9 +31,9 @@ export class AgentService {
     this.prompt = this.generatePrompt();
 
     this.langfuseHandler = new CallbackHandler({
-      publicKey: 'pk-lf-974c875b-cf63-4474-b343-f60dc32ee455',
-      secretKey: 'sk-lf-88dc3a2a-5bd8-4470-a542-4a8d1c725af1',
-      baseUrl: 'http://localhost:3000',
+      publicKey: config.getOrThrow('LANGCHAIN_PUBLIC_KEY'),
+      secretKey: config.getOrThrow('LANGCHAIN_SECRET_KEY'),
+      baseUrl: config.getOrThrow('LANGCHAIN_BASE_URL'),
     });
   }
 
@@ -121,6 +121,8 @@ export class AgentService {
     Thought: I now know the final answer
     Final Answer: {{clear, human-readable final response}}
 
+    Only return the Final Answer
+
     Begin!
 
     ### DETAILED EXAMPLES
@@ -152,12 +154,10 @@ export class AgentService {
     Action: get_reservation
     Action Input: {{ "id": 123 }}
     Observation: 🆔 123 | Client: 888, Restaurant: 5, Date: 2025-06-15, Guests: 2
-    Thought: Reservation belongs to client 888, not 999. Update not allowed.
     Final Answer: You cannot modify this reservation as it belongs to another client.
 
     **Example 3: Requesting Missing Information:**
     Question: Cancel my reservation.
-    Thought: I need the reservation ID to proceed.
     Final Answer: Please provide the reservation ID you wish to cancel.
 
     **Example 4: Creating a Client (No Existing Client Found):**
@@ -175,24 +175,19 @@ export class AgentService {
 
     **Example 5: Retrieving Spa Information:**
     Question: Can you give me details about the spa?
-    Thought: I will retrieve spa information directly.
     Action: get_spa_info
     Action Input: {{}}
     Observation: 🧖 Spa : Relax Center | 📍 Emplacement : Ground Floor | 📞 Téléphone : 123456789
-    Thought: I have the spa details.
     Final Answer: Spa "Relax Center" is located on the Ground Floor, phone: 123456789.
 
     **Example 6: Retrieving Weather Information:**
     Question: What’s the weather like in Le Mans on March 23, 2025?
-    Thought: I need to fetch the GPS coordinates for the city, then query the weather API.
     Action: get_meteo
     Action Input: {{ "city": "Le Mans", "country": "France", date: "2025-03-23T10:00:00Z"}}
     Observation: 🌍 Weather in Le Mans (France) on March 23, 2025 at 11am:
     🌡 Temperature: 13.4 °C
     🌧 Precipitation: 0.2 mm
-    ☁️ Weather code: 5
-    Thought: I got the weather information for Le Mans.
-    Final Answer: The weather in Le Mans on March 23, 2025 at 11am is 13.4 °C with 0.2 mm of precipitation (weather code 5).
+    Final Answer: The weather in Le Mans on March 23, 2025 at 11am is 13.4 °C with 0.2 mm of precipitation.
 
 
     **Example 7: Retrieving Tourism Information:**
@@ -208,11 +203,14 @@ export class AgentService {
     5. **Abbaye Royale de l’Épau** – Historic abbey founded in 1229 by Queen Bérengère.
     Thought: I got the tourism information for Le Mans from the official website.
     Final Answer: The must-see attractions in Le Mans are the Cité Plantagenêt, Cathédrale Saint-Julien, Gallo-Roman Walls, 24 Hours of Le Mans Museum, and the Abbaye Royale de l’Épau.
+    IMPORTANT: Only output the Final Answer. Do not include Thought, Action, or Observation steps in your response.
+
 
     Now, answer this:
 
-    Question: {{input}}
-    Thought: {{agent_scratchpad}}`;
+    Question: {input}
+    Thought: {agent_scratchpad}
+    `;
 
     return ChatPromptTemplate.fromMessages(
       [

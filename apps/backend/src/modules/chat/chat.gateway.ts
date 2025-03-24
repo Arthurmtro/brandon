@@ -62,23 +62,23 @@ export class ChatGateway
   })
   @SubscribeMessage('client:send-chat')
   async handleMessage(
-    @MessageBody() data: ChatClientSendChat,
     @ConnectedSocket() client: Socket,
+    @MessageBody() data: ChatClientSendChat,
   ) {
+    console.log('data', data);
     const iterableReadableStream = await this.agentService.sendMessageStream(
       client.id,
       data.text,
     );
 
-    for await (const event of iterableReadableStream as any) {
-      console.log('event', event);
+    for await (const event of iterableReadableStream) {
+      // console.log('event', event);
       if (
         event?.data &&
-        // event.data?.chunk?.content
-        (event.data?.chunk?.content ||
-          (event?.event === 'on_chain_end' && event.name === 'AgentExecutor'))
+        event?.data?.chunk?.content
+        // (event.data?.chunk?.content ||
+        //   (event?.event === 'on_chain_end' && event.name === 'AgentExecutor'))
       ) {
-        // console.log(event.data.chunk.content);
         this.emitMessage(client, {
           id: event.run_id,
           text: event.data?.chunk?.content ?? '',
@@ -86,6 +86,8 @@ export class ChatGateway
         });
       }
     }
+
+    return;
   }
 
   @ApiServerEvent({

@@ -642,55 +642,12 @@ export const AgentApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        agentControllerTest: async (input: string, clientId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        agentControllerSendMEssage: async (input: string, clientId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'input' is not null or undefined
-            assertParamExists('agentControllerTest', 'input', input)
+            assertParamExists('agentControllerSendMEssage', 'input', input)
             // verify required parameter 'clientId' is not null or undefined
-            assertParamExists('agentControllerTest', 'clientId', clientId)
+            assertParamExists('agentControllerSendMEssage', 'clientId', clientId)
             const localVarPath = `/agents`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (input !== undefined) {
-                localVarQueryParameter['input'] = input;
-            }
-
-            if (clientId !== undefined) {
-                localVarQueryParameter['clientId'] = clientId;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {string} input 
-         * @param {string} clientId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        agentControllerTestStream: async (input: string, clientId: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'input' is not null or undefined
-            assertParamExists('agentControllerTestStream', 'input', input)
-            // verify required parameter 'clientId' is not null or undefined
-            assertParamExists('agentControllerTestStream', 'clientId', clientId)
-            const localVarPath = `/agents/stream`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -738,23 +695,10 @@ export const AgentApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async agentControllerTest(input: string, clientId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.agentControllerTest(input, clientId, options);
+        async agentControllerSendMEssage(input: string, clientId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.agentControllerSendMEssage(input, clientId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AgentApi.agentControllerTest']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {string} input 
-         * @param {string} clientId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async agentControllerTestStream(input: string, clientId: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.agentControllerTestStream(input, clientId, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['AgentApi.agentControllerTestStream']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['AgentApi.agentControllerSendMEssage']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -769,63 +713,33 @@ export const AgentApiFactory = function (configuration?: Configuration, basePath
     return {
         /**
          * 
-         * @param {AgentApiAgentControllerTestRequest} requestParameters Request parameters.
+         * @param {AgentApiAgentControllerSendMEssageRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        agentControllerTest(requestParameters: AgentApiAgentControllerTestRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.agentControllerTest(requestParameters.input, requestParameters.clientId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {AgentApiAgentControllerTestStreamRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        agentControllerTestStream(requestParameters: AgentApiAgentControllerTestStreamRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.agentControllerTestStream(requestParameters.input, requestParameters.clientId, options).then((request) => request(axios, basePath));
+        agentControllerSendMEssage(requestParameters: AgentApiAgentControllerSendMEssageRequest, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.agentControllerSendMEssage(requestParameters.input, requestParameters.clientId, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * Request parameters for agentControllerTest operation in AgentApi.
+ * Request parameters for agentControllerSendMEssage operation in AgentApi.
  * @export
- * @interface AgentApiAgentControllerTestRequest
+ * @interface AgentApiAgentControllerSendMEssageRequest
  */
-export interface AgentApiAgentControllerTestRequest {
+export interface AgentApiAgentControllerSendMEssageRequest {
     /**
      * 
      * @type {string}
-     * @memberof AgentApiAgentControllerTest
+     * @memberof AgentApiAgentControllerSendMEssage
      */
     readonly input: string
 
     /**
      * 
      * @type {string}
-     * @memberof AgentApiAgentControllerTest
-     */
-    readonly clientId: string
-}
-
-/**
- * Request parameters for agentControllerTestStream operation in AgentApi.
- * @export
- * @interface AgentApiAgentControllerTestStreamRequest
- */
-export interface AgentApiAgentControllerTestStreamRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof AgentApiAgentControllerTestStream
-     */
-    readonly input: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof AgentApiAgentControllerTestStream
+     * @memberof AgentApiAgentControllerSendMEssage
      */
     readonly clientId: string
 }
@@ -839,24 +753,13 @@ export interface AgentApiAgentControllerTestStreamRequest {
 export class AgentApi extends BaseAPI {
     /**
      * 
-     * @param {AgentApiAgentControllerTestRequest} requestParameters Request parameters.
+     * @param {AgentApiAgentControllerSendMEssageRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AgentApi
      */
-    public agentControllerTest(requestParameters: AgentApiAgentControllerTestRequest, options?: RawAxiosRequestConfig) {
-        return AgentApiFp(this.configuration).agentControllerTest(requestParameters.input, requestParameters.clientId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {AgentApiAgentControllerTestStreamRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof AgentApi
-     */
-    public agentControllerTestStream(requestParameters: AgentApiAgentControllerTestStreamRequest, options?: RawAxiosRequestConfig) {
-        return AgentApiFp(this.configuration).agentControllerTestStream(requestParameters.input, requestParameters.clientId, options).then((request) => request(this.axios, this.basePath));
+    public agentControllerSendMEssage(requestParameters: AgentApiAgentControllerSendMEssageRequest, options?: RawAxiosRequestConfig) {
+        return AgentApiFp(this.configuration).agentControllerSendMEssage(requestParameters.input, requestParameters.clientId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

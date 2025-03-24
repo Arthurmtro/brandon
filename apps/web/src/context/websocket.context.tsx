@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, {
   createContext,
@@ -6,8 +6,8 @@ import React, {
   useEffect,
   useState,
   ReactNode,
-} from 'react';
-import { socketApi } from '@repo/client';
+} from "react";
+import { socketApi } from "@repo/client";
 
 interface WebSocketContextType {
   isConnected: boolean;
@@ -22,7 +22,7 @@ const WebSocketContext = createContext<WebSocketContextType | undefined>(
 
 socketApi.chat.init({
   socket: {
-    baseUrl: 'http://localhost:3040/chat',
+    baseUrl: "http://localhost:3040/chat",
   },
 });
 
@@ -33,7 +33,7 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
   const connect = () => {
     if (!isConnected) {
       socketApi.chat.socket.connect();
-      console.log('Connecting to chat namespace');
+      console.log("Connecting to chat namespace");
       setSocket(socketApi.chat.socket);
     }
   };
@@ -51,59 +51,40 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
     // }
 
     const handleConnect = () => {
-      console.log('Connected to chat namespace successfully');
+      console.log("Connected to chat namespace successfully");
       setIsConnected(true);
     };
 
     const handleDisconnect = () => {
-      console.log('Disconnected from chat namespace');
+      console.log("Disconnected from chat namespace");
       setIsConnected(false);
     };
 
     const handleConnectError = (error: any) => {
-      console.error('Connection error to chat namespace:', error);
+      console.error("Connection error to chat namespace:", error);
       setIsConnected(false);
     };
 
-    const handleReconnect = (attemptNumber: number) => {
-      console.log(`Reconnecting to chat namespace, attempt ${attemptNumber}`);
-    };
-
-    const handleReconnectAttempt = (attemptNumber: number) => {
-      console.log(
-        `Attempting to reconnect to chat namespace, attempt ${attemptNumber}`
-      );
-    };
-
-    socketApi.chat.socket.on('connect', handleConnect);
-    socketApi.chat.socket.on('disconnect', handleDisconnect);
-    socketApi.chat.socket.on('connect_error', handleConnectError);
+    socketApi.chat.socket.on("connect", handleConnect);
+    socketApi.chat.socket.on("disconnect", handleDisconnect);
+    socketApi.chat.socket.on("connect_error", handleConnectError);
     // socketApi.chat.socket.on('reconnect', handleReconnect);
     // socketApi.chat.socket.on('reconnect_attempt', handleReconnectAttempt);
 
-    let pingInterval: NodeJS.Timeout | null = null;
     if (socket && isConnected) {
-      console.log('Connected to chat namespace successfully', isConnected);
-
-      pingInterval = setInterval(() => {
-        console.log('Sending ping to chat namespace...');
-        socketApi.chat.socket.emit('client:ping', { message: 'ping' });
-      }, 1000);
+      console.log("Connected to chat namespace successfully", isConnected);
 
       const handlePong = (data: any) => {
-        console.log('Received pong from chat namespace:', data);
+        console.log("Received pong from chat namespace:", data);
       };
 
-      socketApi.chat.socket.on('server:pong', handlePong);
+      socketApi.chat.socket.on("server:pong", handlePong);
 
       return () => {
-        if (pingInterval) clearInterval(pingInterval);
         socketApi.chat.socket.offAny();
       };
     }
     return () => {
-      if (pingInterval) clearInterval(pingInterval);
-
       socketApi.chat.socket.offAny();
 
       if (socket && isConnected) {
@@ -130,7 +111,7 @@ export function useWebSocket() {
   const context = useContext(WebSocketContext);
 
   if (context === undefined) {
-    throw new Error('useWebSocket must be used within a WebSocketProvider');
+    throw new Error("useWebSocket must be used within a WebSocketProvider");
   }
 
   return context;

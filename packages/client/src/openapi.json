@@ -228,7 +228,7 @@
     },
     "/agents": {
       "get": {
-        "operationId": "AgentController_test",
+        "operationId": "AgentController_sendMEssage",
         "parameters": [
           {
             "name": "input",
@@ -249,38 +249,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "Agent"
-        ]
-      }
-    },
-    "/agents/stream": {
-      "get": {
-        "operationId": "AgentController_testStream",
-        "parameters": [
-          {
-            "name": "input",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
-          },
-          {
-            "name": "clientId",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
           }
         },
         "tags": [
@@ -716,94 +692,6 @@
         "tags": [
           "Restaurants"
         ]
-      }
-    },
-    "/ChatGateway/client:send-chat": {
-      "post": {
-        "tags": [
-          "WebSocket Events (Client → Server)"
-        ],
-        "summary": "Send a chat",
-        "operationId": "client:send-chat",
-        "x-event": "client:send-chat",
-        "x-namespace": "ChatGateway",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChatClientSendChat"
-              }
-            }
-          }
-        },
-        "responses": {}
-      }
-    },
-    "/ChatGateway/server:send-chat": {
-      "get": {
-        "tags": [
-          "WebSocket Events (Server → Client)"
-        ],
-        "summary": "Server emits a pong message to clients",
-        "operationId": "server:send-chat",
-        "x-event": "server:send-chat",
-        "x-namespace": "ChatGateway",
-        "responses": {
-          "200": {
-            "description": "Event payload for server:send-chat",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ChatServerSendChat"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/ChatGateway/client:ping": {
-      "post": {
-        "tags": [
-          "WebSocket Events (Client → Server)"
-        ],
-        "summary": "Ping for connection testing",
-        "operationId": "client:ping",
-        "x-event": "client:ping",
-        "x-namespace": "ChatGateway",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChatClientPingDto"
-              }
-            }
-          }
-        },
-        "responses": {}
-      }
-    },
-    "/ChatGateway/server:pong": {
-      "get": {
-        "tags": [
-          "WebSocket Events (Server → Client)"
-        ],
-        "summary": "Server emits a pong message to clients",
-        "operationId": "server:pong",
-        "x-event": "server:pong",
-        "x-namespace": "ChatGateway",
-        "responses": {
-          "200": {
-            "description": "Event payload for server:pong",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ChatServerPongDto"
-                }
-              }
-            }
-          }
-        }
       }
     }
   },
@@ -1351,64 +1239,6 @@
         "required": [
           "count",
           "results"
-        ]
-      },
-      "ChatClientSendChat": {
-        "type": "object",
-        "properties": {
-          "text": {
-            "type": "string",
-            "description": "text"
-          }
-        },
-        "required": [
-          "text"
-        ]
-      },
-      "ChatServerSendChat": {
-        "type": "object",
-        "properties": {
-          "text": {
-            "type": "string",
-            "description": "text"
-          },
-          "id": {
-            "type": "string",
-            "description": "id"
-          },
-          "isFinished": {
-            "type": "boolean",
-            "description": "isFinished"
-          }
-        },
-        "required": [
-          "text",
-          "id",
-          "isFinished"
-        ]
-      },
-      "ChatClientPingDto": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "description": "client send ping"
-          }
-        },
-        "required": [
-          "message"
-        ]
-      },
-      "ChatServerPongDto": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "description": "server send pong"
-          }
-        },
-        "required": [
-          "message"
         ]
       }
     }

@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { api, RestaurantResponse } from '@repo/client';
+import { api, RestaurantResponse } from "@repo/client";
 import {
   createContext,
   useContext,
   useState,
   useEffect,
   ReactNode,
-} from 'react';
+} from "react";
 
 interface RestaurantContextProps {
   restaurants: RestaurantResponse[];
@@ -42,15 +42,15 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
 
       const { data, status } = response;
       if (status !== 200) {
-        throw new Error('Failed to fetch restaurants');
+        throw new Error("Failed to fetch restaurants");
       }
 
       setRestaurants(data.results);
       setTotalCount(data.count);
     } catch (err) {
-      console.error('Error fetching restaurants:', err);
+      console.error("Error fetching restaurants:", err);
       setError(
-        err instanceof Error ? err : new Error('Failed to fetch restaurants')
+        err instanceof Error ? err : new Error("Failed to fetch restaurants")
       );
     } finally {
       setIsLoading(false);
@@ -80,7 +80,7 @@ export function RestaurantProvider({ children }: { children: ReactNode }) {
 export function useRestaurants() {
   const context = useContext(RestaurantContext);
   if (context === undefined) {
-    throw new Error('useRestaurants must be used within a RestaurantProvider');
+    throw new Error("useRestaurants must be used within a RestaurantProvider");
   }
   return context;
 }
